@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Quản trị website - Trí Việt CMS</title>
+  <link rel="stylesheet" href="/admin/static/admin.css" />
+  <link href="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.snow.css" rel="stylesheet" />
+</head>
+<body>
+  <div id="login-screen">
+    <div class="login-card">
+      <h1>Trí Việt CMS</h1>
+      <p>Đăng nhập để quản lý nội dung website</p>
+      <form id="login-form">
+        <div class="field">
+          <label for="username">Tên đăng nhập</label>
+          <input id="username" type="text" value="admin" autocomplete="username" />
+        </div>
+        <div class="field">
+          <label for="password">Mật khẩu</label>
+          <input id="password" type="password" value="admin123" autocomplete="current-password" />
+        </div>
+        <button class="btn btn-primary" type="submit" style="width:100%">Đăng nhập</button>
+        <div id="login-status" class="status error"></div>
+      </form>
+    </div>
+  </div>
+
+  <div id="app" class="hidden">
+    <aside class="sidebar">
+      <div class="brand">
+        <h2>Trí Việt CMS</h2>
+        <p>Quản trị nội dung website</p>
+      </div>
+      <button class="nav-btn active" data-view="pages">Bài viết / Trang</button>
+      <button class="nav-btn" data-view="media">Thư viện ảnh</button>
+      <button class="nav-btn" data-view="settings">Cài đặt chung</button>
+      <div class="sidebar-footer">
+        <a class="btn btn-secondary" href="/giasubinhminh.com/index.html" target="_blank" rel="noopener">Xem website</a>
+        <button id="logout-btn" class="btn btn-danger" type="button">Đăng xuất</button>
+      </div>
+    </aside>
+
+    <main class="main">
+      <section id="view-pages">
+        <div class="topbar">
+          <h1>Danh sách bài viết</h1>
+          <div class="topbar-actions">
+            <input id="page-search" type="search" placeholder="Tìm theo tiêu đề..." />
+          </div>
+        </div>
+        <div class="panel">
+          <div id="page-list" class="page-list"></div>
+          <div id="pages-status" class="status"></div>
+        </div>
+      </section>
+
+      <section id="view-editor" class="hidden">
+        <div class="topbar">
+          <h1 id="editor-title">Chỉnh sửa bài viết</h1>
+          <div class="topbar-actions">
+            <a id="preview-link" class="btn btn-secondary" href="#" target="_blank" rel="noopener">Xem trước</a>
+            <button id="back-to-list" class="btn btn-secondary" type="button">Quay lại</button>
+            <button id="save-page" class="btn btn-primary" type="button">Lưu thay đổi</button>
+          </div>
+        </div>
+
+        <div class="editor-layout">
+          <div class="panel">
+            <div class="field">
+              <label for="field-title">Tiêu đề SEO (title)</label>
+              <input id="field-title" type="text" />
+            </div>
+            <div class="field">
+              <label for="field-heading">Tiêu đề hiển thị (H1)</label>
+              <input id="field-heading" type="text" />
+            </div>
+            <div class="field">
+              <label for="field-description">Mô tả SEO</label>
+              <textarea id="field-description"></textarea>
+            </div>
+            <div class="field">
+              <label>Nội dung bài viết</label>
+              <p class="field-hint">Nhấn vào ảnh trong bài để đổi ảnh, hoặc dùng nút ảnh trên thanh công cụ để chèn mới.</p>
+              <div id="editor-toolbar"></div>
+              <div id="editor-content"></div>
+              <div id="image-toolbar" class="image-toolbar hidden">
+                <div class="image-toolbar-head">
+                  <strong>Ảnh trong bài</strong>
+                  <button id="close-image-toolbar" class="btn btn-secondary" type="button">Đóng</button>
+                </div>
+                <img id="selected-image-preview" alt="Ảnh đang chọn" />
+                <div class="image-toolbar-actions">
+                  <label class="btn btn-primary" for="inline-image-input">Tải ảnh mới</label>
+                  <button id="replace-image-library" class="btn btn-secondary" type="button">Chọn từ thư viện</button>
+                </div>
+              </div>
+              <input id="inline-image-input" type="file" accept="image/*" class="hidden" />
+            </div>
+            <div id="editor-status" class="status"></div>
+          </div>
+
+          <div class="panel editor-preview">
+            <div class="field">
+              <label for="field-thumbnail">Ảnh đại diện (URL)</label>
+              <input id="field-thumbnail" type="text" />
+            </div>
+            <img id="thumbnail-preview" alt="Ảnh đại diện" />
+            <div style="margin-top:16px; display:flex; gap:10px; flex-wrap:wrap;">
+              <button id="pick-thumbnail" class="btn btn-secondary" type="button">Chọn từ thư viện</button>
+              <label class="btn btn-secondary" for="upload-thumbnail">Tải ảnh mới</label>
+              <input id="upload-thumbnail" type="file" accept="image/*" class="hidden" />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="view-media" class="hidden">
+        <div class="topbar">
+          <h1>Thư viện ảnh</h1>
+          <div class="topbar-actions">
+            <input id="media-search" type="search" placeholder="Tìm ảnh..." />
+            <label class="btn btn-primary" for="upload-media">Tải ảnh lên</label>
+            <input id="upload-media" type="file" accept="image/*" class="hidden" />
+          </div>
+        </div>
+        <div class="panel">
+          <div id="media-grid" class="media-grid"></div>
+          <div id="media-status" class="status"></div>
+        </div>
+      </section>
+
+      <section id="view-settings" class="hidden">
+        <div class="topbar">
+          <h1>Cài đặt chung</h1>
+          <div class="topbar-actions">
+            <button id="save-settings" class="btn btn-primary" type="button">Lưu cài đặt</button>
+          </div>
+        </div>
+        <div class="panel grid-2">
+          <div>
+            <div class="field">
+              <label for="setting-site-name">Tên website</label>
+              <input id="setting-site-name" type="text" />
+            </div>
+            <div class="field">
+              <label for="setting-logo">Logo (URL)</label>
+              <input id="setting-logo" type="text" />
+            </div>
+            <div class="field">
+              <label for="setting-hotline1">Hotline 1</label>
+              <input id="setting-hotline1" type="text" />
+            </div>
+            <div class="field">
+              <label for="setting-hotline2">Hotline 2</label>
+              <input id="setting-hotline2" type="text" />
+            </div>
+          </div>
+          <div>
+            <div class="field">
+              <label for="setting-password">Đổi mật khẩu admin</label>
+              <input id="setting-password" type="password" placeholder="Để trống nếu không đổi" />
+            </div>
+            <img id="setting-logo-preview" alt="Logo" style="max-width:220px; border-radius:12px; border:1px solid var(--border);" />
+          </div>
+        </div>
+        <div id="settings-status" class="status"></div>
+      </section>
+    </main>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.js"></script>
+  <script src="/admin/static/admin.js"></script>
+</body>
+</html>

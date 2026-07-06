@@ -1,0 +1,6 @@
+# HTTrack Website Copier Cookie File
+# This file format is compatible with Netscape cookies
+giasubinhminh.com	TRUE	/	FALSE	1999999999	wordpress_test_cookie	WP%20Cookie%20check
+cdn-images-1.medium.com	TRUE	/	FALSE	1999999999	_cfuvid	MV4mVc8qebUPAMmQ6RZZ7EYLph557Oaa1Gqp8tMKHdc-1782356247.8360562-1.0.1.1-Su2ADC5qHB5YNkA_F6tDQ_POm.e_A5lz5oJRZBo6uec
+medium.com	TRUE	/	FALSE	1999999999	SameSite	None
+

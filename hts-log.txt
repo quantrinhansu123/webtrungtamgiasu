@@ -1,0 +1,477 @@
+HTTrack3.49-2+htsswf+htsjava launched on Thu, 25 Jun 2026 09:04:10 at https://giasubinhminh.com/ https://giasubinhminh.com/ +*.png +*.gif +*.jpg +*.jpeg +*.css +*.js -ad.doubleclick.net/* -mime:application/foobar
+(winhttrack -qwC2%Ps2u1%s%uN0%I0p3DaK0H0%kf2A25000%f#f -F "Mozilla/4.5 (compatible; HTTrack 3.0x; Windows 98)" -%F "<!-- Mirrored from %s%s by HTTrack Website Copier/3.x [XR&CO'2014], %s -->" -%l "en, *" https://giasubinhminh.com/ https://giasubinhminh.com/ -O1 "D:\cloneweb" +*.png +*.gif +*.jpg +*.jpeg +*.css +*.js -ad.doubleclick.net/* -mime:application/foobar )
+
+Information, Warnings and Errors reported for this mirror:
+note:	the hts-log.txt file, and hts-cache folder, may contain sensitive information,
+	such as username/password authentication for websites mirrored in this project
+	do not share these files/folders if you want these information to remain private
+
+09:04:57	Error: 	"Forbidden" (403) at link https://giasubinhminh.com/xmlrpc.php (from https://giasubinhminh.com/)
+09:05:01	Error: 	"Bad Request" (400) at link https://www.googletagmanager.com/gtm.js?id= (from https://giasubinhminh.com/)
+09:09:36	Warning: 	Moved Permanently for https://giasubinhminh.com/category/lien-he/
+09:09:36	Warning: 	File has moved from https://giasubinhminh.com/category/lien-he/ to https://giasubinhminh.com/lien-he/
+09:09:36	Warning: 	Moved Permanently for https://giasubinhminh.com/gia-su-theo-mon/gia-su-mon-toan/
+09:09:36	Warning: 	File has moved from https://giasubinhminh.com/gia-su-theo-mon/gia-su-mon-toan/ to https://giasubinhminh.com/gia-su-mon-toan/
+09:09:43	Warning: 	Moved Permanently for https://giasubinhminh.com/gia-su-theo-mon/gia-su-mon-anh/
+09:09:43	Warning: 	File has moved from https://giasubinhminh.com/gia-su-theo-mon/gia-su-mon-anh/ to https://giasubinhminh.com/gia-su-mon-anh/
+09:09:55	Error: 	"Not Found" (404) at link https://giasubinhminh.com/danh-muc-gia-su-tieu-hoc/ (from https://giasubinhminh.com/)
+09:10:07	Warning: 	Moved Permanently for https://giasubinhminh.com/gia-su-theo-mon/gia-su-mon-hoa/
+09:10:07	Warning: 	File has moved from https://giasubinhminh.com/gia-su-theo-mon/gia-su-mon-hoa/ to https://giasubinhminh.com/gia-su-mon-hoa/
+09:10:31	Warning: 	Moved Permanently for https://giasubinhminh.com/gia-su-theo-mon/gia-su-mon-van/
+09:10:31	Warning: 	File has moved from https://giasubinhminh.com/gia-su-theo-mon/gia-su-mon-van/ to https://giasubinhminh.com/gia-su-mon-van/
+09:10:36	Warning: 	Moved Permanently for https://giasubinhminh.com/gia-su-theo-mon/gia-su-mon-ly/
+09:10:36	Warning: 	File has moved from https://giasubinhminh.com/gia-su-theo-mon/gia-su-mon-ly/ to https://giasubinhminh.com/gia-su-mon-ly/
+09:10:47	Error: 	"Not Found" (404) at link https://giasubinhminh.com/danh-muc-gia-su-ngoai-ngu/ (from https://giasubinhminh.com/)
+09:10:54	Error: 	"Not Found" (404) at link https://giasubinhminh.com/danh-muc-gia-su-nang-khieu/ (from https://giasubinhminh.com/)
+09:10:57	Warning: 	Moved Permanently for https://giasubinhminh.com/?p=3616
+09:10:57	Warning: 	File has moved from https://giasubinhminh.com/?p=3616 to https://giasubinhminh.com/gia-su-day-kem-tai-nha-online-tu-lop-1-12-on-thi-tat-ca-cac-mon/
+09:19:19	Warning: 	Moved Permanently for https://giasubinhminh.com/?p=1493
+09:19:19	Warning: 	File has moved from https://giasubinhminh.com/?p=1493 to https://giasubinhminh.com/bang-gia-500-gia-su-mon-toan-gioi-tu-lop-1-12-o-ha-noi/
+09:21:27	Warning: 	Moved Permanently for https://giasubinhminh.com/?p=1458
+09:21:27	Warning: 	File has moved from https://giasubinhminh.com/?p=1458 to https://giasubinhminh.com/top-3000-gia-su-tieng-anh-tai-nha-tang-hieu-qua-gap-5-lan/
+09:22:31	Error: 	"Not Found" (404) at link https://giasubinhminh.com/wp-content/uploads/2018/10/DẠY-KÈM-MÔN-ANH-VĂN-LỚP-12-TẠI-NHÀ.jpg (from https://giasubinhminh.com/top-3000-gia-su-tieng-anh-tai-nha-tang-hieu-qua-gap-5-lan/)
+09:23:10	Warning: 	Moved Permanently for https://giasubinhminh.com/?p=3248
+09:23:10	Warning: 	File has moved from https://giasubinhminh.com/?p=3248 to https://giasubinhminh.com/gia-su-mon-van/
+09:23:59	Warning: 	Moved Permanently for https://giasubinhminh.com/?p=3252
+09:23:59	Warning: 	File has moved from https://giasubinhminh.com/?p=3252 to https://giasubinhminh.com/gia-su-mon-hoa/
+09:24:41	Error: 	"Not Found" (404) at link https://giasubinhminh.com/wp-content/uploads/2018/10/1450322784_hoá2.png (from https://giasubinhminh.com/gia-su-mon-hoa/)
+09:25:01	Error: 	"Not Found" (404) at link https://giasubinhminh.com/wp-content/uploads/2018/10/1450278651_hoá0.png (from https://giasubinhminh.com/gia-su-mon-hoa/)
+09:25:13	Warning: 	Moved Permanently for https://giasubinhminh.com/?p=1631
+09:25:13	Warning: 	File has moved from https://giasubinhminh.com/?p=1631 to https://giasubinhminh.com/top-500-gia-su-vat-ly-gia-su-su-pham-gioi/
+09:25:35	Error: 	"Not Found" (404) at link https://giasubinhminh.com/wp-content/uploads/2018/10/1450322407_lý2.png (from https://giasubinhminh.com/top-500-gia-su-vat-ly-gia-su-su-pham-gioi/)
+09:26:09	Warning: 	Moved Permanently for https://giasubinhminh.com/?p=1635
+09:26:09	Warning: 	File has moved from https://giasubinhminh.com/?p=1635 to https://giasubinhminh.com/top-1-gia-su-tieu-hoc-su-pham-hoc-phi-chi-tu-100k/
+09:27:37	Warning: 	Moved Permanently for https://giasubinhminh.com/?p=928
+09:27:37	Warning: 	File has moved from https://giasubinhminh.com/?p=928 to https://giasubinhminh.com/gia-su-luyen-day-thi-ielts-co-chung-chi-ielts-8-0-cam-ket-chat-luong/
+09:27:55	Warning: 	Moved Permanently for https://giasubinhminh.com/?p=3276
+09:27:55	Warning: 	File has moved from https://giasubinhminh.com/?p=3276 to https://giasubinhminh.com/gia-su-tieng-trung/
+09:28:09	Warning: 	Moved Permanently for https://giasubinhminh.com/?p=3274
+09:28:09	Warning: 	File has moved from https://giasubinhminh.com/?p=3274 to https://giasubinhminh.com/gia-su-tieng-nhat/
+09:28:16	Warning: 	Moved Permanently for https://giasubinhminh.com/?p=3272
+09:28:16	Warning: 	File has moved from https://giasubinhminh.com/?p=3272 to https://giasubinhminh.com/gia-su-tieng-han/
+09:28:27	Warning: 	Moved Permanently for https://giasubinhminh.com/?p=2764
+09:28:27	Warning: 	File has moved from https://giasubinhminh.com/?p=2764 to https://giasubinhminh.com/gia-su-nang-khieu/
+09:28:27	Warning: 	Moved Permanently for https://giasubinhminh.com/?p=1134
+09:28:27	Warning: 	File has moved from https://giasubinhminh.com/?p=1134 to https://giasubinhminh.com/hoc-phi-bang-gia-gia-su-tai-nha-hn-mon-toan-anh-van-hoa-ly/
+09:28:32	Warning: 	Moved Permanently for https://giasubinhminh.com/top-500-gia-su-tieu-hoc-hoc-phi-chi-tu-100k/
+09:28:32	Warning: 	File has moved from https://giasubinhminh.com/top-500-gia-su-tieu-hoc-hoc-phi-chi-tu-100k/ to https://giasubinhminh.com/top-1-gia-su-tieu-hoc-su-pham-hoc-phi-chi-tu-100k/
+09:29:14	Warning: 	Moved Permanently for https://giasubinhminh.com/gia-su-day-kem-mon-toan-lop-6-gioi-o-ha-noi/
+09:29:14	Warning: 	File has moved from https://giasubinhminh.com/gia-su-day-kem-mon-toan-lop-6-gioi-o-ha-noi/ to https://giasubinhminh.com/gia-su-toan-lop-6-gia-su-gioi-chuyen-toan-thcs-day-con-tu-duy-hoc-tu-co-ban-den-nang-cao/
+09:29:14	Warning: 	Moved Permanently for https://giasubinhminh.com/top-1-gia-su-day-kem-toan-lop-7-hoc-phi-bao-nhieu-tien/
+09:29:14	Warning: 	File has moved from https://giasubinhminh.com/top-1-gia-su-day-kem-toan-lop-7-hoc-phi-bao-nhieu-tien/ to https://giasubinhminh.com/gia-su-toan-lop-7-tai-ha-noi-chuyen-su-pham-nghiep-vu-su-pham/
+09:29:58	Error: 	"Not Found" (404) at link https://giasubinhminh.com/wp-content/uploads/2018/10/Có-phải-sinh-viên-đại-học-danh-tiếng-mới-có-khả-năng-làm-gia-sư-giỏi-min-300x133.jpg (from https://giasubinhminh.com/chia-se-kinh-nghiem/)
+09:30:04	Warning: 	Moved Permanently for https://giasubinhminh.com/?p=3243
+09:30:04	Warning: 	File has moved from https://giasubinhminh.com/?p=3243 to https://giasubinhminh.com/gia-su-mon-toan/
+09:30:04	Warning: 	Retry after error -5 (Unable to get server's address: No such host is known. ) at link demogiasu.vntsc.vn/uploads/news/Gia-Su-Cac-Mon/Sinh-Hoc/hot_2.gif (from https://giasubinhminh.com/gia-su-mon-toan/)
+09:30:10	Warning: 	Moved Permanently for https://giasubinhminh.com/?p=3246
+09:30:10	Warning: 	File has moved from https://giasubinhminh.com/?p=3246 to https://giasubinhminh.com/gia-su-mon-anh/
+09:30:36	Warning: 	Moved Permanently for https://giasubinhminh.com/?p=2776
+09:30:36	Warning: 	File has moved from https://giasubinhminh.com/?p=2776 to https://giasubinhminh.com/gia-su-tieu-hoc/
+09:31:09	Warning: 	Moved Permanently for https://giasubinhminh.com/?p=3250
+09:31:09	Warning: 	File has moved from https://giasubinhminh.com/?p=3250 to https://giasubinhminh.com/gia-su-mon-ly/
+09:31:09	Warning: 	Retry after error -5 (Unable to get server's address: No such host is known. ) at link https://giasubinhminh.net/wp-content/uploads/2018/11/images-4-300x162.jpg (from https://giasubinhminh.com/gia-su-mon-ly/)
+09:31:09	Warning: 	Retry after error -5 (Unable to get server's address: unknown error) at link https://giasubinhminh.net/wp-content/uploads/2018/11/trung-tam-gia-su-binh-minh-300x169.png (from https://giasubinhminh.com/gia-su-mon-ly/)
+09:31:17	Warning: 	Moved Permanently for https://giasubinhminh.com/?p=2758
+09:31:17	Warning: 	File has moved from https://giasubinhminh.com/?p=2758 to https://giasubinhminh.com/gia-su-ngoai-ngu/
+09:31:24	Error: 	"Not Found" (404) at link https://giasubinhminh.com/wp-content/uploads/2018/09/gia-sư-dạy-kèm-môn-tiếng-anh-giasunhantaiviet_com-300x150.jpg (from https://giasubinhminh.com/gia-su-lop-1-mb/)
+09:31:38	Error: 	"Not Found" (404) at link https://giasubinhminh.com/wp-content/uploads/2018/10/1450278651_hoá0-211x300.png (from https://giasubinhminh.com/gia-su-lop-10-mb/)
+09:32:17	Error: 	"Not Found" (404) at link https://giasubinhminh.com/wp-content/uploads/2018/10/DẠY-KÈM-MÔN-ANH-VĂN-LỚP-12-TẠI-NHÀ-300x174.jpg (from https://giasubinhminh.com/gia-su-lop-12-mb/)
+09:32:17	Error: 	"Not Found" (404) at link https://giasubinhminh.com/wp-content/uploads/2018/10/1450322784_hoá2-211x300.png (from https://giasubinhminh.com/gia-su-lop-12-mb/)
+09:32:17	Error: 	"Not Found" (404) at link https://giasubinhminh.com/wp-content/uploads/2018/10/1450322407_lý2-215x300.png (from https://giasubinhminh.com/gia-su-lop-12-mb/)
+09:33:48	Error: 	"Not Found" (404) at link https://giasubinhminh.com/wp-content/uploads/2018/09/gia-sư-tiếng-anh-lớp-3-ở-Hà-Nội-1-300x200.jpg (from https://giasubinhminh.com/gia-su-lop-4-mb/)
+09:39:15	Error: 	"Not Found" (404) at link https://giasubinhminh.com/wp-content/uploads/2018/10/Tình-Trạng-Gia-Sư-Hiện-Nay-Tại-Quận-Hà-Đông-Ra-Sao-300x200.jpg (from https://giasubinhminh.com/gia-su-quan-ha-dong-mb/)
+09:39:35	Error: 	"Forbidden" (403) at link https://giasubinhminh.com/wp-json/wp/v2/users/1 (from https://giasubinhminh.com/author/admin/)
+09:39:45	Warning: 	Moved Permanently for https://giasubinhminh.com/?p=1576
+09:39:45	Warning: 	File has moved from https://giasubinhminh.com/?p=1576 to https://giasubinhminh.com/hoc-phi-gia-su-hoa-gioi-o-ha-noi-tu-lop-8-12-chi-tu-100k/
+09:40:06	Warning: 	Moved Permanently for https://giasubinhminh.com/?p=3775
+09:40:06	Warning: 	File has moved from https://giasubinhminh.com/?p=3775 to https://giasubinhminh.com/gia-su-tieng-nhat-chuyen-day-giao-tiep-luyen-chung-chi-cap-toc-nguoi-moi-bat-dau/
+09:40:06	Warning: 	Moved Permanently for https://giasubinhminh.com/?p=3773
+09:40:06	Warning: 	File has moved from https://giasubinhminh.com/?p=3773 to https://giasubinhminh.com/gia-su-tieng-han-chuyen-day-giao-tiep-luyen-chung-chi-cap-toc-nguoi-moi-bat-dau/
+09:40:11	Warning: 	Moved Permanently for https://giasubinhminh.com/?p=3768
+09:40:11	Warning: 	File has moved from https://giasubinhminh.com/?p=3768 to https://giasubinhminh.com/gia-su-tieng-trung-chuyen-day-giao-tiep-luyen-chung-chi-cap-toc-nguoi-moi-bat-dau/
+09:40:11	Warning: 	Moved Permanently for https://giasubinhminh.com/?p=3764
+09:40:11	Warning: 	File has moved from https://giasubinhminh.com/?p=3764 to https://giasubinhminh.com/gia-su-toan-lop-12-gia-su-chuyen-toan-luyen-thi-dai-hoc-thpt/
+09:40:11	Warning: 	Moved Permanently for https://giasubinhminh.com/?p=3750
+09:40:11	Warning: 	File has moved from https://giasubinhminh.com/?p=3750 to https://giasubinhminh.com/gia-su-toan-lop-9-chuyen-luyen-thi-chuyen-cap-vao-10-luyen-thi-chuyen/
+09:40:11	Warning: 	Moved Permanently for https://giasubinhminh.com/?p=3707
+09:40:11	Warning: 	File has moved from https://giasubinhminh.com/?p=3707 to https://giasubinhminh.com/gia-su-chuyen-lop-12-on-luyen-thi-thpt-on-thi-dai-hoc/
+09:40:11	Warning: 	Moved Permanently for https://giasubinhminh.com/?p=3690
+09:40:11	Warning: 	File has moved from https://giasubinhminh.com/?p=3690 to https://giasubinhminh.com/gia-su-chuyen-lop-9-on-luyen-thi-chuyen-cap-lop-10-toan-van-anh/
+09:40:11	Error: 	"Not Found" (404) at link https://giasubinhminh.com/wp-content/uploads/2024/04/QUY-DINH-HOC-THU-900-x-600-mm-1-1024x683.png (from https://giasubinhminh.com/gia-su-chuyen-lop-9-on-luyen-thi-chuyen-cap-lop-10-toan-van-anh/)
+09:40:11	Warning: 	Moved Permanently for https://giasubinhminh.com/?p=3646
+09:40:11	Warning: 	File has moved from https://giasubinhminh.com/?p=3646 to https://giasubinhminh.com/hon-5000-gia-su-top-1-mon-toan-ly-hoa-gioi-chuyen-khoi-a/
+09:40:11	Warning: 	Retry after error -5 (Unable to get server's address: unknown error) at link https://giasubinhminh.net/wp-content/uploads/2018/10/gia-su-quan-hai-ba-trung-300x180.jpg (from https://giasubinhminh.com/hon-5000-gia-su-top-1-mon-toan-ly-hoa-gioi-chuyen-khoi-a/)
+09:40:12	Warning: 	Retry after error -5 (Unable to get server's address: unknown error) at link https://giasubinhminh.net/wp-content/uploads/2018/10/1.jpg (from https://giasubinhminh.com/hon-5000-gia-su-top-1-mon-toan-ly-hoa-gioi-chuyen-khoi-a/)
+09:40:12	Warning: 	Moved Permanently for https://giasubinhminh.com/?p=2631
+09:40:12	Warning: 	File has moved from https://giasubinhminh.com/?p=2631 to https://giasubinhminh.com/cam-ket-tien-bo-sau-10-buoi/
+09:40:14	Warning: 	Moved Permanently for https://giasubinhminh.com/?p=2633
+09:40:14	Warning: 	File has moved from https://giasubinhminh.com/?p=2633 to https://giasubinhminh.com/hoc-thu-2-buoi-mien-phi/
+09:40:14	Warning: 	Moved Permanently for https://giasubinhminh.com/?p=2635
+09:40:14	Warning: 	File has moved from https://giasubinhminh.com/?p=2635 to https://giasubinhminh.com/gia-su-co-trinh-do-su-pham/
+09:40:14	Warning: 	Moved Permanently for https://giasubinhminh.com/?p=2637
+09:40:14	Warning: 	File has moved from https://giasubinhminh.com/?p=2637 to https://giasubinhminh.com/tu-van-mien-phi-100/
+09:40:15	Warning: 	Moved Permanently for https://giasubinhminh.com/?p=3258
+09:40:15	Warning: 	File has moved from https://giasubinhminh.com/?p=3258 to https://giasubinhminh.com/gia-su-mon-dia/
+09:40:15	Warning: 	Retry after error -5 (Unable to get server's address: unknown error) at link https://giasubinhminh.net/wp-content/uploads/2018/10/kinh-nghiem-lua-chon-gia-su-phu-hop-cho-con-e1562647207173.png (from https://giasubinhminh.com/gia-su-mon-dia/)
+09:40:20	Warning: 	Moved Permanently for https://giasubinhminh.com/?p=3254
+09:40:20	Warning: 	File has moved from https://giasubinhminh.com/?p=3254 to https://giasubinhminh.com/gia-su-mon-sinh/
+09:40:28	Warning: 	Moved Permanently for https://giasubinhminh.com/?p=3256
+09:40:28	Warning: 	File has moved from https://giasubinhminh.com/?p=3256 to https://giasubinhminh.com/gia-su-mon-su/
+09:40:28	Warning: 	Retry after error -5 (Unable to get server's address: unknown error) at link https://giasubinhminh.net/wp-content/uploads/2018/10/kinh-nghiem-lua-chon-gia-su-phu-hop-cho-con-2.png (from https://giasubinhminh.com/gia-su-mon-su/)
+09:40:33	Warning: 	Moved Permanently for https://giasubinhminh.com/?p=3268
+09:40:33	Warning: 	File has moved from https://giasubinhminh.com/?p=3268 to https://giasubinhminh.com/gia-su-quan-thanh-xuan/
+09:40:36	Warning: 	Moved Permanently for https://giasubinhminh.com/?p=3266
+09:40:36	Warning: 	File has moved from https://giasubinhminh.com/?p=3266 to https://giasubinhminh.com/gia-su-quan-hoang-mai/
+09:40:39	Warning: 	Moved Permanently for https://giasubinhminh.com/?p=3264
+09:40:39	Warning: 	File has moved from https://giasubinhminh.com/?p=3264 to https://giasubinhminh.com/gia-su-quan-ha-dong/
+09:40:41	Error: 	"Not Found" (404) at link https://giasubinhminh.com/wp-content/uploads/2018/10/Tình-Trạng-Gia-Sư-Hiện-Nay-Tại-Quận-Hà-Đông-Ra-Sao.jpg (from https://giasubinhminh.com/gia-su-quan-ha-dong/)
+09:40:41	Warning: 	Moved Permanently for https://giasubinhminh.com/?p=3262
+09:40:41	Warning: 	File has moved from https://giasubinhminh.com/?p=3262 to https://giasubinhminh.com/gia-su-quan-cau-giay/
+09:40:44	Error: 	"Not Found" (404) at link https://giasubinhminh.com/wp-content/uploads/2018/10/Có-phải-sinh-viên-đại-học-danh-tiếng-mới-có-khả-năng-làm-gia-sư-giỏi-min-e1538795176700.jpg (from https://giasubinhminh.com/gia-su-quan-cau-giay/)
+09:40:44	Warning: 	Moved Permanently for https://giasubinhminh.com/?p=3260
+09:40:44	Warning: 	File has moved from https://giasubinhminh.com/?p=3260 to https://giasubinhminh.com/gia-su-quan-ba-dinh/
+09:40:44	Warning: 	Moved Permanently for https://giasubinhminh.com/?p=3270
+09:40:44	Warning: 	File has moved from https://giasubinhminh.com/?p=3270 to https://giasubinhminh.com/gia-su-tieng-anh/
+09:40:44	Warning: 	Moved Permanently for https://giasubinhminh.com/?p=3282
+09:40:44	Warning: 	File has moved from https://giasubinhminh.com/?p=3282 to https://giasubinhminh.com/gia-su-ve/
+09:40:44	Warning: 	Moved Permanently for https://giasubinhminh.com/?p=3280
+09:40:44	Warning: 	File has moved from https://giasubinhminh.com/?p=3280 to https://giasubinhminh.com/gia-su-dan-piano/
+09:40:44	Warning: 	Moved Permanently for https://giasubinhminh.com/?p=3278
+09:40:44	Warning: 	File has moved from https://giasubinhminh.com/?p=3278 to https://giasubinhminh.com/gia-su-dan-organ/
+09:40:50	Warning: 	Moved Permanently for https://giasubinhminh.com/?p=1522
+09:40:50	Warning: 	File has moved from https://giasubinhminh.com/?p=1522 to https://giasubinhminh.com/top1-gia-su-van-ha-noi-bang-gia-mon-van-moi-nhat-2018/
+09:41:04	Warning: 	Moved Permanently for https://giasubinhminh.com/?p=3524
+09:41:04	Warning: 	File has moved from https://giasubinhminh.com/?p=3524 to https://giasubinhminh.com/gia-su-day-online-tai-nha-tu-lop-1-12-on-thi-tat-ca-cac-mon/
+09:41:23	Warning: 	Moved Permanently for https://giasubinhminh.com/?p=1234
+09:41:23	Warning: 	File has moved from https://giasubinhminh.com/?p=1234 to https://giasubinhminh.com/top-100-gia-su-toan-cap-2-cam-ket-tien-bo-sau-10-buoi-hoc/
+09:41:38	Warning: 	Moved Permanently for https://giasubinhminh.com/?p=937
+09:41:38	Warning: 	File has moved from https://giasubinhminh.com/?p=937 to https://giasubinhminh.com/bang-gia-gia-su-luyen-chu-dep-tai-nha-tien-bo-chi-sau-1-thang/
+09:42:03	Error: 	"Not Found" (404) at link https://giasubinhminh.com/wp-content/uploads/2018/10/Foto-niño.jpg (from https://giasubinhminh.com/bang-gia-gia-su-luyen-chu-dep-tai-nha-tien-bo-chi-sau-1-thang/)
+09:42:19	Warning: 	Moved Permanently for https://giasubinhminh.com/?p=3193
+09:42:19	Warning: 	File has moved from https://giasubinhminh.com/?p=3193 to https://giasubinhminh.com/hanh-trang-lop-1/
+09:42:19	Warning: 	Retry after error -5 (Unable to get server's address: unknown error) at link https://giasubinhminh.net/wp-content/uploads/2018/10/loi_khuyen_gia_su_tieu_hoc.jpg (from https://giasubinhminh.com/hanh-trang-lop-1/)
+09:42:20	Warning: 	Retry after error -5 (Unable to get server's address: unknown error) at link https://giasubinhminh.net/wp-content/uploads/2018/09/gia-sư-hà-nội.png (from https://giasubinhminh.com/hanh-trang-lop-1/)
+09:42:20	Warning: 	Moved Permanently for https://giasubinhminh.com/?p=3489
+09:42:20	Warning: 	File has moved from https://giasubinhminh.com/?p=3489 to https://giasubinhminh.com/kem-bang-gia-gia-su-mon-lich-su-gioi-khoi-c-chuyen-on-thi-lop-9-12/
+09:42:29	Warning: 	Moved Permanently for https://giasubinhminh.com/?p=1685
+09:42:29	Warning: 	File has moved from https://giasubinhminh.com/?p=1685 to https://giasubinhminh.com/hoc-phi-gia-su-tieng-anh-tai-nha-hoc-phi-re-cam-ket-tien-bo/
+09:42:32	Warning: 	Moved Permanently for https://giasubinhminh.com/?p=1680
+09:42:32	Warning: 	File has moved from https://giasubinhminh.com/?p=1680 to https://giasubinhminh.com/top-100-gia-su-tieng-anh-giao-tiep-ha-noi-cam-ket-giao-tiep-tot-sau-3-thang/
+09:42:53	Warning: 	Moved Permanently for https://giasubinhminh.com/?p=1418
+09:42:53	Warning: 	File has moved from https://giasubinhminh.com/?p=1418 to https://giasubinhminh.com/gia-su-tieng-anh-12-hoc-la-gioi-thi-la-do/
+09:42:53	Error: 	"Not Found" (404) at link https://giasubinhminh.com/wp-content/uploads/2018/10/Anh-văn-1-300x300.jpg (from https://giasubinhminh.com/gia-su-tieng-anh-12-hoc-la-gioi-thi-la-do/)
+09:43:05	Warning: 	Moved Permanently for https://giasubinhminh.com/?p=1410
+09:43:05	Warning: 	File has moved from https://giasubinhminh.com/?p=1410 to https://giasubinhminh.com/gia-su-tieng-anh-lop-11-but-pha-thanh-cong/
+09:43:05	Error: 	"Not Found" (404) at link https://giasubinhminh.com/wp-content/uploads/2018/10/gia-sư-tiếng-anh-tại-quận-cầu-giấy-hà-nội-1-300x187.jpg (from https://giasubinhminh.com/gia-su-tieng-anh-lop-11-but-pha-thanh-cong/)
+09:43:15	Warning: 	Moved Permanently for https://giasubinhminh.com/?p=1160
+09:43:15	Warning: 	File has moved from https://giasubinhminh.com/?p=1160 to https://giasubinhminh.com/nhung-truong-cap-2-o-ha-noi-bi-kip-chon-truong-o-cau-giay-phu-hop-cho-con/
+09:43:16	Error: 	"Not Found" (404) at link https://giasubinhminh.com/wp-content/uploads/2018/10/Có-phải-sinh-viên-đại-học-danh-tiếng-mới-có-khả-năng-làm-gia-sư-giỏi-min-1024x453.jpg (from https://giasubinhminh.com/nhung-truong-cap-2-o-ha-noi-bi-kip-chon-truong-o-cau-giay-phu-hop-cho-con/)
+09:43:36	Warning: 	Moved Permanently for https://giasubinhminh.com/?p=1291
+09:43:36	Warning: 	File has moved from https://giasubinhminh.com/?p=1291 to https://giasubinhminh.com/gia-su-van-lop-12-cham-dinh-cua-thanh-cong/
+09:43:36	Error: 	"Not Found" (404) at link https://giasuviet.com.vn/app/uploads/2014/08/gia-su-van-lop-12-300x199.png (from https://giasubinhminh.com/gia-su-van-lop-12-cham-dinh-cua-thanh-cong/)
+09:43:36	Warning: 	Retry after error -5 (Unable to get server's address: No such host is known. ) at link giasuhanoi.net/wp-content/uploads/2018/07/văn-lớp-12-400x277.jpg (from https://giasubinhminh.com/gia-su-van-lop-12-cham-dinh-cua-thanh-cong/)
+09:43:44	Warning: 	Moved Permanently for https://giasubinhminh.com/?p=1288
+09:43:44	Warning: 	File has moved from https://giasubinhminh.com/?p=1288 to https://giasubinhminh.com/gia-su-van-11-danh-thuc-dam-me-hoc-van-trong-con-nguoi-ban/
+09:43:49	Warning: 	Moved Permanently for https://giasubinhminh.com/?p=1285
+09:43:49	Warning: 	File has moved from https://giasubinhminh.com/?p=1285 to https://giasubinhminh.com/gia-su-van-10-de-thanh-cong-noi-tiep-thanh-cong/
+09:43:49	Error: 	"Bad Request" (400) at link https://i2.wp.com/giasutrongtin.com/wp-content/uploads/2017/07/giao-vien-on-thi-vao-lop-10-toan-van-anh.jpg (from https://giasubinhminh.com/gia-su-van-10-de-thanh-cong-noi-tiep-thanh-cong/)
+09:43:54	Warning: 	Moved Permanently for https://giasubinhminh.com/?p=1261
+09:43:54	Warning: 	File has moved from https://giasubinhminh.com/?p=1261 to https://giasubinhminh.com/gia-su-van-lop-9-on-thi-lop-10-tu-co-ban-den-nang-cao/
+09:43:54	Warning: 	Retry after error -5 (Unable to get server's address: unknown error) at link giasuhanoi.net/wp-content/uploads/2018/07/văn-lớp-9-400x224.jpg (from https://giasubinhminh.com/gia-su-van-lop-9-on-thi-lop-10-tu-co-ban-den-nang-cao/)
+09:44:09	Warning: 	Moved Permanently for https://giasubinhminh.com/?p=1362
+09:44:09	Warning: 	File has moved from https://giasubinhminh.com/?p=1362 to https://giasubinhminh.com/gia-su-hoa-lop-12-muon-gioi-hoa-thi-khong-duoc-bo-lo/
+09:44:21	Warning: 	Moved Permanently for https://giasubinhminh.com/?p=1356
+09:44:21	Warning: 	File has moved from https://giasubinhminh.com/?p=1356 to https://giasubinhminh.com/gia-su-hoa-lop-11-de-con-duong-gioi-hoa-tro-nen-ngan-nhat/
+09:44:27	Warning: 	Moved Permanently for https://giasubinhminh.com/?p=1345
+09:44:27	Warning: 	File has moved from https://giasubinhminh.com/?p=1345 to https://giasubinhminh.com/gia-su-hoa-lop-10-giup-con-tro-thanh-than-dong-hoa-hoc/
+09:44:36	Warning: 	Moved Permanently for https://giasubinhminh.com/?p=1322
+09:44:36	Warning: 	File has moved from https://giasubinhminh.com/?p=1322 to https://giasubinhminh.com/gia-su-hoa-lop-9-nguoi-ban-cua-thanh-cong/
+09:44:40	Warning: 	Moved Permanently for https://giasubinhminh.com/?p=1308
+09:44:40	Warning: 	File has moved from https://giasubinhminh.com/?p=1308 to https://giasubinhminh.com/gia-su-ly-lop-12-nguoc-dong-de-chiem-linh-uoc-mo/
+09:44:41	Warning: 	Retry after error -5 (Unable to get server's address: No such host is known. ) at link timgiasu.edu.vn/upload/images/dangtin/monly1/gia-su-ly (3).png (from https://giasubinhminh.com/gia-su-ly-lop-12-nguoc-dong-de-chiem-linh-uoc-mo/)
+09:44:41	Warning: 	Retry after error -5 (Unable to get server's address: No such host is known. ) at link giasugiatri.com/wp-content/uploads/2015/07/Gia-Sư-Môn-Lý-–-Dạy-Kèm-Môn-Lý-Tại-Nhà.jpg (from https://giasubinhminh.com/gia-su-ly-lop-12-nguoc-dong-de-chiem-linh-uoc-mo/)
+09:44:56	Warning: 	Moved Permanently for https://giasubinhminh.com/?p=1302
+09:44:56	Warning: 	File has moved from https://giasubinhminh.com/?p=1302 to https://giasubinhminh.com/gia-su-ly-lop-11-nam-giu-chia-khoa-cua-su-thanh-cong/
+09:44:57	Warning: 	Retry after error -5 (Unable to get server's address: No such host is known. ) at link https://myteacher.edu.vn/image/anhdaidientinh/gia-su-da-nang-(tp).jpg (from https://giasubinhminh.com/gia-su-ly-lop-11-nam-giu-chia-khoa-cua-su-thanh-cong/)
+09:45:04	Warning: 	Moved Permanently for https://giasubinhminh.com/?p=1298
+09:45:04	Warning: 	File has moved from https://giasubinhminh.com/?p=1298 to https://giasubinhminh.com/gia-su-ly-lop-10-hoc-phi-re-hieu-qua-gap-3-lan/
+09:45:04	Warning: 	Retry after error -5 (Unable to get server's address: unknown error) at link timgiasu.edu.vn/upload/images/dangtin/monly1/gia-su-ly (9).png (from https://giasubinhminh.com/gia-su-ly-lop-10-hoc-phi-re-hieu-qua-gap-3-lan/)
+09:45:11	Warning: 	Moved Permanently for https://giasubinhminh.com/?p=1281
+09:45:11	Warning: 	File has moved from https://giasubinhminh.com/?p=1281 to https://giasubinhminh.com/gia-su-ly-lop-9-chia-khoa-vang-cho-su-thanh-cong/
+09:45:11	Warning: 	Retry after error -5 (Unable to get server's address: No such host is known. ) at link giasuthienviet.com/wp-content/uploads/2016/03/gia-su-toan-lop-9-tai-nha.gif (from https://giasubinhminh.com/gia-su-ly-lop-9-chia-khoa-vang-cho-su-thanh-cong/)
+09:45:19	Warning: 	Moved Permanently for https://giasubinhminh.com/?p=1608
+09:45:19	Warning: 	File has moved from https://giasubinhminh.com/?p=1608 to https://giasubinhminh.com/top-500gia-su-day-kem-lop-1-uom-mam-tuong-lai-con-tre/
+09:45:19	Error: 	"Not Found" (404) at link https://giasubinhminh.com/wp-content/uploads/2018/09/gia-sư-dạy-kèm-môn-tiếng-anh-giasunhantaiviet_com-e1537294684156.jpg (from https://giasubinhminh.com/top-500gia-su-day-kem-lop-1-uom-mam-tuong-lai-con-tre/)
+09:45:19	Warning: 	Moved Permanently for https://giasubinhminh.com/?p=1230
+09:45:19	Warning: 	File has moved from https://giasubinhminh.com/?p=1230 to https://giasubinhminh.com/gia-su-lop-2-tai-ha-noi-gia-su-su-pham-gioi-hoc-phi-chi-tu-100k/
+09:45:33	Warning: 	Moved Permanently for https://giasubinhminh.com/?p=1038
+09:45:33	Warning: 	File has moved from https://giasubinhminh.com/?p=1038 to https://giasubinhminh.com/tong-hop-gia-su-toan-lop-2-quyen-loi-hoc-phi-hinh-thuc-hoc/
+09:45:43	Warning: 	Moved Permanently for https://giasubinhminh.com/?p=1075
+09:45:43	Warning: 	File has moved from https://giasubinhminh.com/?p=1075 to https://giasubinhminh.com/top-100-giao-vien-day-lop-1-uom-mam-tuong-lai/
+09:45:53	Warning: 	Moved Permanently for https://giasubinhminh.com/?p=1035
+09:45:53	Warning: 	File has moved from https://giasubinhminh.com/?p=1035 to https://giasubinhminh.com/hoc-phi-2018-gia-su-mon-toan-lop-1-bat-mi-giai-phap-giup-con-hoc-tot/
+09:46:10	Warning: 	Moved Permanently for https://giasubinhminh.com/?p=888
+09:46:10	Warning: 	File has moved from https://giasubinhminh.com/?p=888 to https://giasubinhminh.com/gia-su-kem-lop-1-gia-su-toan-tieng-viet-tieng-anh-lop-1/
+09:46:25	Warning: 	Moved Permanently for https://giasubinhminh.com/?p=1005
+09:46:25	Warning: 	File has moved from https://giasubinhminh.com/?p=1005 to https://giasubinhminh.com/top-100-gia-su-day-tieng-nhat-hantrung-hoc-phi-gia-re/
+09:46:30	Warning: 	Moved Permanently for https://giasubinhminh.com/?p=1178
+09:46:30	Warning: 	File has moved from https://giasubinhminh.com/?p=1178 to https://giasubinhminh.com/gia-su-day-tieng-han-tai-nha-cam-ket-thanh-thao-tieng-han-sau-3-thang/
+09:46:30	Warning: 	Retry after error -5 (Unable to get server's address: No such host is known. ) at link https://dayhoctainha.com/wp-content/uploads/2015/08/gia_su_tieng_han-1.jpg (from https://giasubinhminh.com/gia-su-day-tieng-han-tai-nha-cam-ket-thanh-thao-tieng-han-sau-3-thang/)
+09:46:30	Error: 	"Not Found" (404) at link https://giasubinhminh.com/wp-content/uploads/2018/10/Foto-niño-300x160.jpg (from https://giasubinhminh.com/hanh-trang-lop-1-mb/)
+09:46:31	Warning: 	Moved Permanently for https://giasubinhminh.com/?p=869
+09:46:31	Warning: 	File has moved from https://giasubinhminh.com/?p=869 to https://giasubinhminh.com/500-gia-su-tieng-anh-tieu-hoc-uy-tin-chat-luong/
+09:46:31	Error: 	"Not Found" (404) at link https://giasubinhminh.com/wp-content/uploads/2018/10/Anh-văn-300x300.jpg (from https://giasubinhminh.com/500-gia-su-tieng-anh-tieu-hoc-uy-tin-chat-luong/)
+09:46:46	Warning: 	Moved Permanently for https://giasubinhminh.com/?p=3779
+09:46:46	Warning: 	File has moved from https://giasubinhminh.com/?p=3779 to https://giasubinhminh.com/gia-su-tieng-phap-chuyen-day-ngu-phap-giao-tiep-luyen-chung-chi-cap-toc-nguoi-moi-bat-dau/
+09:46:53	Warning: 	Moved Permanently for https://giasubinhminh.com/?p=838
+09:46:53	Warning: 	File has moved from https://giasubinhminh.com/?p=838 to https://giasubinhminh.com/gia-su-toan-lop-8-su-pham-tai-nha-hoc-phi-bao-nhieu-tien/
+09:47:07	Warning: 	file not stored in cache due to bogus state (incomplete type with OK (200), size 6565): https://giasubinhminh.com/wp-json/wp/v2/tags/73
+09:47:26	Warning: 	Moved Permanently for https://giasubinhminh.com/?p=3196
+09:47:26	Warning: 	File has moved from https://giasubinhminh.com/?p=3196 to https://giasubinhminh.com/gia-su-lop-1/
+09:47:34	Warning: 	Moved Permanently for https://giasubinhminh.com/?p=3553
+09:47:34	Warning: 	File has moved from https://giasubinhminh.com/?p=3553 to https://giasubinhminh.com/quy-dinh-hoc-thu-2-buoi-trung-tam-gia-su-binh-minh/
+09:47:34	Warning: 	Moved Permanently for https://giasubinhminh.com/?p=1919
+09:47:34	Warning: 	File has moved from https://giasubinhminh.com/?p=1919 to https://giasubinhminh.com/tong-hop-cac-kinh-nghiem-lan-dau-di-gia-su-tai-nha-thanh-cong-95/
+09:47:34	Warning: 	Moved Permanently for https://giasubinhminh.com/?p=1917
+09:47:34	Warning: 	File has moved from https://giasubinhminh.com/?p=1917 to https://giasubinhminh.com/nen-tim-gia-su-nhu-the-nao-la-hieu-qua-gia-su-binh-minh/
+09:47:34	Warning: 	Moved Permanently for https://giasubinhminh.com/?p=606
+09:47:34	Warning: 	File has moved from https://giasubinhminh.com/?p=606 to https://giasubinhminh.com/lien-he/
+09:47:34	Warning: 	Retry after error -5 (Unable to get server's address: unknown error) at link demogiasu.vntsc.vn/uploads/news/Gia-Su-Cac-Mon/Sinh-Hoc/hot_2.gif (from https://giasubinhminh.com/gia-su-mon-toan/)
+09:47:36	Warning: 	Moved Permanently for https://giasubinhminh.com/?p=1404
+09:47:36	Warning: 	File has moved from https://giasubinhminh.com/?p=1404 to https://giasubinhminh.com/gia-su-tieng-anh-lop-10-dap-tan-noi-so-tieng-anh/
+09:47:36	Error: 	"Not Found" (404) at link https://giasubinhminh.com/wp-content/uploads/2018/10/Gia-sư-dạy-kèm-tiếng-Anh-lớp-10-tại-Cần-Thơ-1200x508-300x127.jpg (from https://giasubinhminh.com/gia-su-tieng-anh-lop-10-dap-tan-noi-so-tieng-anh/)
+09:47:44	Warning: 	Moved Permanently for https://giasubinhminh.com/?p=1397
+09:47:44	Warning: 	File has moved from https://giasubinhminh.com/?p=1397 to https://giasubinhminh.com/gia-su-tieng-anh-lop-9-gia-su-gioi-chuyen-luyen-thi-vao-10-on-chuyen/
+09:47:44	Warning: 	Retry after error -5 (Unable to get server's address: No such host is known. ) at link https://giasuviet.net/wp-content/uploads/2024/05/Anh-web-600-x-400-px-11.png (from https://giasubinhminh.com/gia-su-tieng-anh-lop-9-gia-su-gioi-chuyen-luyen-thi-vao-10-on-chuyen/)
+09:47:44	Warning: 	Retry after error -5 (Unable to get server's address: unknown error) at link https://giasuviet.net/wp-content/uploads/2021/06/Anh-web-600-x-400-px-1.png (from https://giasubinhminh.com/gia-su-tieng-anh-lop-9-gia-su-gioi-chuyen-luyen-thi-vao-10-on-chuyen/)
+09:47:44	Warning: 	Retry after error -5 (Unable to get server's address: unknown error) at link https://giasuviet.net/wp-content/uploads/2021/06/CHINH-SACH-HOC-THU-4.png (from https://giasubinhminh.com/gia-su-tieng-anh-lop-9-gia-su-gioi-chuyen-luyen-thi-vao-10-on-chuyen/)
+09:47:44	Warning: 	Retry after error -5 (Unable to get server's address: unknown error) at link https://giasuviet.net/wp-content/uploads/2021/06/Anh-web-600-x-400-px-2.png (from https://giasubinhminh.com/gia-su-tieng-anh-lop-9-gia-su-gioi-chuyen-luyen-thi-vao-10-on-chuyen/)
+09:47:56	Warning: 	Moved Permanently for https://giasubinhminh.com/?p=3217
+09:47:56	Warning: 	File has moved from https://giasubinhminh.com/?p=3217 to https://giasubinhminh.com/gia-su-lop-2/
+09:47:56	Warning: 	Moved Permanently for https://giasubinhminh.com/?p=3219
+09:47:56	Warning: 	File has moved from https://giasubinhminh.com/?p=3219 to https://giasubinhminh.com/gia-su-lop-3/
+09:47:56	Warning: 	Moved Permanently for https://giasubinhminh.com/?p=3221
+09:47:56	Warning: 	File has moved from https://giasubinhminh.com/?p=3221 to https://giasubinhminh.com/gia-su-lop-4/
+09:47:56	Error: 	"Not Found" (404) at link https://giasubinhminh.com/wp-content/uploads/2018/09/gia-sư-tiếng-anh-lớp-3-ở-Hà-Nội-1-e1537433627990.jpg (from https://giasubinhminh.com/gia-su-lop-4/)
+09:47:56	Warning: 	Moved Permanently for https://giasubinhminh.com/?p=3223
+09:47:56	Warning: 	File has moved from https://giasubinhminh.com/?p=3223 to https://giasubinhminh.com/gia-su-lop-5/
+09:47:56	Warning: 	Retry after error -5 (Unable to get server's address: unknown error) at link https://giasubinhminh.net/wp-content/uploads/2018/11/images-4-300x162.jpg (from https://giasubinhminh.com/gia-su-mon-ly/)
+09:47:56	Warning: 	Retry after error -5 (Unable to get server's address: unknown error) at link https://giasubinhminh.net/wp-content/uploads/2018/11/trung-tam-gia-su-binh-minh-300x169.png (from https://giasubinhminh.com/gia-su-mon-ly/)
+09:47:56	Warning: 	Moved Permanently for https://giasubinhminh.com/?p=1015
+09:47:56	Warning: 	File has moved from https://giasubinhminh.com/?p=1015 to https://giasubinhminh.com/hoc-phi-cuc-soc-gia-su-piano-gia-su-organ-ha-noi-cam-ket-tien-bo/
+09:48:05	Warning: 	Moved Permanently for https://giasubinhminh.com/?p=3234
+09:48:05	Warning: 	File has moved from https://giasubinhminh.com/?p=3234 to https://giasubinhminh.com/gia-su-lop-10/
+09:48:05	Warning: 	Moved Permanently for https://giasubinhminh.com/?p=936
+09:48:05	Warning: 	File has moved from https://giasubinhminh.com/?p=936 to https://giasubinhminh.com/hoc-phi-2018-tu-a-z-tim-gia-su-mon-toan-lop-10-o-ha-noi/
+09:48:20	Warning: 	Moved Permanently for https://giasubinhminh.com/?p=960
+09:48:20	Warning: 	File has moved from https://giasubinhminh.com/?p=960 to https://giasubinhminh.com/woah-top-gia-su-toan-gioi-lop-11-quyen-loi-hoc-phi-nhu-the-nao/
+09:48:32	Warning: 	Moved Permanently for https://giasubinhminh.com/gia-su-lop-12-mb/page/1/
+09:48:32	Warning: 	File has moved from https://giasubinhminh.com/gia-su-lop-12-mb/page/1/ to https://giasubinhminh.com/gia-su-lop-12-mb/
+09:48:32	Warning: 	Moved Permanently for https://giasubinhminh.com/?p=3238
+09:48:32	Warning: 	File has moved from https://giasubinhminh.com/?p=3238 to https://giasubinhminh.com/gia-su-lop-12/
+09:48:32	Warning: 	Moved Permanently for https://giasubinhminh.com/?p=896
+09:48:32	Warning: 	File has moved from https://giasubinhminh.com/?p=896 to https://giasubinhminh.com/gia-su-kem-lop-2-giao-vien-sinh-vien-kem-lop-2-cam-ket-tien-bo/
+09:48:47	Warning: 	Moved Permanently for https://giasubinhminh.com/?p=1009
+09:48:47	Warning: 	File has moved from https://giasubinhminh.com/?p=1009 to https://giasubinhminh.com/gia-su-gioi-toan-lop-3-chi-tu-100k-giup-con-tien-bo-sau-1-thang/
+09:48:58	Warning: 	Moved Permanently for https://giasubinhminh.com/?p=906
+09:48:58	Warning: 	File has moved from https://giasubinhminh.com/?p=906 to https://giasubinhminh.com/gia-su-day-lop-3-o-ha-noi-toan-tieng-viet-tieng-anh-tai-nha/
+09:49:25	Warning: 	Moved Permanently for https://giasubinhminh.com/?p=837
+09:49:25	Warning: 	File has moved from https://giasubinhminh.com/?p=837 to https://giasubinhminh.com/gia-su-su-pham-mon-toan-lop-4/
+09:49:25	Error: 	"Not Found" (404) at link https://giasubinhminh.com/wp-content/uploads/2018/09/Gia-sư-toán-lớp-4-370x250-2-300x203.jpg (from https://giasubinhminh.com/gia-su-su-pham-mon-toan-lop-4/)
+09:49:37	Warning: 	Moved Permanently for https://giasubinhminh.com/?p=912
+09:49:37	Warning: 	File has moved from https://giasubinhminh.com/?p=912 to https://giasubinhminh.com/top-500-gia-su-kem-lop-4-gia-su-su-pham-gioi-con-tien-bo-nhanh/
+09:49:37	Error: 	"Not Found" (404) at link https://giasubinhminh.com/wp-content/uploads/2018/09/gia-sư-tiếng-anh-lớp-3-ở-Hà-Nội-1-1024x683.jpg (from https://giasubinhminh.com/top-500-gia-su-kem-lop-4-gia-su-su-pham-gioi-con-tien-bo-nhanh/)
+09:50:04	Warning: 	Moved Permanently for https://giasubinhminh.com/?p=918
+09:50:04	Warning: 	File has moved from https://giasubinhminh.com/?p=918 to https://giasubinhminh.com/bang-gia-su-kem-lop-5-hoc-sinh-tien-bo-sau-10-buoi-hoc/
+09:50:17	Warning: 	Moved Permanently for https://giasubinhminh.com/?p=862
+09:50:17	Warning: 	File has moved from https://giasubinhminh.com/?p=862 to https://giasubinhminh.com/gia-su-toan-lop-5-bi-quyet-tim-gia-su-toan-lop-5-gioi/
+09:50:26	Warning: 	Moved Permanently for https://giasubinhminh.com/gia-su-lop-6-mb/page/1/
+09:50:26	Warning: 	File has moved from https://giasubinhminh.com/gia-su-lop-6-mb/page/1/ to https://giasubinhminh.com/gia-su-lop-6-mb/
+09:50:26	Warning: 	Moved Permanently for https://giasubinhminh.com/?p=3226
+09:50:26	Warning: 	File has moved from https://giasubinhminh.com/?p=3226 to https://giasubinhminh.com/gia-su-lop-6/
+09:50:26	Warning: 	Moved Permanently for https://giasubinhminh.com/?p=1265
+09:50:26	Warning: 	File has moved from https://giasubinhminh.com/?p=1265 to https://giasubinhminh.com/hoc-phi-gia-su-ly-lop-6-o-ha-noi-5-tieu-chi-tim-gia-su-gioi/
+09:50:26	Warning: 	Retry after error -5 (Unable to get server's address: No such host is known. ) at link https://giasugioi24h.com/wp-content/uploads/2017/08/mon-vat-ly.jpg (from https://giasubinhminh.com/hoc-phi-gia-su-ly-lop-6-o-ha-noi-5-tieu-chi-tim-gia-su-gioi/)
+09:50:36	Warning: 	Moved Permanently for https://giasubinhminh.com/?p=1093
+09:50:36	Warning: 	File has moved from https://giasubinhminh.com/?p=1093 to https://giasubinhminh.com/cam-ket-gia-su-mon-van-lop-6-gia-su-su-pham-van-gia-re-nhat/
+09:50:48	Warning: 	Moved Permanently for https://giasubinhminh.com/?p=1082
+09:50:48	Warning: 	File has moved from https://giasubinhminh.com/?p=1082 to https://giasubinhminh.com/gia-su-mon-tieng-anh-lop-6-hoc-phi-re-nhat-ha-noi-2018/
+09:51:00	Warning: 	Moved Permanently for https://giasubinhminh.com/?p=1069
+09:51:00	Warning: 	File has moved from https://giasubinhminh.com/?p=1069 to https://giasubinhminh.com/hoc-phi-gia-su-lop-6-gia-su-su-pham-gioi-chi-tu-100k/
+09:51:06	Warning: 	Moved Permanently for https://giasubinhminh.com/?p=3228
+09:51:06	Warning: 	File has moved from https://giasubinhminh.com/?p=3228 to https://giasubinhminh.com/gia-su-lop-7/
+09:51:06	Warning: 	Moved Permanently for https://giasubinhminh.com/?p=1269
+09:51:06	Warning: 	File has moved from https://giasubinhminh.com/?p=1269 to https://giasubinhminh.com/gia-su-ly-lop-7-truyen-cho-con-ngon-lua-dam-me-hoc-ly/
+09:51:12	Warning: 	Moved Permanently for https://giasubinhminh.com/?p=1251
+09:51:12	Warning: 	File has moved from https://giasubinhminh.com/?p=1251 to https://giasubinhminh.com/bi-kip-gia-su-tieng-anh-lop-7-hoc-phi-va-nhung-dieu-can-biet/
+09:51:24	Warning: 	Moved Permanently for https://giasubinhminh.com/?p=1239
+09:51:24	Warning: 	File has moved from https://giasubinhminh.com/?p=1239 to https://giasubinhminh.com/top-1-gia-su-van-lop-7-o-ha-noi-hoc-phi-uu-dai-nhat-2018/
+09:51:24	Warning: 	Retry after error -5 (Unable to get server's address: No such host is known. ) at link giasubaoanh.com.vn/upload/5a73d1a06e717.jpg (from https://giasubinhminh.com/top-1-gia-su-van-lop-7-o-ha-noi-hoc-phi-uu-dai-nhat-2018/)
+09:51:36	Warning: 	Moved Permanently for https://giasubinhminh.com/?p=820
+09:51:36	Warning: 	File has moved from https://giasubinhminh.com/?p=820 to https://giasubinhminh.com/gia-su-toan-lop-7-tai-ha-noi-chuyen-su-pham-nghiep-vu-su-pham/
+09:51:36	Warning: 	Moved Permanently for https://giasubinhminh.com/gia-su-lop-8-mb/page/1/
+09:51:36	Warning: 	File has moved from https://giasubinhminh.com/gia-su-lop-8-mb/page/1/ to https://giasubinhminh.com/gia-su-lop-8-mb/
+09:51:36	Warning: 	Moved Permanently for https://giasubinhminh.com/?p=3230
+09:51:36	Warning: 	File has moved from https://giasubinhminh.com/?p=3230 to https://giasubinhminh.com/gia-su-lop-8/
+09:51:36	Warning: 	Moved Permanently for https://giasubinhminh.com/?p=1390
+09:51:36	Warning: 	File has moved from https://giasubinhminh.com/?p=1390 to https://giasubinhminh.com/gia-su-tieng-anh-lop-8-de-con-dat-toi-dinh-cao-ngoai-ngu/
+09:51:36	Error: 	"Not Found" (404) at link https://giasubinhminh.com/wp-content/uploads/2018/10/gia-sư-tiếng-anh-tại-quận-cầu-giấy-hà-nội-300x187.jpg (from https://giasubinhminh.com/gia-su-tieng-anh-lop-8-de-con-dat-toi-dinh-cao-ngoai-ngu/)
+09:52:00	Warning: 	Moved Permanently for https://giasubinhminh.com/?p=1316
+09:52:00	Warning: 	File has moved from https://giasubinhminh.com/?p=1316 to https://giasubinhminh.com/gia-su-hoa-8-phep-mau-lam-nen-dieu-ki-dieu/
+09:52:04	Warning: 	Moved Permanently for https://giasubinhminh.com/?p=1276
+09:52:04	Warning: 	File has moved from https://giasubinhminh.com/?p=1276 to https://giasubinhminh.com/gia-su-ly-lop-8-danh-thuc-tiem-nang-trong-con-nguoi-ban/
+09:52:11	Warning: 	Moved Permanently for https://giasubinhminh.com/?p=1256
+09:52:11	Warning: 	File has moved from https://giasubinhminh.com/?p=1256 to https://giasubinhminh.com/hoc-phi-gia-su-van-lop-8-ha-noi-chi-tu-100k-2-buoi-hoc-thu/
+09:52:20	Warning: 	Moved Permanently for https://giasubinhminh.com/gia-su-lop-9-mb/page/1/
+09:52:20	Warning: 	File has moved from https://giasubinhminh.com/gia-su-lop-9-mb/page/1/ to https://giasubinhminh.com/gia-su-lop-9-mb/
+09:52:21	Warning: 	Moved Permanently for https://giasubinhminh.com/?p=3232
+09:52:21	Warning: 	File has moved from https://giasubinhminh.com/?p=3232 to https://giasubinhminh.com/gia-su-lop-9/
+09:52:21	Warning: 	Moved Permanently for https://giasubinhminh.com/?p=3240
+09:52:21	Warning: 	File has moved from https://giasubinhminh.com/?p=3240 to https://giasubinhminh.com/gia-su-luyen-hsg/
+09:52:21	Warning: 	Moved Permanently for https://giasubinhminh.com/?p=3242
+09:52:21	Warning: 	File has moved from https://giasubinhminh.com/?p=3242 to https://giasubinhminh.com/gia-su-luyen-thi-dai-hoc/
+09:52:21	Warning: 	Moved Permanently for https://giasubinhminh.com/?p=1109
+09:52:21	Warning: 	File has moved from https://giasubinhminh.com/?p=1109 to https://giasubinhminh.com/gia-su-on-thi-dai-hoc-cap-toc-cam-ket-chat-luong-dau-ra/
+09:52:32	Warning: 	Moved Permanently for https://giasubinhminh.com/?p=969
+09:52:32	Warning: 	File has moved from https://giasubinhminh.com/?p=969 to https://giasubinhminh.com/hoc-phitop-gia-su-toan-gioi-lop-12-chuyen-luyen-thi-dai-hoc/
+09:52:55	Warning: 	Moved Permanently for https://giasubinhminh.com/gia-su-mon-anh-mb/page/1/
+09:52:55	Warning: 	File has moved from https://giasubinhminh.com/gia-su-mon-anh-mb/page/1/ to https://giasubinhminh.com/gia-su-mon-anh-mb/
+09:53:02	Warning: 	Moved Permanently for https://giasubinhminh.com/gia-su-mon-hoa-mb/page/1/
+09:53:02	Warning: 	File has moved from https://giasubinhminh.com/gia-su-mon-hoa-mb/page/1/ to https://giasubinhminh.com/gia-su-mon-hoa-mb/
+09:53:02	Warning: 	Moved Permanently for https://giasubinhminh.com/gia-su-mon-ly-mb/page/1/
+09:53:02	Warning: 	File has moved from https://giasubinhminh.com/gia-su-mon-ly-mb/page/1/ to https://giasubinhminh.com/gia-su-mon-ly-mb/
+09:53:24	Warning: 	Moved Permanently for https://giasubinhminh.com/gia-su-mon-toan-mb/page/1/
+09:53:24	Warning: 	File has moved from https://giasubinhminh.com/gia-su-mon-toan-mb/page/1/ to https://giasubinhminh.com/gia-su-mon-toan-mb/
+09:53:43	Warning: 	Moved Permanently for https://giasubinhminh.com/gia-su-mon-van-mb/page/1/
+09:53:43	Warning: 	File has moved from https://giasubinhminh.com/gia-su-mon-van-mb/page/1/ to https://giasubinhminh.com/gia-su-mon-van-mb/
+09:53:44	Warning: 	Moved Permanently for https://giasubinhminh.com/?p=1128
+09:53:44	Warning: 	File has moved from https://giasubinhminh.com/?p=1128 to https://giasubinhminh.com/top-100gia-su-mon-toan-quan-cau-giay-cam-ket-tien-bo-sau-10-buoi/
+09:53:49	Error: 	"Not Found" (404) at link https://giasubinhminh.com/wp-content/uploads/2018/10/Tìm-hiểu-kỹ-gia-sư-lớp-2-trước-khi-thuê-300x200.jpg (from https://giasubinhminh.com/top-100gia-su-mon-toan-quan-cau-giay-cam-ket-tien-bo-sau-10-buoi/)
+09:53:55	Warning: 	Moved Permanently for https://giasubinhminh.com/?p=1184
+09:53:55	Warning: 	File has moved from https://giasubinhminh.com/?p=1184 to https://giasubinhminh.com/gia-su-quan-ha-dong-gia-su-pham-gioi-gia-chi-tu-100k/
+09:53:55	Warning: 	Retry after error -5 (Unable to get server's address: No such host is known. ) at link giasuminhhanh.com.vn/wp-content/uploads/2018/09/Gia-sư-lớp-2-300x287.jpg (from https://giasubinhminh.com/gia-su-quan-ha-dong-gia-su-pham-gioi-gia-chi-tu-100k/)
+09:53:55	Warning: 	Retry after error -5 (Unable to get server's address: unknown error) at link https://giasugioi24h.com/wp-content/uploads/2017/08/gia-su-quan-ha-dong.jpg (from https://giasubinhminh.com/gia-su-quan-ha-dong-gia-su-pham-gioi-gia-chi-tu-100k/)
+09:53:55	Warning: 	Moved Permanently for https://giasubinhminh.com/?p=1198
+09:53:55	Warning: 	File has moved from https://giasubinhminh.com/?p=1198 to https://giasubinhminh.com/gia-su-quan-hoang-mai-gia-su-gioi-giup-con-tien-bo-sau-10-buoi/
+09:54:35	Warning: 	Moved Permanently for https://giasubinhminh.com/gia-su-tieng-anh-mb/page/1/
+09:54:35	Warning: 	File has moved from https://giasubinhminh.com/gia-su-tieng-anh-mb/page/1/ to https://giasubinhminh.com/gia-su-tieng-anh-mb/
+09:54:40	Warning: 	Moved Permanently for https://giasubinhminh.com/author/admin/page/1/
+09:54:40	Warning: 	File has moved from https://giasubinhminh.com/author/admin/page/1/ to https://giasubinhminh.com/author/admin/
+09:54:51	Warning: 	Retry after error -5 (Unable to get server's address: unknown error) at link https://giasubinhminh.net/wp-content/uploads/2018/10/gia-su-quan-hai-ba-trung-300x180.jpg (from https://giasubinhminh.com/hon-5000-gia-su-top-1-mon-toan-ly-hoa-gioi-chuyen-khoi-a/)
+09:54:51	Warning: 	Retry after error -5 (Unable to get server's address: unknown error) at link https://giasubinhminh.net/wp-content/uploads/2018/10/1.jpg (from https://giasubinhminh.com/hon-5000-gia-su-top-1-mon-toan-ly-hoa-gioi-chuyen-khoi-a/)
+09:54:51	Warning: 	Retry after error -5 (Unable to get server's address: unknown error) at link https://giasubinhminh.net/wp-content/uploads/2018/10/kinh-nghiem-lua-chon-gia-su-phu-hop-cho-con-e1562647207173.png (from https://giasubinhminh.com/gia-su-mon-dia/)
+09:54:51	Warning: 	Retry after error -5 (Unable to get server's address: unknown error) at link https://giasubinhminh.net/wp-content/uploads/2018/10/kinh-nghiem-lua-chon-gia-su-phu-hop-cho-con-2.png (from https://giasubinhminh.com/gia-su-mon-su/)
+09:54:51	Warning: 	Moved Permanently for https://giasubinhminh.com/?p=868
+09:54:51	Warning: 	File has moved from https://giasubinhminh.com/?p=868 to https://giasubinhminh.com/bang-gia-gia-su-mon-toan-lop-9-gioi-luyen-thi-vao-lop-10/
+09:54:51	Warning: 	Moved Permanently for https://giasubinhminh.com/bang-gia-gia-su-tieng-anh-9-ha-noi-bi-kip-noi-tieng-anh-nhu-tay/
+09:54:51	Warning: 	File has moved from https://giasubinhminh.com/bang-gia-gia-su-tieng-anh-9-ha-noi-bi-kip-noi-tieng-anh-nhu-tay/ to https://giasubinhminh.com/gia-su-tieng-anh-lop-9-gia-su-gioi-chuyen-luyen-thi-vao-10-on-chuyen/
+09:55:13	Warning: 	Moved Permanently for https://giasubinhminh.com/?p=1222
+09:55:13	Warning: 	File has moved from https://giasubinhminh.com/?p=1222 to https://giasubinhminh.com/gia-su-cho-tre-tu-ki-tre-cham-phat-trien-bi-kip-tam-ly/
+09:55:13	Warning: 	Retry after error -5 (Unable to get server's address: This is usually a temporary error during hostnam) at link https://znews-photo-td.zadn.vn/w660/Uploaded/orhwao_obvbhj3/2017_01_05/image001_2.jpg (from https://giasubinhminh.com/gia-su-cho-tre-tu-ki-tre-cham-phat-trien-bi-kip-tam-ly/)
+09:55:13	Warning: 	Retry after error -5 (Unable to get server's address: No such host is known. ) at link https://dwbxi9io9o7ce.cloudfront.net/images/20170401_122913_360474_a1ce7e_c349adb65526.max-1800x1800.jpg (from https://giasubinhminh.com/gia-su-cho-tre-tu-ki-tre-cham-phat-trien-bi-kip-tam-ly/)
+09:55:13	Warning: 	Retry after error -5 (error:00000001:lib(0):func(0):reason(1)) at link https://nhathuoclongchau.com/upload/post/40388/images/cach-day-tre-tu-ky-tap-noi-3.jpg (from https://giasubinhminh.com/gia-su-cho-tre-tu-ki-tre-cham-phat-trien-bi-kip-tam-ly/)
+09:55:13	Warning: 	Moved Permanently for https://giasubinhminh.com/?p=1147
+09:55:13	Warning: 	File has moved from https://giasubinhminh.com/?p=1147 to https://giasubinhminh.com/hoc-phi-chi-tu-100k-gia-su-day-lop-la-uom-mam-tuong-lai-con-tre/
+09:55:13	Warning: 	Retry after error -5 (Unable to get server's address: No such host is known. ) at link giasuvanhien.com/upload/files/healthcare-for-1st-grade-child_jpg-1-size-3%5B1%5D.jpg (from https://giasubinhminh.com/hoc-phi-chi-tu-100k-gia-su-day-lop-la-uom-mam-tuong-lai-con-tre/)
+09:55:23	Warning: 	Retry after error -5 (Unable to get server's address: unknown error) at link https://giasubinhminh.net/wp-content/uploads/2018/10/loi_khuyen_gia_su_tieu_hoc.jpg (from https://giasubinhminh.com/hanh-trang-lop-1/)
+09:55:23	Warning: 	Retry after error -5 (Unable to get server's address: unknown error) at link https://giasubinhminh.net/wp-content/uploads/2018/09/gia-sư-hà-nội.png (from https://giasubinhminh.com/hanh-trang-lop-1/)
+09:55:23	Warning: 	Moved Permanently for https://giasubinhminh.com/?p=1167
+09:55:23	Warning: 	File has moved from https://giasubinhminh.com/?p=1167 to https://giasubinhminh.com/hoc-phi-regia-su-mon-van-tai-ha-noi-noi-hoi-tu-gia-su-mon-van-gioi-nhat-ha-noi/
+09:55:23	Warning: 	Retry after error -5 (Unable to get server's address: No such host is known. ) at link giasu99.com/wp-content/uploads/2018/02/gia-sư-ngữ-văn.jpg (from https://giasubinhminh.com/hoc-phi-regia-su-mon-van-tai-ha-noi-noi-hoi-tu-gia-su-mon-van-gioi-nhat-ha-noi/)
+09:55:23	Warning: 	Retry after error -5 (Unable to get server's address: unknown error) at link giasubaoanh.com.vn/upload/5a9cb324d3d58.jpg (from https://giasubinhminh.com/hoc-phi-regia-su-mon-van-tai-ha-noi-noi-hoi-tu-gia-su-mon-van-gioi-nhat-ha-noi/)
+09:55:28	Warning: 	Retry after error -5 (Unable to get server's address: unknown error) at link giasuhanoi.net/wp-content/uploads/2018/07/văn-lớp-12-400x277.jpg (from https://giasubinhminh.com/gia-su-van-lop-12-cham-dinh-cua-thanh-cong/)
+09:55:28	Warning: 	Retry after error -5 (Unable to get server's address: unknown error) at link giasuhanoi.net/wp-content/uploads/2018/07/văn-lớp-9-400x224.jpg (from https://giasubinhminh.com/gia-su-van-lop-9-on-thi-lop-10-tu-co-ban-den-nang-cao/)
+09:55:28	Warning: 	Retry after error -5 (Unable to get server's address: unknown error) at link timgiasu.edu.vn/upload/images/dangtin/monly1/gia-su-ly (3).png (from https://giasubinhminh.com/gia-su-ly-lop-12-nguoc-dong-de-chiem-linh-uoc-mo/)
+09:55:28	Warning: 	Retry after error -5 (Unable to get server's address: unknown error) at link giasugiatri.com/wp-content/uploads/2015/07/Gia-Sư-Môn-Lý-–-Dạy-Kèm-Môn-Lý-Tại-Nhà.jpg (from https://giasubinhminh.com/gia-su-ly-lop-12-nguoc-dong-de-chiem-linh-uoc-mo/)
+09:55:28	Warning: 	Retry after error -5 (Unable to get server's address: unknown error) at link https://myteacher.edu.vn/image/anhdaidientinh/gia-su-da-nang-(tp).jpg (from https://giasubinhminh.com/gia-su-ly-lop-11-nam-giu-chia-khoa-cua-su-thanh-cong/)
+09:55:28	Warning: 	Retry after error -5 (Unable to get server's address: unknown error) at link timgiasu.edu.vn/upload/images/dangtin/monly1/gia-su-ly (9).png (from https://giasubinhminh.com/gia-su-ly-lop-10-hoc-phi-re-hieu-qua-gap-3-lan/)
+09:55:28	Warning: 	Retry after error -5 (Unable to get server's address: unknown error) at link giasuthienviet.com/wp-content/uploads/2016/03/gia-su-toan-lop-9-tai-nha.gif (from https://giasubinhminh.com/gia-su-ly-lop-9-chia-khoa-vang-cho-su-thanh-cong/)
+09:55:28	Warning: 	Retry after error -5 (Unable to get server's address: unknown error) at link https://dayhoctainha.com/wp-content/uploads/2015/08/gia_su_tieng_han-1.jpg (from https://giasubinhminh.com/gia-su-day-tieng-han-tai-nha-cam-ket-thanh-thao-tieng-han-sau-3-thang/)
+09:55:28	Warning: 	Moved Permanently for https://giasubinhminh.com/?p=812
+09:55:28	Warning: 	File has moved from https://giasubinhminh.com/?p=812 to https://giasubinhminh.com/gia-su-toan-lop-6-gia-su-gioi-chuyen-toan-thcs-day-con-tu-duy-hoc-tu-co-ban-den-nang-cao/
+09:55:50	Error: 	"Unable to get server's address: unknown error" (-5) after 2 retries at link demogiasu.vntsc.vn/uploads/news/Gia-Su-Cac-Mon/Sinh-Hoc/hot_2.gif (from https://giasubinhminh.com/gia-su-mon-toan/)
+09:55:50	Warning: 	Moved Permanently for https://giasubinhminh.com/tag/cach-day-tre-bi-benh-tu-ki/page/1/
+09:55:50	Warning: 	File has moved from https://giasubinhminh.com/tag/cach-day-tre-bi-benh-tu-ki/page/1/ to https://giasubinhminh.com/tag/cach-day-tre-bi-benh-tu-ki/
+09:55:50	Warning: 	Moved Permanently for https://giasubinhminh.com/tag/cach-day-tre-tu-ki/page/1/
+09:55:50	Warning: 	File has moved from https://giasubinhminh.com/tag/cach-day-tre-tu-ki/page/1/ to https://giasubinhminh.com/tag/cach-day-tre-tu-ki/
+09:55:50	Warning: 	Retry after error -5 (Unable to get server's address: unknown error) at link https://giasuviet.net/wp-content/uploads/2024/05/Anh-web-600-x-400-px-11.png (from https://giasubinhminh.com/gia-su-tieng-anh-lop-9-gia-su-gioi-chuyen-luyen-thi-vao-10-on-chuyen/)
+09:55:50	Warning: 	Retry after error -5 (Unable to get server's address: unknown error) at link https://giasuviet.net/wp-content/uploads/2021/06/Anh-web-600-x-400-px-1.png (from https://giasubinhminh.com/gia-su-tieng-anh-lop-9-gia-su-gioi-chuyen-luyen-thi-vao-10-on-chuyen/)
+09:55:50	Warning: 	Retry after error -5 (Unable to get server's address: unknown error) at link https://giasuviet.net/wp-content/uploads/2021/06/CHINH-SACH-HOC-THU-4.png (from https://giasubinhminh.com/gia-su-tieng-anh-lop-9-gia-su-gioi-chuyen-luyen-thi-vao-10-on-chuyen/)
+09:55:50	Warning: 	Retry after error -5 (Unable to get server's address: unknown error) at link https://giasuviet.net/wp-content/uploads/2021/06/Anh-web-600-x-400-px-2.png (from https://giasubinhminh.com/gia-su-tieng-anh-lop-9-gia-su-gioi-chuyen-luyen-thi-vao-10-on-chuyen/)
+09:55:50	Error: 	"Unable to get server's address: unknown error" (-5) after 2 retries at link https://giasubinhminh.net/wp-content/uploads/2018/11/images-4-300x162.jpg (from https://giasubinhminh.com/gia-su-mon-ly/)
+09:55:50	Error: 	"Unable to get server's address: unknown error" (-5) after 2 retries at link https://giasubinhminh.net/wp-content/uploads/2018/11/trung-tam-gia-su-binh-minh-300x169.png (from https://giasubinhminh.com/gia-su-mon-ly/)
+09:55:50	Warning: 	Moved Permanently for https://giasubinhminh.com/?p=1041
+09:55:50	Warning: 	File has moved from https://giasubinhminh.com/?p=1041 to https://giasubinhminh.com/uu-dai-lon-hoc-phi-gia-su-lop-8-bao-nhieu-tien/
+09:55:57	Warning: 	Retry after error -5 (Unable to get server's address: unknown error) at link https://giasugioi24h.com/wp-content/uploads/2017/08/mon-vat-ly.jpg (from https://giasubinhminh.com/hoc-phi-gia-su-ly-lop-6-o-ha-noi-5-tieu-chi-tim-gia-su-gioi/)
+09:55:57	Warning: 	Retry after error -5 (Unable to get server's address: unknown error) at link giasubaoanh.com.vn/upload/5a73d1a06e717.jpg (from https://giasubinhminh.com/top-1-gia-su-van-lop-7-o-ha-noi-hoc-phi-uu-dai-nhat-2018/)
+09:55:57	Warning: 	Moved Permanently for https://giasubinhminh.com/?p=1048
+09:55:57	Warning: 	File has moved from https://giasubinhminh.com/?p=1048 to https://giasubinhminh.com/thue-giao-vien-day-tieng-anh-tai-nha-hoc-phi-cuc-ki-uu-dai/
+09:55:57	Error: 	"Not Found" (404) at link https://giasubinhminh.com/wp-content/uploads/2018/09/gia-sư-3-e1538109266852.jpg (from https://giasubinhminh.com/thue-giao-vien-day-tieng-anh-tai-nha-hoc-phi-cuc-ki-uu-dai/)
+09:56:02	Warning: 	Moved Permanently for https://giasubinhminh.com/?p=1103
+09:56:02	Warning: 	File has moved from https://giasubinhminh.com/?p=1103 to https://giasubinhminh.com/bang-gia-top-1-gia-su-toan-ly-hoa-gioi-chuyen-khoi-a/
+09:56:09	Warning: 	Moved Permanently for https://giasubinhminh.com/?p=1163
+09:56:09	Warning: 	File has moved from https://giasubinhminh.com/?p=1163 to https://giasubinhminh.com/top-100gia-su-chuyen-toan-tai-nha-cam-ket-tien-bo-sau-10-buoi/
+09:56:09	Warning: 	Retry after error -5 (Unable to get server's address: unknown error) at link giasuthienviet.com/wp-content/uploads/2016/03/gia-su-tai-nha.jpg (from https://giasubinhminh.com/top-100gia-su-chuyen-toan-tai-nha-cam-ket-tien-bo-sau-10-buoi/)
+09:56:18	Warning: 	Moved Permanently for https://giasubinhminh.com/?p=1101
+09:56:18	Warning: 	File has moved from https://giasubinhminh.com/?p=1101 to https://giasubinhminh.com/gia-su-su-pham-gioi-ha-noi-cam-ket-tien-bo-sau-10-buoi/
+09:56:27	Warning: 	Moved Permanently for https://giasubinhminh.com/?p=994
+09:56:27	Warning: 	File has moved from https://giasubinhminh.com/?p=994 to https://giasubinhminh.com/gia-su-day-tieng-viet-cho-nguoi-nuoc-ngoai-cam-ket-noi-tieng-viet-nhu-nguoi-viet/
+09:56:49	Warning: 	Retry after error -5 (Unable to get server's address: unknown error) at link giasuminhhanh.com.vn/wp-content/uploads/2018/09/Gia-sư-lớp-2-300x287.jpg (from https://giasubinhminh.com/gia-su-quan-ha-dong-gia-su-pham-gioi-gia-chi-tu-100k/)
+09:56:49	Warning: 	Retry after error -5 (Unable to get server's address: unknown error) at link https://giasugioi24h.com/wp-content/uploads/2017/08/gia-su-quan-ha-dong.jpg (from https://giasubinhminh.com/gia-su-quan-ha-dong-gia-su-pham-gioi-gia-chi-tu-100k/)
+09:56:50	Warning: 	Moved Permanently for https://giasubinhminh.com/?p=1173
+09:56:50	Warning: 	File has moved from https://giasubinhminh.com/?p=1173 to https://giasubinhminh.com/giao-vien-day-kem-tieng-anh-top-1-ha-noi-cam-ket-tien-bo-sau-10-buoi/
+09:56:50	Warning: 	Retry after error -5 (error:00000005:lib(0):func(0):DH lib) at link https://cdn-images-1.medium.com/max/530/1*yKH0N6acFlA5bgOXZ2NTvQ.jpeg (from https://giasubinhminh.com/giao-vien-day-kem-tieng-anh-top-1-ha-noi-cam-ket-tien-bo-sau-10-buoi/)
+09:56:54	Warning: 	Moved Permanently for https://giasubinhminh.com/?p=1142
+09:56:54	Warning: 	File has moved from https://giasubinhminh.com/?p=1142 to https://giasubinhminh.com/gia-su-tieng-anh-online-tiet-kiem-toi-da-chi-phi-cam-ket-hieu-qua-sau-10-buoi/
+09:56:54	Warning: 	Retry after error 502 (Bad Gateway) at link https://bang.vn/ezupload/001/20-10-2016/14769697742613_1460803292_a7f1438b.jpg (from https://giasubinhminh.com/gia-su-tieng-anh-online-tiet-kiem-toi-da-chi-phi-cam-ket-hieu-qua-sau-10-buoi/)
+09:56:54	Warning: 	Retry after error 502 (Bad Gateway) at link https://d1plicc6iqzi9y.cloudfront.net/sites/default/files/pictures/gia-su-tieng-anh-3.jpg (from https://giasubinhminh.com/gia-su-tieng-anh-online-tiet-kiem-toi-da-chi-phi-cam-ket-hieu-qua-sau-10-buoi/)
+09:57:04	Warning: 	Moved Permanently for https://giasubinhminh.com/?p=1116
+09:57:04	Warning: 	File has moved from https://giasubinhminh.com/?p=1116 to https://giasubinhminh.com/gia-su-day-kem-anh-van-hoc-phi-re-gia-su-chat-luong/
+09:57:11	Warning: 	Moved Permanently for https://giasubinhminh.com/?p=1019
+09:57:11	Warning: 	File has moved from https://giasubinhminh.com/?p=1019 to https://giasubinhminh.com/hoc-phi-re-gia-su-tieng-anh-cho-nguoi-di-lam-mat-goc-cam-ket/
+09:57:24	Error: 	"Unable to get server's address: unknown error" (-5) after 2 retries at link https://giasubinhminh.net/wp-content/uploads/2018/10/gia-su-quan-hai-ba-trung-300x180.jpg (from https://giasubinhminh.com/hon-5000-gia-su-top-1-mon-toan-ly-hoa-gioi-chuyen-khoi-a/)
+09:57:24	Error: 	"Unable to get server's address: unknown error" (-5) after 2 retries at link https://giasubinhminh.net/wp-content/uploads/2018/10/1.jpg (from https://giasubinhminh.com/hon-5000-gia-su-top-1-mon-toan-ly-hoa-gioi-chuyen-khoi-a/)
+09:57:24	Error: 	"Unable to get server's address: unknown error" (-5) after 2 retries at link https://giasubinhminh.net/wp-content/uploads/2018/10/kinh-nghiem-lua-chon-gia-su-phu-hop-cho-con-e1562647207173.png (from https://giasubinhminh.com/gia-su-mon-dia/)
+09:57:24	Error: 	"Unable to get server's address: unknown error" (-5) after 2 retries at link https://giasubinhminh.net/wp-content/uploads/2018/10/kinh-nghiem-lua-chon-gia-su-phu-hop-cho-con-2.png (from https://giasubinhminh.com/gia-su-mon-su/)
+09:57:24	Warning: 	Retry after error -5 (Unable to get server's address: unknown error) at link https://znews-photo-td.zadn.vn/w660/Uploaded/orhwao_obvbhj3/2017_01_05/image001_2.jpg (from https://giasubinhminh.com/gia-su-cho-tre-tu-ki-tre-cham-phat-trien-bi-kip-tam-ly/)
+09:57:24	Warning: 	Retry after error -5 (Unable to get server's address: unknown error) at link https://dwbxi9io9o7ce.cloudfront.net/images/20170401_122913_360474_a1ce7e_c349adb65526.max-1800x1800.jpg (from https://giasubinhminh.com/gia-su-cho-tre-tu-ki-tre-cham-phat-trien-bi-kip-tam-ly/)
+09:57:25	Warning: 	Retry after error -5 (error:00000001:lib(0):func(0):reason(1)) at link https://nhathuoclongchau.com/upload/post/40388/images/cach-day-tre-tu-ky-tap-noi-3.jpg (from https://giasubinhminh.com/gia-su-cho-tre-tu-ki-tre-cham-phat-trien-bi-kip-tam-ly/)
+09:57:25	Warning: 	Retry after error -5 (Unable to get server's address: unknown error) at link giasuvanhien.com/upload/files/healthcare-for-1st-grade-child_jpg-1-size-3%5B1%5D.jpg (from https://giasubinhminh.com/hoc-phi-chi-tu-100k-gia-su-day-lop-la-uom-mam-tuong-lai-con-tre/)
+09:57:25	Error: 	"Unable to get server's address: unknown error" (-5) after 2 retries at link https://giasubinhminh.net/wp-content/uploads/2018/10/loi_khuyen_gia_su_tieu_hoc.jpg (from https://giasubinhminh.com/hanh-trang-lop-1/)
+09:57:25	Error: 	"Unable to get server's address: unknown error" (-5) after 2 retries at link https://giasubinhminh.net/wp-content/uploads/2018/09/gia-sư-hà-nội.png (from https://giasubinhminh.com/hanh-trang-lop-1/)
+09:57:25	Warning: 	Retry after error -5 (Unable to get server's address: unknown error) at link giasu99.com/wp-content/uploads/2018/02/gia-sư-ngữ-văn.jpg (from https://giasubinhminh.com/hoc-phi-regia-su-mon-van-tai-ha-noi-noi-hoi-tu-gia-su-mon-van-gioi-nhat-ha-noi/)
+09:57:25	Warning: 	Retry after error -5 (Unable to get server's address: unknown error) at link giasubaoanh.com.vn/upload/5a9cb324d3d58.jpg (from https://giasubinhminh.com/hoc-phi-regia-su-mon-van-tai-ha-noi-noi-hoi-tu-gia-su-mon-van-gioi-nhat-ha-noi/)
+09:57:25	Error: 	"Unable to get server's address: unknown error" (-5) after 2 retries at link giasuhanoi.net/wp-content/uploads/2018/07/văn-lớp-12-400x277.jpg (from https://giasubinhminh.com/gia-su-van-lop-12-cham-dinh-cua-thanh-cong/)
+09:57:25	Error: 	"Unable to get server's address: unknown error" (-5) after 2 retries at link giasuhanoi.net/wp-content/uploads/2018/07/văn-lớp-9-400x224.jpg (from https://giasubinhminh.com/gia-su-van-lop-9-on-thi-lop-10-tu-co-ban-den-nang-cao/)
+09:57:25	Error: 	"Unable to get server's address: unknown error" (-5) after 2 retries at link timgiasu.edu.vn/upload/images/dangtin/monly1/gia-su-ly (3).png (from https://giasubinhminh.com/gia-su-ly-lop-12-nguoc-dong-de-chiem-linh-uoc-mo/)
+09:57:25	Error: 	"Unable to get server's address: unknown error" (-5) after 2 retries at link giasugiatri.com/wp-content/uploads/2015/07/Gia-Sư-Môn-Lý-–-Dạy-Kèm-Môn-Lý-Tại-Nhà.jpg (from https://giasubinhminh.com/gia-su-ly-lop-12-nguoc-dong-de-chiem-linh-uoc-mo/)
+09:57:25	Error: 	"Unable to get server's address: unknown error" (-5) after 2 retries at link https://myteacher.edu.vn/image/anhdaidientinh/gia-su-da-nang-(tp).jpg (from https://giasubinhminh.com/gia-su-ly-lop-11-nam-giu-chia-khoa-cua-su-thanh-cong/)
+09:57:25	Error: 	"Unable to get server's address: unknown error" (-5) after 2 retries at link timgiasu.edu.vn/upload/images/dangtin/monly1/gia-su-ly (9).png (from https://giasubinhminh.com/gia-su-ly-lop-10-hoc-phi-re-hieu-qua-gap-3-lan/)
+09:57:25	Error: 	"Unable to get server's address: unknown error" (-5) after 2 retries at link giasuthienviet.com/wp-content/uploads/2016/03/gia-su-toan-lop-9-tai-nha.gif (from https://giasubinhminh.com/gia-su-ly-lop-9-chia-khoa-vang-cho-su-thanh-cong/)
+09:57:25	Error: 	"Unable to get server's address: unknown error" (-5) after 2 retries at link https://dayhoctainha.com/wp-content/uploads/2015/08/gia_su_tieng_han-1.jpg (from https://giasubinhminh.com/gia-su-day-tieng-han-tai-nha-cam-ket-thanh-thao-tieng-han-sau-3-thang/)
+09:57:25	Error: 	"Unable to get server's address: unknown error" (-5) after 2 retries at link https://giasuviet.net/wp-content/uploads/2024/05/Anh-web-600-x-400-px-11.png (from https://giasubinhminh.com/gia-su-tieng-anh-lop-9-gia-su-gioi-chuyen-luyen-thi-vao-10-on-chuyen/)
+09:57:25	Error: 	"Unable to get server's address: unknown error" (-5) after 2 retries at link https://giasuviet.net/wp-content/uploads/2021/06/Anh-web-600-x-400-px-1.png (from https://giasubinhminh.com/gia-su-tieng-anh-lop-9-gia-su-gioi-chuyen-luyen-thi-vao-10-on-chuyen/)
+09:57:25	Error: 	"Unable to get server's address: unknown error" (-5) after 2 retries at link https://giasuviet.net/wp-content/uploads/2021/06/CHINH-SACH-HOC-THU-4.png (from https://giasubinhminh.com/gia-su-tieng-anh-lop-9-gia-su-gioi-chuyen-luyen-thi-vao-10-on-chuyen/)
+09:57:25	Error: 	"Unable to get server's address: unknown error" (-5) after 2 retries at link https://giasuviet.net/wp-content/uploads/2021/06/Anh-web-600-x-400-px-2.png (from https://giasubinhminh.com/gia-su-tieng-anh-lop-9-gia-su-gioi-chuyen-luyen-thi-vao-10-on-chuyen/)
+09:57:25	Error: 	"Unable to get server's address: unknown error" (-5) after 2 retries at link https://giasugioi24h.com/wp-content/uploads/2017/08/mon-vat-ly.jpg (from https://giasubinhminh.com/hoc-phi-gia-su-ly-lop-6-o-ha-noi-5-tieu-chi-tim-gia-su-gioi/)
+09:57:25	Error: 	"Unable to get server's address: unknown error" (-5) after 2 retries at link giasubaoanh.com.vn/upload/5a73d1a06e717.jpg (from https://giasubinhminh.com/top-1-gia-su-van-lop-7-o-ha-noi-hoc-phi-uu-dai-nhat-2018/)
+09:57:25	Warning: 	Retry after error -5 (Unable to get server's address: unknown error) at link giasuthienviet.com/wp-content/uploads/2016/03/gia-su-tai-nha.jpg (from https://giasubinhminh.com/top-100gia-su-chuyen-toan-tai-nha-cam-ket-tien-bo-sau-10-buoi/)
+09:57:25	Error: 	"Unable to get server's address: unknown error" (-5) after 2 retries at link giasuminhhanh.com.vn/wp-content/uploads/2018/09/Gia-sư-lớp-2-300x287.jpg (from https://giasubinhminh.com/gia-su-quan-ha-dong-gia-su-pham-gioi-gia-chi-tu-100k/)
+09:57:25	Error: 	"Unable to get server's address: unknown error" (-5) after 2 retries at link https://giasugioi24h.com/wp-content/uploads/2017/08/gia-su-quan-ha-dong.jpg (from https://giasubinhminh.com/gia-su-quan-ha-dong-gia-su-pham-gioi-gia-chi-tu-100k/)
+09:57:25	Warning: 	Retry after error -5 (error:00000005:lib(0):func(0):DH lib) at link https://cdn-images-1.medium.com/max/530/1*yKH0N6acFlA5bgOXZ2NTvQ.jpeg (from https://giasubinhminh.com/giao-vien-day-kem-tieng-anh-top-1-ha-noi-cam-ket-tien-bo-sau-10-buoi/)
+09:57:25	Warning: 	Retry after error 502 () at link https://bang.vn/ezupload/001/20-10-2016/14769697742613_1460803292_a7f1438b.jpg (from https://giasubinhminh.com/gia-su-tieng-anh-online-tiet-kiem-toi-da-chi-phi-cam-ket-hieu-qua-sau-10-buoi/)
+09:57:25	Warning: 	Retry after error 502 () at link https://d1plicc6iqzi9y.cloudfront.net/sites/default/files/pictures/gia-su-tieng-anh-3.jpg (from https://giasubinhminh.com/gia-su-tieng-anh-online-tiet-kiem-toi-da-chi-phi-cam-ket-hieu-qua-sau-10-buoi/)
+09:57:25	Error: 	"Unable to get server's address: unknown error" (-5) after 2 retries at link https://znews-photo-td.zadn.vn/w660/Uploaded/orhwao_obvbhj3/2017_01_05/image001_2.jpg (from https://giasubinhminh.com/gia-su-cho-tre-tu-ki-tre-cham-phat-trien-bi-kip-tam-ly/)
+09:57:25	Error: 	"Unable to get server's address: unknown error" (-5) after 2 retries at link https://dwbxi9io9o7ce.cloudfront.net/images/20170401_122913_360474_a1ce7e_c349adb65526.max-1800x1800.jpg (from https://giasubinhminh.com/gia-su-cho-tre-tu-ki-tre-cham-phat-trien-bi-kip-tam-ly/)
+09:57:25	Error: 	"error:00000001:lib(0):func(0):reason(1)" (-5) after 2 retries at link https://nhathuoclongchau.com/upload/post/40388/images/cach-day-tre-tu-ky-tap-noi-3.jpg (from https://giasubinhminh.com/gia-su-cho-tre-tu-ki-tre-cham-phat-trien-bi-kip-tam-ly/)
+09:57:25	Error: 	"Unable to get server's address: unknown error" (-5) after 2 retries at link giasuvanhien.com/upload/files/healthcare-for-1st-grade-child_jpg-1-size-3%5B1%5D.jpg (from https://giasubinhminh.com/hoc-phi-chi-tu-100k-gia-su-day-lop-la-uom-mam-tuong-lai-con-tre/)
+09:57:25	Error: 	"Unable to get server's address: unknown error" (-5) after 2 retries at link giasu99.com/wp-content/uploads/2018/02/gia-sư-ngữ-văn.jpg (from https://giasubinhminh.com/hoc-phi-regia-su-mon-van-tai-ha-noi-noi-hoi-tu-gia-su-mon-van-gioi-nhat-ha-noi/)
+09:57:25	Error: 	"Unable to get server's address: unknown error" (-5) after 2 retries at link giasubaoanh.com.vn/upload/5a9cb324d3d58.jpg (from https://giasubinhminh.com/hoc-phi-regia-su-mon-van-tai-ha-noi-noi-hoi-tu-gia-su-mon-van-gioi-nhat-ha-noi/)
+09:57:25	Error: 	"Unable to get server's address: unknown error" (-5) after 2 retries at link giasuthienviet.com/wp-content/uploads/2016/03/gia-su-tai-nha.jpg (from https://giasubinhminh.com/top-100gia-su-chuyen-toan-tai-nha-cam-ket-tien-bo-sau-10-buoi/)
+09:57:26	Warning: 	Moved Permanently for https://cdn-images-1.medium.com/max/530/1*yKH0N6acFlA5bgOXZ2NTvQ.jpeg
+09:57:26	Warning: 	Warning moved treated for https://cdn-images-1.medium.com/max/530/1*yKH0N6acFlA5bgOXZ2NTvQ.jpeg (real one is https://cdn-images-1.medium.com/v2/resize:fit:530/1*yKH0N6acFlA5bgOXZ2NTvQ.jpeg)
+09:57:26	Error: 	"" (502) after 2 retries at link https://bang.vn/ezupload/001/20-10-2016/14769697742613_1460803292_a7f1438b.jpg (from https://giasubinhminh.com/gia-su-tieng-anh-online-tiet-kiem-toi-da-chi-phi-cam-ket-hieu-qua-sau-10-buoi/)
+09:57:26	Error: 	"" (502) after 2 retries at link https://d1plicc6iqzi9y.cloudfront.net/sites/default/files/pictures/gia-su-tieng-anh-3.jpg (from https://giasubinhminh.com/gia-su-tieng-anh-online-tiet-kiem-toi-da-chi-phi-cam-ket-hieu-qua-sau-10-buoi/)
+
+HTTrack Website Copier/3.49-2 mirror complete in 53 minutes 16 seconds : 2831 links scanned, 2527 files written (190528101 bytes overall) [121630663 bytes received at 38057 bytes/sec], 98192396 bytes transferred using HTTP compression in 2138 files, ratio 25%, 3.0 requests per connection
+(71 errors, 395 warnings, 0 messages)

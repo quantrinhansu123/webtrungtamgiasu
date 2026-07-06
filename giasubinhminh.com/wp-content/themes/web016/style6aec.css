@@ -1,0 +1,34 @@
+/*
+Theme Name: web016
+Description: This is a child theme for Flatsome Theme
+Author: UX Themes
+Template: flatsome
+Version: 3.0
+*/
+
+/*************** ADD CUSTOM CSS HERE.   ***************/
+
+body {
+    font-family: "Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif !important;
+    line-height: 1.5 !important;
+	margin: auto;
+}
+
+.nav > li > a {
+	font-family: "Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif !important;
+}
+
+h1,h2,h3,h4,h5,h6, .heading-font{
+	font-family: "Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif !important;
+}
+
+.alt-font{
+	font-family: "Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif !important;
+}
+
+
+@media only screen and (max-width: 48em) {
+/*************** ADD MOBILE ONLY CSS HERE  ***************/
+
+
+}
