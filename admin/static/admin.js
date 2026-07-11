@@ -4,12 +4,26 @@ let quill = null;
 let mediaPickMode = null;
 let inlineImageTarget = null;
 
+const FEATURED_CAM_KET_ID = "cam-ket-tien-bo-sau-10-buoi/index.html";
+
 const views = {
   pages: document.getElementById("view-pages"),
+  homepage: document.getElementById("view-homepage"),
   editor: document.getElementById("view-editor"),
   media: document.getElementById("view-media"),
   settings: document.getElementById("view-settings"),
 };
+
+function setActiveNav(viewName, pageId = null) {
+  document.querySelectorAll(".nav-btn").forEach((btn) => {
+    const isFeatured =
+      btn.dataset.view === "featured-cam-ket" &&
+      pageId === FEATURED_CAM_KET_ID &&
+      viewName === "editor";
+    const isMatch = btn.dataset.view === viewName;
+    btn.classList.toggle("active", isFeatured || (isMatch && viewName !== "editor"));
+  });
+}
 
 async function api(url, options = {}) {
   const response = await fetch(url, {
@@ -29,11 +43,14 @@ async function api(url, options = {}) {
 
 function showView(name) {
   Object.entries(views).forEach(([key, el]) => {
+    if (!el) return;
     el.classList.toggle("hidden", key !== name);
   });
-  document.querySelectorAll(".nav-btn").forEach((btn) => {
-    btn.classList.toggle("active", btn.dataset.view === name);
-  });
+  if (name === "editor" && currentPageId === FEATURED_CAM_KET_ID) {
+    setActiveNav("editor", FEATURED_CAM_KET_ID);
+  } else {
+    setActiveNav(name);
+  }
 }
 
 function setStatus(el, message, type = "") {
@@ -109,14 +126,19 @@ function initEditor() {
   });
 }
 
+async function enterAdmin() {
+  document.getElementById("login-screen").classList.add("hidden");
+  document.getElementById("app").classList.remove("hidden");
+  initEditor();
+  await loadPages();
+  await loadSettings();
+  await openFromHash();
+}
+
 async function checkSession() {
   const me = await api("/api/me");
   if (me.logged_in) {
-    document.getElementById("login-screen").classList.add("hidden");
-    document.getElementById("app").classList.remove("hidden");
-    initEditor();
-    await loadPages();
-    await loadSettings();
+    await enterAdmin();
   }
 }
 
@@ -129,11 +151,7 @@ async function login(event) {
       method: "POST",
       body: JSON.stringify({ username, password }),
     });
-    document.getElementById("login-screen").classList.add("hidden");
-    document.getElementById("app").classList.remove("hidden");
-    initEditor();
-    await loadPages();
-    await loadSettings();
+    await enterAdmin();
   } catch (error) {
     setStatus(document.getElementById("login-status"), error.message, "error");
   }
@@ -189,7 +207,10 @@ async function openEditor(pageId) {
   setStatus(status, "Đang tải bài viết...");
   try {
     const page = await api(`/api/pages/${pageId}`);
-    document.getElementById("editor-title").textContent = page.title || "Chỉnh sửa bài viết";
+    document.getElementById("editor-title").textContent =
+      pageId === FEATURED_CAM_KET_ID
+        ? "Quản trị: Cam kết tiến bộ sau 10 buổi"
+        : page.title || "Chỉnh sửa bài viết";
     document.getElementById("field-title").value = page.title || "";
     document.getElementById("field-heading").value = page.heading || "";
     document.getElementById("field-description").value = page.description || "";
@@ -198,9 +219,269 @@ async function openEditor(pageId) {
     document.getElementById("preview-link").href = page.public_url;
     quill.root.innerHTML = page.content || "<p></p>";
     showView("editor");
+    if (pageId === FEATURED_CAM_KET_ID) {
+      history.replaceState(null, "", "#cam-ket-tien-bo-sau-10-buoi");
+    }
     setStatus(status, "");
   } catch (error) {
     setStatus(status, error.message, "error");
+  }
+}
+
+async function openFeaturedCamKet() {
+  await openEditor(FEATURED_CAM_KET_ID);
+}
+
+function renderWhyFeatures(features = []) {
+  const wrap = document.getElementById("home-why-features");
+  wrap.innerHTML = Array.from({ length: 4 }, (_, i) => {
+    const item = features[i] || { title: "", text: "" };
+    return `
+      <div class="home-feature-card">
+        <div class="field">
+          <label>Ô ${i + 1} — tiêu đề</label>
+          <input class="home-why-feature-title" type="text" value="${escapeAttr(item.title || "")}" />
+        </div>
+        <div class="field" style="margin-bottom:0">
+          <label>Ô ${i + 1} — nội dung</label>
+          <textarea class="home-why-feature-text">${escapeHtml(item.text || "")}</textarea>
+        </div>
+      </div>`;
+  }).join("");
+}
+
+function formatSizeLabel(width, height, fallback = "Chưa có ảnh") {
+  if (width && height) return `${width} × ${height} px`;
+  return fallback;
+}
+
+function bindPreviewSize(img, badgeEl, recommendedText = "") {
+  const update = () => {
+    if (!img.naturalWidth) {
+      badgeEl.textContent = "Khổ ảnh: Chưa có ảnh";
+      return;
+    }
+    badgeEl.textContent = `Khổ ảnh: ${formatSizeLabel(img.naturalWidth, img.naturalHeight)}`;
+  };
+  img.addEventListener("load", update);
+  img.addEventListener("error", () => {
+    badgeEl.textContent = "Khổ ảnh: Không tải được";
+  });
+  if (img.complete) update();
+  if (recommendedText) {
+    const hint = badgeEl.parentElement?.querySelector(".size-hint");
+    if (hint) hint.textContent = recommendedText;
+  }
+}
+
+function renderSlides(slides = []) {
+  const wrap = document.getElementById("home-slides");
+  wrap.innerHTML = Array.from({ length: 3 }, (_, i) => {
+    const item = slides[i] || { id: "", image: "", size_label: "" };
+    const preview = normalizeAssetUrl(item.image || "");
+    const sizeLabel = item.size_label || formatSizeLabel(item.width, item.height);
+    return `
+      <div class="home-slide-card" data-slide-id="${escapeAttr(item.id || "")}">
+        <div class="field" style="margin-bottom:0">
+          <label>Ảnh slide ${i + 1}</label>
+          <div class="home-media-row">
+            <input class="home-slide-image" type="text" value="${escapeAttr(item.image || "")}" />
+            <label class="btn btn-secondary" for="upload-home-slide-${i}">Tải ảnh</label>
+            <input id="upload-home-slide-${i}" class="home-slide-upload hidden" type="file" accept="image/*" data-index="${i}" />
+          </div>
+          <div class="home-size-meta">
+            <span class="size-badge home-slide-size">Khổ ảnh: ${escapeHtml(sizeLabel || "—")}</span>
+            <span class="size-hint">Khổ chuẩn slide: 1360 × 540 px</span>
+          </div>
+          <div class="home-preview-frame home-preview-frame-slide">
+            <img class="home-slide-preview" src="${escapeAttr(preview)}" alt="Slide ${i + 1}" />
+          </div>
+        </div>
+      </div>`;
+  }).join("");
+
+  wrap.querySelectorAll(".home-slide-card").forEach((card) => {
+    const input = card.querySelector(".home-slide-image");
+    const preview = card.querySelector(".home-slide-preview");
+    const badge = card.querySelector(".home-slide-size");
+    bindPreviewSize(preview, badge, "Khổ chuẩn slide: 1360 × 540 px");
+    input.addEventListener("input", () => {
+      preview.src = normalizeAssetUrl(input.value.trim());
+    });
+  });
+
+  wrap.querySelectorAll(".home-slide-upload").forEach((input) => {
+    input.addEventListener("change", async (event) => {
+      const file = event.target.files[0];
+      if (!file) return;
+      const card = event.target.closest(".home-slide-card");
+      const status = document.getElementById("homepage-status");
+      try {
+        setStatus(status, "Đang tải ảnh slide...");
+        await uploadFile(file, async (data) => {
+          const field = card.querySelector(".home-slide-image");
+          const preview = card.querySelector(".home-slide-preview");
+          const badge = card.querySelector(".home-slide-size");
+          field.value = data.path;
+          preview.src = data.url;
+          badge.textContent = `Khổ ảnh: ${data.size_label || formatSizeLabel(data.width, data.height)}`;
+          setStatus(status, "Đã tải ảnh — đang lưu vào slide...", "success");
+          await saveHomepage();
+        });
+      } catch (error) {
+        setStatus(status, error.message, "error");
+      } finally {
+        event.target.value = "";
+      }
+    });
+  });
+}
+
+function renderCommitItems(items = []) {
+  const wrap = document.getElementById("home-commit-items");
+  wrap.innerHTML = Array.from({ length: 7 }, (_, i) => {
+    const value = items[i] || "";
+    return `
+      <div class="field" style="margin-bottom:0">
+        <label>Cam kết ${i + 1}</label>
+        <input class="home-commit-item" type="text" value="${escapeAttr(value)}" />
+      </div>`;
+  }).join("");
+}
+
+function renderTutors(tutors = []) {
+  const wrap = document.getElementById("home-tutors");
+  wrap.innerHTML = Array.from({ length: 4 }, (_, i) => {
+    const item = tutors[i] || { title: "", text: "", image: "" };
+    return `
+      <div class="home-tutor-card">
+        <div class="field">
+          <label>Gia sư ${i + 1} — môn / vai trò</label>
+          <input class="home-tutor-title" type="text" value="${escapeAttr(item.title || "")}" />
+        </div>
+        <div class="field">
+          <label>Mô tả</label>
+          <textarea class="home-tutor-text">${escapeHtml(item.text || "")}</textarea>
+        </div>
+        <div class="field" style="margin-bottom:0">
+          <label>Ảnh (URL)</label>
+          <input class="home-tutor-image" type="text" value="${escapeAttr(item.image || "")}" />
+        </div>
+      </div>`;
+  }).join("");
+}
+
+async function loadHomepage() {
+  const status = document.getElementById("homepage-status");
+  setStatus(status, "Đang tải trang chủ...");
+  try {
+    const data = await api("/api/homepage");
+    document.getElementById("home-title").value = data.title || "";
+    document.getElementById("home-description").value = data.description || "";
+    document.getElementById("home-logo").value = data.logo || "";
+    document.getElementById("home-logo-preview").src = normalizeAssetUrl(data.logo || "");
+    document.getElementById("home-logo-size").textContent =
+      `Khổ ảnh: ${data.logo_size_label || formatSizeLabel(data.logo_width, data.logo_height)}`;
+    bindPreviewSize(
+      document.getElementById("home-logo-preview"),
+      document.getElementById("home-logo-size"),
+      "Gợi ý logo: 186 × 100 px"
+    );
+    renderSlides(data.slides || []);
+    document.getElementById("home-why-title").value = data.why_title || "";
+    document.getElementById("home-why-subtitle").value = data.why_subtitle || "";
+    renderWhyFeatures(data.why_features || []);
+    document.getElementById("home-subjects-title").value = data.subjects_title || "";
+    document.getElementById("home-subjects-intro").value = data.subjects_intro || "";
+    document.getElementById("home-commit-title").value = data.commit_title || "";
+    document.getElementById("home-commit-image").value = data.commit_image || "";
+    renderCommitItems(data.commit_items || []);
+    document.getElementById("home-banner-title").value = data.banner_title || "";
+    document.getElementById("home-banner-subtitle").value = data.banner_subtitle || "";
+    document.getElementById("home-banner-cta").value = data.banner_cta || "";
+    document.getElementById("home-banner-phone").value = data.banner_phone || "";
+    document.getElementById("home-team-title").value = data.team_title || "";
+    document.getElementById("home-teacher-title").value = data.teacher_title || "";
+    document.getElementById("home-teacher-html").value = data.teacher_html || "";
+    document.getElementById("home-student-title").value = data.student_title || "";
+    document.getElementById("home-student-html").value = data.student_html || "";
+    document.getElementById("home-register-label").value = data.register_label || "";
+    document.getElementById("home-tutors-title").value = data.tutors_title || "";
+    renderTutors(data.tutors || []);
+    setStatus(status, "Đã tải nội dung trang chủ", "success");
+  } catch (error) {
+    setStatus(status, error.message, "error");
+  }
+}
+
+async function openHomepage() {
+  history.replaceState(null, "", "#trang-chu");
+  showView("homepage");
+  await loadHomepage();
+}
+
+async function saveHomepage() {
+  const status = document.getElementById("homepage-status");
+  setStatus(status, "Đang lưu...");
+  const whyFeatures = Array.from(document.querySelectorAll(".home-feature-card")).map((card) => ({
+    title: card.querySelector(".home-why-feature-title").value.trim(),
+    text: card.querySelector(".home-why-feature-text").value.trim(),
+  }));
+  const slides = Array.from(document.querySelectorAll(".home-slide-card")).map((card) => ({
+    id: card.dataset.slideId || "",
+    image: card.querySelector(".home-slide-image").value.trim(),
+  }));
+  const commitItems = Array.from(document.querySelectorAll(".home-commit-item")).map((input) =>
+    input.value.trim()
+  );
+  const tutors = Array.from(document.querySelectorAll(".home-tutor-card")).map((card) => ({
+    title: card.querySelector(".home-tutor-title").value.trim(),
+    text: card.querySelector(".home-tutor-text").value.trim(),
+    image: card.querySelector(".home-tutor-image").value.trim(),
+  }));
+
+  try {
+    await api("/api/homepage", {
+      method: "PUT",
+      body: JSON.stringify({
+        title: document.getElementById("home-title").value.trim(),
+        description: document.getElementById("home-description").value.trim(),
+        logo: document.getElementById("home-logo").value.trim(),
+        slides,
+        why_title: document.getElementById("home-why-title").value.trim(),
+        why_subtitle: document.getElementById("home-why-subtitle").value.trim(),
+        why_features: whyFeatures,
+        subjects_title: document.getElementById("home-subjects-title").value.trim(),
+        subjects_intro: document.getElementById("home-subjects-intro").value.trim(),
+        commit_title: document.getElementById("home-commit-title").value.trim(),
+        commit_image: document.getElementById("home-commit-image").value.trim(),
+        commit_items: commitItems,
+        banner_title: document.getElementById("home-banner-title").value.trim(),
+        banner_subtitle: document.getElementById("home-banner-subtitle").value.trim(),
+        banner_cta: document.getElementById("home-banner-cta").value.trim(),
+        banner_phone: document.getElementById("home-banner-phone").value.trim(),
+        team_title: document.getElementById("home-team-title").value.trim(),
+        teacher_title: document.getElementById("home-teacher-title").value.trim(),
+        teacher_html: document.getElementById("home-teacher-html").value,
+        student_title: document.getElementById("home-student-title").value.trim(),
+        student_html: document.getElementById("home-student-html").value,
+        register_label: document.getElementById("home-register-label").value.trim(),
+        tutors_title: document.getElementById("home-tutors-title").value.trim(),
+        tutors,
+      }),
+    });
+    setStatus(status, "Đã lưu trang chủ thành công", "success");
+  } catch (error) {
+    setStatus(status, error.message, "error");
+  }
+}
+
+async function openFromHash() {
+  const hash = (location.hash || "").replace(/^#/, "");
+  if (hash === "cam-ket-tien-bo-sau-10-buoi" || hash === "featured-cam-ket") {
+    await openFeaturedCamKet();
+  } else if (hash === "trang-chu" || hash === "homepage") {
+    await openHomepage();
   }
 }
 
@@ -355,11 +636,39 @@ document.getElementById("login-form").addEventListener("submit", login);
 document.getElementById("logout-btn").addEventListener("click", logout);
 document.getElementById("save-page").addEventListener("click", savePage);
 document.getElementById("save-settings").addEventListener("click", saveSettings);
+document.getElementById("save-homepage").addEventListener("click", saveHomepage);
 document.getElementById("back-to-list").addEventListener("click", () => {
   clearSelectedImage();
+  history.replaceState(null, "", " ");
   showView("pages");
 });
 document.getElementById("close-image-toolbar").addEventListener("click", clearSelectedImage);
+document.getElementById("open-featured-cam-ket").addEventListener("click", openFeaturedCamKet);
+document.getElementById("open-homepage").addEventListener("click", openHomepage);
+
+document.getElementById("home-logo").addEventListener("input", (event) => {
+  document.getElementById("home-logo-preview").src = normalizeAssetUrl(event.target.value.trim());
+});
+
+document.getElementById("upload-home-logo").addEventListener("change", async (event) => {
+  const file = event.target.files[0];
+  if (!file) return;
+  const status = document.getElementById("homepage-status");
+  try {
+    setStatus(status, "Đang tải logo...");
+    await uploadFile(file, (data) => {
+      document.getElementById("home-logo").value = data.path;
+      document.getElementById("home-logo-preview").src = data.url;
+      document.getElementById("home-logo-size").textContent =
+        `Khổ ảnh: ${data.size_label || formatSizeLabel(data.width, data.height)}`;
+      setStatus(status, "Đã tải logo", "success");
+    });
+  } catch (error) {
+    setStatus(status, error.message, "error");
+  } finally {
+    event.target.value = "";
+  }
+});
 
 document.getElementById("page-search").addEventListener("input", (event) => {
   loadPages(event.target.value.trim());
@@ -392,7 +701,16 @@ document.getElementById("replace-image-library").addEventListener("click", async
 document.querySelectorAll(".nav-btn").forEach((btn) => {
   btn.addEventListener("click", async () => {
     const view = btn.dataset.view;
-    if (view === "pages") showView("pages");
+    if (view === "pages") {
+      history.replaceState(null, "", " ");
+      showView("pages");
+    }
+    if (view === "homepage") {
+      await openHomepage();
+    }
+    if (view === "featured-cam-ket") {
+      await openFeaturedCamKet();
+    }
     if (view === "media") {
       mediaPickMode = null;
       showView("media");
@@ -454,6 +772,10 @@ document.getElementById("inline-image-input").addEventListener("change", async (
   } finally {
     event.target.value = "";
   }
+});
+
+window.addEventListener("hashchange", () => {
+  openFromHash().catch(() => {});
 });
 
 checkSession().catch(() => {});

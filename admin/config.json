@@ -1,5 +1,10 @@
 {
   "username": "admin",
   "password": "admin123",
-  "site_name": "Trung Tâm Gia Sư Trí Việt"
+  "site_name": "Trung Tâm Gia Sư Trí Việt",
+  "hotline1": "0962.005.996",
+  "hotline2": "0987.005.996",
+  "website": "http://giasusuphamtriviet.vn",
+  "address1": "Số 21 - Ngõ 73 - Nguyễn Trãi - Thanh Xuân - Hà Nội",
+  "address2": "Sn 261 đường Nguyễn Văn Linh - Xuân Hoà - Phúc Yên - Vĩnh Phúc"
 }

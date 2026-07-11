@@ -14,6 +14,8 @@ SITE_DIR = BASE_DIR / "giasubinhminh.com"
 ADMIN_DIR = Path(__file__).resolve().parent
 CONFIG_PATH = ADMIN_DIR / "config.json"
 UPLOAD_DIR = SITE_DIR / "wp-content" / "uploads" / "cms"
+SLIDE_RECOMMENDED = {"width": 1360, "height": 540}
+LOGO_RECOMMENDED = {"width": 186, "height": 100}
 
 BLOCKED_PREFIXES = {
     "wp-content",
@@ -339,14 +341,384 @@ def api_upload_media():
     file.save(save_path)
 
     rel = save_path.relative_to(SITE_DIR).as_posix()
+    size = get_image_size(rel)
     return jsonify(
         {
             "ok": True,
             "name": filename,
             "path": rel,
             "url": f"/giasubinhminh.com/{rel}",
+            "width": size["width"],
+            "height": size["height"],
+            "size_label": size["size_label"],
         }
     )
+
+
+def set_deep_text(tag, text: str) -> bool:
+    if not tag:
+        return False
+    current = tag
+    while True:
+        children = [c for c in current.children if getattr(c, "name", None)]
+        if len(children) == 1:
+            current = children[0]
+        else:
+            break
+    current.clear()
+    current.append(text)
+    return True
+
+
+def resolve_site_image_path(src: str) -> Path | None:
+    if not src:
+        return None
+    clean = src.strip().replace("\\", "/")
+    if clean.startswith("http://") or clean.startswith("https://"):
+        # local clone paths sometimes keep absolute originals; try last path segment under uploads
+        marker = "/wp-content/"
+        idx = clean.find(marker)
+        if idx >= 0:
+            clean = clean[idx + 1 :]
+        else:
+            return None
+    if clean.startswith("/giasubinhminh.com/"):
+        clean = clean[len("/giasubinhminh.com/") :]
+    if clean.startswith("/"):
+        clean = clean.lstrip("/")
+    path = SITE_DIR / clean.replace("/", os.sep)
+    return path if path.is_file() else None
+
+
+def get_image_size(src: str) -> dict:
+    path = resolve_site_image_path(src)
+    if not path:
+        return {"width": None, "height": None, "size_label": "Chưa có ảnh"}
+    try:
+        from PIL import Image
+
+        with Image.open(path) as img:
+            width, height = img.size
+        return {
+            "width": width,
+            "height": height,
+            "size_label": f"{width} × {height} px",
+        }
+    except Exception:
+        return {"width": None, "height": None, "size_label": "Không đọc được khổ ảnh"}
+
+
+SLIDER_BANNER_IDS = (
+    "banner-75206964",
+    "banner-443370161",
+    "banner-1738321284",
+)
+
+
+def extract_css_bg(html: str, selector_id: str) -> str:
+    pattern = rf"#{re.escape(selector_id)}\s*\.bg\.bg-loaded\s*\{{[^}}]*background-image:\s*url\((['\"]?)([^)'\"]+)\1\)"
+    match = re.search(pattern, html, re.IGNORECASE | re.DOTALL)
+    return match.group(2).strip() if match else ""
+
+
+def replace_css_bg(html: str, selector_id: str, image_url: str) -> str:
+    if not image_url:
+        return html
+    pattern = rf"(#{re.escape(selector_id)}\s*\.bg\.bg-loaded\s*\{{[^}}]*background-image:\s*url\()(['\"]?)([^)'\"]+)\2(\))"
+
+    def _repl(match):
+        return f"{match.group(1)}{image_url}{match.group(4)}"
+
+    updated, count = re.subn(pattern, _repl, html, count=1, flags=re.IGNORECASE | re.DOTALL)
+    return updated if count else html
+
+
+def parse_homepage(html: str) -> dict:
+    soup = BeautifulSoup(html, "html.parser")
+    title_tag = soup.find("title")
+    meta_desc = soup.find("meta", attrs={"name": "description"})
+
+    logo = ""
+    logo_img = soup.select_one("#logo .header_logo, #logo .header-logo")
+    if logo_img and logo_img.get("src"):
+        logo = logo_img["src"]
+    logo_size = get_image_size(logo)
+
+    slides = []
+    for banner_id in SLIDER_BANNER_IDS:
+        image = extract_css_bg(html, banner_id)
+        size = get_image_size(image)
+        slides.append(
+            {
+                "id": banner_id,
+                "image": image,
+                "width": size["width"],
+                "height": size["height"],
+                "size_label": size["size_label"],
+            }
+        )
+
+    why = soup.select_one("#section_1675344263")
+    why_title = ""
+    why_subtitle = ""
+    why_features = []
+    if why:
+        why_title = extract_text(why.select_one(".why-choose > .col h2"))
+        why_subtitle = extract_text(why.select_one(".why-choose > .col p.p1"))
+        for col in why.select(".why-choose > .col")[1:5]:
+            why_features.append(
+                {
+                    "title": extract_text(col.select_one("h3")),
+                    "text": extract_text(col.select_one("p.p1")),
+                }
+            )
+
+    subjects = soup.select_one("#section_12457")
+    subjects_title = extract_text(subjects.select_one("h2")) if subjects else ""
+    subjects_intro = extract_text(subjects.select_one("p.wp-title")) if subjects else ""
+
+    commit = soup.select_one("#section_1521040097")
+    commit_title = ""
+    commit_items = []
+    commit_image = ""
+    if commit:
+        commit_title = extract_text(commit.select_one("h2.wp-heading-header"))
+        for p in commit.select(".icon-box-text p"):
+            commit_items.append(extract_text(p))
+        img = commit.select_one("#image_1812503763 img")
+        if img and img.get("src"):
+            commit_image = img["src"]
+
+    banner = soup.select_one("#section_134981638")
+    banner_title = extract_text(banner.select_one("h2")) if banner else ""
+    banner_subtitle = extract_text(banner.select_one("h3")) if banner else ""
+    banner_cta = ""
+    banner_phone = ""
+    if banner:
+        strong = banner.select_one("p strong")
+        banner_cta = extract_text(strong)
+        phone = banner.select_one("a.button span")
+        banner_phone = extract_text(phone)
+
+    team = soup.select_one("#section_1404580446")
+    team_title = extract_text(team.select_one("h2")) if team else ""
+    teacher_title = ""
+    teacher_html = ""
+    student_title = ""
+    student_html = ""
+    register_label = ""
+    if team:
+        cols = team.select(".row > .col")
+        if len(cols) >= 1:
+            teacher_title = extract_text(cols[0].select_one("h3"))
+            ul = cols[0].select_one("ul")
+            teacher_html = ul.decode_contents() if ul else ""
+        if len(cols) >= 2:
+            student_title = extract_text(cols[1].select_one("h3"))
+            ul = cols[1].select_one("ul")
+            student_html = ul.decode_contents() if ul else ""
+        btn = team.select_one("a.button span")
+        register_label = extract_text(btn)
+
+    tutors_section = soup.select_one("#section_203571188")
+    tutors_title = ""
+    tutors = []
+    if tutors_section:
+        tutors_title = extract_text(tutors_section.select_one("h2"))
+        for box in tutors_section.select("#row-441710802 .box")[:4]:
+            img = box.select_one(".box-image img")
+            tutors.append(
+                {
+                    "title": extract_text(box.select_one("h4")),
+                    "text": extract_text(box.select_one(".box-text-inner p")),
+                    "image": img.get("src", "") if img else "",
+                }
+            )
+
+    while len(why_features) < 4:
+        why_features.append({"title": "", "text": ""})
+    while len(commit_items) < 7:
+        commit_items.append("")
+    while len(tutors) < 4:
+        tutors.append({"title": "", "text": "", "image": ""})
+
+    return {
+        "title": extract_text(title_tag),
+        "description": meta_desc.get("content", "") if meta_desc else "",
+        "public_url": "/giasubinhminh.com/index.html",
+        "logo": logo,
+        "logo_width": logo_size["width"],
+        "logo_height": logo_size["height"],
+        "logo_size_label": logo_size["size_label"],
+        "logo_recommended": LOGO_RECOMMENDED,
+        "slide_recommended": SLIDE_RECOMMENDED,
+        "slides": slides,
+        "why_title": why_title,
+        "why_subtitle": why_subtitle,
+        "why_features": why_features[:4],
+        "subjects_title": subjects_title,
+        "subjects_intro": subjects_intro,
+        "commit_title": commit_title,
+        "commit_items": commit_items[:7],
+        "commit_image": commit_image,
+        "banner_title": banner_title,
+        "banner_subtitle": banner_subtitle,
+        "banner_cta": banner_cta,
+        "banner_phone": banner_phone,
+        "team_title": team_title,
+        "teacher_title": teacher_title,
+        "teacher_html": teacher_html,
+        "student_title": student_title,
+        "student_html": student_html,
+        "register_label": register_label,
+        "tutors_title": tutors_title,
+        "tutors": tutors[:4],
+    }
+
+
+def apply_homepage_updates(html: str, data: dict) -> str:
+    soup = BeautifulSoup(html, "html.parser")
+
+    if data.get("title"):
+        title_tag = soup.find("title")
+        if title_tag:
+            title_tag.string = data["title"]
+        update_meta_content(soup, "og:title", data["title"], "property")
+
+    if "description" in data:
+        update_meta_content(soup, "description", data["description"] or "")
+        update_meta_content(soup, "og:description", data["description"] or "", "property")
+
+    if data.get("logo"):
+        for tag in soup.select("#logo .header_logo, #logo .header-logo, #logo .header-logo-dark"):
+            tag["src"] = data["logo"]
+
+    html = str(soup)
+    slides = data.get("slides") or []
+    for idx, banner_id in enumerate(SLIDER_BANNER_IDS):
+        if idx >= len(slides):
+            break
+        image = (slides[idx] or {}).get("image") or ""
+        if image:
+            html = replace_css_bg(html, banner_id, image)
+    soup = BeautifulSoup(html, "html.parser")
+
+    why = soup.select_one("#section_1675344263")
+    if why:
+        if data.get("why_title"):
+            set_deep_text(why.select_one(".why-choose > .col h2"), data["why_title"])
+        if "why_subtitle" in data:
+            set_deep_text(why.select_one(".why-choose > .col p.p1"), data.get("why_subtitle") or "")
+        features = data.get("why_features") or []
+        cols = why.select(".why-choose > .col")[1:5]
+        for idx, col in enumerate(cols):
+            if idx >= len(features):
+                break
+            item = features[idx] or {}
+            if item.get("title"):
+                set_deep_text(col.select_one("h3"), item["title"])
+            if "text" in item:
+                set_deep_text(col.select_one("p.p1"), item.get("text") or "")
+
+    subjects = soup.select_one("#section_12457")
+    if subjects:
+        if data.get("subjects_title"):
+            set_deep_text(subjects.select_one("h2"), data["subjects_title"])
+        if "subjects_intro" in data:
+            set_deep_text(subjects.select_one("p.wp-title"), data.get("subjects_intro") or "")
+
+    commit = soup.select_one("#section_1521040097")
+    if commit:
+        if data.get("commit_title"):
+            set_deep_text(commit.select_one("h2.wp-heading-header"), data["commit_title"])
+        items = data.get("commit_items") or []
+        for idx, p in enumerate(commit.select(".icon-box-text p")):
+            if idx >= len(items):
+                break
+            set_deep_text(p, items[idx] or "")
+        if data.get("commit_image"):
+            img = commit.select_one("#image_1812503763 img")
+            if img:
+                img["src"] = data["commit_image"]
+
+    banner = soup.select_one("#section_134981638")
+    if banner:
+        if data.get("banner_title"):
+            set_deep_text(banner.select_one("h2"), data["banner_title"])
+        if "banner_subtitle" in data:
+            set_deep_text(banner.select_one("h3"), data.get("banner_subtitle") or "")
+        if "banner_cta" in data:
+            strong = banner.select_one("p strong")
+            if strong:
+                strong.string = data.get("banner_cta") or ""
+        if data.get("banner_phone"):
+            phone = banner.select_one("a.button span")
+            if phone:
+                phone.string = data["banner_phone"]
+
+    team = soup.select_one("#section_1404580446")
+    if team:
+        if data.get("team_title"):
+            set_deep_text(team.select_one("h2"), data["team_title"])
+        cols = team.select(".row > .col")
+        if len(cols) >= 1:
+            if data.get("teacher_title"):
+                set_deep_text(cols[0].select_one("h3"), data["teacher_title"])
+            if "teacher_html" in data:
+                ul = cols[0].select_one("ul")
+                if ul is not None:
+                    ul.clear()
+                    ul.append(BeautifulSoup(data.get("teacher_html") or "", "html.parser"))
+        if len(cols) >= 2:
+            if data.get("student_title"):
+                set_deep_text(cols[1].select_one("h3"), data["student_title"])
+            if "student_html" in data:
+                ul = cols[1].select_one("ul")
+                if ul is not None:
+                    ul.clear()
+                    ul.append(BeautifulSoup(data.get("student_html") or "", "html.parser"))
+        if data.get("register_label"):
+            btn = team.select_one("a.button span")
+            if btn:
+                btn.string = data["register_label"]
+
+    tutors_section = soup.select_one("#section_203571188")
+    if tutors_section:
+        if data.get("tutors_title"):
+            set_deep_text(tutors_section.select_one("h2"), data["tutors_title"])
+        tutors = data.get("tutors") or []
+        boxes = tutors_section.select("#row-441710802 .box")[:4]
+        for idx, box in enumerate(boxes):
+            if idx >= len(tutors):
+                break
+            item = tutors[idx] or {}
+            if item.get("title"):
+                set_deep_text(box.select_one("h4"), item["title"])
+            if "text" in item:
+                set_deep_text(box.select_one(".box-text-inner p"), item.get("text") or "")
+            if item.get("image"):
+                img = box.select_one(".box-image img")
+                if img:
+                    img["src"] = item["image"]
+
+    return str(soup)
+
+
+@app.get("/api/homepage")
+@login_required
+def api_get_homepage():
+    html = read_page_file("index.html")
+    return jsonify(parse_homepage(html))
+
+
+@app.put("/api/homepage")
+@login_required
+def api_update_homepage():
+    data = request.get_json(silent=True) or {}
+    html = read_page_file("index.html")
+    updated = apply_homepage_updates(html, data)
+    write_page_file("index.html", updated)
+    return jsonify({"ok": True, "message": "Đã lưu trang chủ"})
 
 
 @app.get("/api/settings")

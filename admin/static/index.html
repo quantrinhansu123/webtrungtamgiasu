@@ -34,6 +34,21 @@
         <p>Quản trị nội dung website</p>
       </div>
       <button class="nav-btn active" data-view="pages">Bài viết / Trang</button>
+      <button
+        class="nav-btn nav-featured"
+        data-view="homepage"
+        title="Quản trị trang chủ"
+      >
+        Trang chủ
+      </button>
+      <button
+        class="nav-btn nav-featured"
+        data-view="featured-cam-ket"
+        data-page-id="cam-ket-tien-bo-sau-10-buoi/index.html"
+        title="Quản trị trang Cam kết tiến bộ sau 10 buổi"
+      >
+        Cam kết 10 buổi
+      </button>
       <button class="nav-btn" data-view="media">Thư viện ảnh</button>
       <button class="nav-btn" data-view="settings">Cài đặt chung</button>
       <div class="sidebar-footer">
@@ -50,10 +65,198 @@
             <input id="page-search" type="search" placeholder="Tìm theo tiêu đề..." />
           </div>
         </div>
+        <div class="panel featured-page-card" id="featured-home-card">
+          <div class="featured-page-info">
+            <span class="badge">Trang nổi bật</span>
+            <strong>Trang chủ</strong>
+            <small>/giasubinhminh.com/index.html</small>
+            <p>Quản lý các khối nội dung chính của trang chủ đang live trên Vercel.</p>
+          </div>
+          <div class="featured-page-actions">
+            <button id="open-homepage" class="btn btn-primary" type="button">Quản trị trang chủ</button>
+            <a class="btn btn-secondary" href="/giasubinhminh.com/index.html" target="_blank" rel="noopener">Xem trang</a>
+          </div>
+        </div>
+        <div class="panel featured-page-card" id="featured-cam-ket-card">
+          <div class="featured-page-info">
+            <span class="badge">Trang nổi bật</span>
+            <strong>Cam kết tiến bộ sau 10 buổi</strong>
+            <small>/cam-ket-tien-bo-sau-10-buoi/</small>
+            <p>Trang đang live trên Vercel — chỉnh sửa tiêu đề, nội dung và ảnh tại đây.</p>
+          </div>
+          <div class="featured-page-actions">
+            <button
+              id="open-featured-cam-ket"
+              class="btn btn-primary"
+              type="button"
+              data-page-id="cam-ket-tien-bo-sau-10-buoi/index.html"
+            >
+              Quản trị trang này
+            </button>
+            <a
+              class="btn btn-secondary"
+              href="/giasubinhminh.com/cam-ket-tien-bo-sau-10-buoi/index.html"
+              target="_blank"
+              rel="noopener"
+            >Xem trang</a>
+          </div>
+        </div>
         <div class="panel">
           <div id="page-list" class="page-list"></div>
           <div id="pages-status" class="status"></div>
         </div>
+      </section>
+
+      <section id="view-homepage" class="hidden">
+        <div class="topbar">
+          <h1>Quản trị trang chủ</h1>
+          <div class="topbar-actions">
+            <a class="btn btn-secondary" href="/giasubinhminh.com/index.html" target="_blank" rel="noopener">Xem trước</a>
+            <button id="save-homepage" class="btn btn-primary" type="button">Lưu trang chủ</button>
+          </div>
+        </div>
+
+        <div class="panel homepage-block">
+          <h3>Logo &amp; Slider trang chủ</h3>
+          <p class="field-hint">
+            Khổ slide chuẩn: <strong>1360 × 540 px</strong> (tỉ lệ ~2.52:1). Nên upload đúng khổ để không bị méo.
+          </p>
+          <div class="field">
+            <label for="home-logo">Logo website</label>
+            <div class="home-media-row">
+              <input id="home-logo" type="text" placeholder="Đường dẫn ảnh logo..." />
+              <label class="btn btn-secondary" for="upload-home-logo">Tải ảnh</label>
+              <input id="upload-home-logo" type="file" accept="image/*" class="hidden" />
+            </div>
+            <div class="home-size-meta">
+              <span class="size-badge" id="home-logo-size">Khổ ảnh: —</span>
+              <span class="size-hint">Gợi ý logo: 186 × 100 px</span>
+            </div>
+            <div class="home-preview-frame home-preview-frame-logo">
+              <img id="home-logo-preview" class="home-preview-img" alt="Logo preview" />
+            </div>
+          </div>
+          <div id="home-slides" class="home-slide-grid"></div>
+        </div>
+
+        <div class="panel homepage-block">
+          <h3>SEO</h3>
+          <div class="grid-2">
+            <div class="field">
+              <label for="home-title">Tiêu đề trang</label>
+              <input id="home-title" type="text" />
+            </div>
+            <div class="field">
+              <label for="home-description">Mô tả SEO</label>
+              <textarea id="home-description"></textarea>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel homepage-block">
+          <h3>Tại sao chọn Trung Tâm</h3>
+          <div class="field">
+            <label for="home-why-title">Tiêu đề</label>
+            <input id="home-why-title" type="text" />
+          </div>
+          <div class="field">
+            <label for="home-why-subtitle">Mô tả ngắn</label>
+            <textarea id="home-why-subtitle"></textarea>
+          </div>
+          <div id="home-why-features" class="home-feature-grid"></div>
+        </div>
+
+        <div class="panel homepage-block">
+          <h3>Môn học gia sư tại nhà</h3>
+          <div class="field">
+            <label for="home-subjects-title">Tiêu đề</label>
+            <input id="home-subjects-title" type="text" />
+          </div>
+          <div class="field">
+            <label for="home-subjects-intro">Đoạn giới thiệu</label>
+            <textarea id="home-subjects-intro"></textarea>
+          </div>
+        </div>
+
+        <div class="panel homepage-block">
+          <h3>Cam kết từ trung tâm</h3>
+          <div class="field">
+            <label for="home-commit-title">Tiêu đề</label>
+            <input id="home-commit-title" type="text" />
+          </div>
+          <div class="field">
+            <label for="home-commit-image">Ảnh minh họa (URL)</label>
+            <input id="home-commit-image" type="text" />
+          </div>
+          <div id="home-commit-items" class="home-commit-list"></div>
+        </div>
+
+        <div class="panel homepage-block">
+          <h3>Banner thống kê</h3>
+          <div class="grid-2">
+            <div class="field">
+              <label for="home-banner-title">Tiêu đề</label>
+              <input id="home-banner-title" type="text" />
+            </div>
+            <div class="field">
+              <label for="home-banner-subtitle">Phụ đề</label>
+              <input id="home-banner-subtitle" type="text" />
+            </div>
+            <div class="field">
+              <label for="home-banner-cta">Nhãn CTA</label>
+              <input id="home-banner-cta" type="text" />
+            </div>
+            <div class="field">
+              <label for="home-banner-phone">Số điện thoại</label>
+              <input id="home-banner-phone" type="text" />
+            </div>
+          </div>
+        </div>
+
+        <div class="panel homepage-block">
+          <h3>Đội ngũ gia sư tại nhà</h3>
+          <div class="field">
+            <label for="home-team-title">Tiêu đề</label>
+            <input id="home-team-title" type="text" />
+          </div>
+          <div class="grid-2">
+            <div>
+              <div class="field">
+                <label for="home-teacher-title">Cột Giáo viên — tiêu đề</label>
+                <input id="home-teacher-title" type="text" />
+              </div>
+              <div class="field">
+                <label for="home-teacher-html">Nội dung danh sách (HTML li)</label>
+                <textarea id="home-teacher-html" rows="8"></textarea>
+              </div>
+            </div>
+            <div>
+              <div class="field">
+                <label for="home-student-title">Cột Sinh viên — tiêu đề</label>
+                <input id="home-student-title" type="text" />
+              </div>
+              <div class="field">
+                <label for="home-student-html">Nội dung danh sách (HTML li)</label>
+                <textarea id="home-student-html" rows="8"></textarea>
+              </div>
+            </div>
+          </div>
+          <div class="field">
+            <label for="home-register-label">Nút đăng ký</label>
+            <input id="home-register-label" type="text" />
+          </div>
+        </div>
+
+        <div class="panel homepage-block">
+          <h3>Gia sư nổi bật</h3>
+          <div class="field">
+            <label for="home-tutors-title">Tiêu đề khối</label>
+            <input id="home-tutors-title" type="text" />
+          </div>
+          <div id="home-tutors" class="home-tutor-grid"></div>
+        </div>
+
+        <div id="homepage-status" class="status"></div>
       </section>
 
       <section id="view-editor" class="hidden">
