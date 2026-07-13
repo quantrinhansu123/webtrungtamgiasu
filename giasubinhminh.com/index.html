@@ -695,8 +695,10 @@ header ul.nav.header-nav.header-bottom-nav.nav-left.nav-size-medium.nav-spacing-
 .header-top-heading h6 {
     color: #ed3237;
     font-weight: 700;
-    font-size: 19px;
+    font-size: clamp(15px, 1.35vw, 19px);
+    line-height: 1.25;
     opacity: 1;
+    white-space: nowrap;
 }
 li.html.header-button-2 a:after {
     content: none;
@@ -779,8 +781,9 @@ li.html.header-button-2 a:after {
 		    font-size: 18px;
 	}
 	.header-top-heading h6 {
-		font-size: 14px;
+		font-size: 13px;
 		line-height: 20px;
+		white-space: nowrap;
 	}
 	ul.mobile-nav.nav.nav-left a {
 		padding-right: 0 !important;
