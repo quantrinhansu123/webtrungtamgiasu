@@ -895,8 +895,8 @@ def api_get_settings():
     config = load_config()
     homepage = SITE_DIR / "index.html"
     logo = "wp-content/uploads/2018/07/logo-1.png"
-    hotline1 = "096.31.38.511"
-    hotline2 = "0987.115.131"
+    hotline1 = "0962.005.996"
+    hotline2 = "0987.005.996"
     if homepage.exists():
         soup = BeautifulSoup(read_page_file("index.html"), "html.parser")
         logo_img = soup.select_one(".header_logo, .header-logo")
