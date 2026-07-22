@@ -3,12 +3,15 @@ let allPages = [];
 let quill = null;
 let mediaPickMode = null;
 let inlineImageTarget = null;
+let currentClassId = null;
+let allClasses = [];
 
 const FEATURED_CAM_KET_ID = "cam-ket-tien-bo-sau-10-buoi/index.html";
 
 const views = {
   pages: document.getElementById("view-pages"),
   homepage: document.getElementById("view-homepage"),
+  classes: document.getElementById("view-classes"),
   editor: document.getElementById("view-editor"),
   media: document.getElementById("view-media"),
   settings: document.getElementById("view-settings"),
@@ -476,12 +479,131 @@ async function saveHomepage() {
   }
 }
 
+function localDateValue(date = new Date()) {
+  const offset = date.getTimezoneOffset();
+  return new Date(date.getTime() - offset * 60000).toISOString().slice(0, 10);
+}
+
+function resetClassForm() {
+  currentClassId = null;
+  document.getElementById("class-id").value = "";
+  document.getElementById("class-title").value = `LỚP MỚI NGÀY ${new Intl.DateTimeFormat("vi-VN").format(new Date())}`;
+  document.getElementById("class-date").value = localDateValue();
+  document.getElementById("class-content").value = "";
+  document.getElementById("class-form-title").textContent = "Tạo bài lớp mới";
+  document.getElementById("save-class").textContent = "Đăng lớp mới";
+  document.getElementById("cancel-class-edit").classList.add("hidden");
+}
+
+function renderClasses() {
+  const list = document.getElementById("class-admin-list");
+  if (!allClasses.length) {
+    list.innerHTML = "<p>Chưa có bài lớp mới.</p>";
+    return;
+  }
+  list.innerHTML = allClasses.map((item) => {
+    const excerpt = String(item.content || "").replaceAll("\n", " ").slice(0, 150);
+    return `
+      <article class="class-admin-item" data-id="${escapeAttr(item.id)}">
+        <div>
+          <small>${escapeHtml(item.date || "")}</small>
+          <strong>${escapeHtml(item.title || "")}</strong>
+          <p>${escapeHtml(excerpt)}${String(item.content || "").length > 150 ? "..." : ""}</p>
+        </div>
+        <div class="class-admin-actions">
+          <button class="btn btn-secondary edit-class" type="button">Chỉnh sửa</button>
+          <button class="btn btn-danger delete-class" type="button">Xóa</button>
+        </div>
+      </article>`;
+  }).join("");
+
+  list.querySelectorAll(".edit-class").forEach((button) => {
+    button.addEventListener("click", () => {
+      const id = button.closest(".class-admin-item").dataset.id;
+      const item = allClasses.find((entry) => entry.id === id);
+      if (!item) return;
+      currentClassId = item.id;
+      document.getElementById("class-id").value = item.id;
+      document.getElementById("class-title").value = item.title || "";
+      document.getElementById("class-date").value = item.date || localDateValue();
+      document.getElementById("class-content").value = item.content || "";
+      document.getElementById("class-form-title").textContent = "Chỉnh sửa bài lớp mới";
+      document.getElementById("save-class").textContent = "Lưu thay đổi";
+      document.getElementById("cancel-class-edit").classList.remove("hidden");
+      document.getElementById("class-title").focus();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    });
+  });
+
+  list.querySelectorAll(".delete-class").forEach((button) => {
+    button.addEventListener("click", async () => {
+      const id = button.closest(".class-admin-item").dataset.id;
+      const item = allClasses.find((entry) => entry.id === id);
+      if (!item || !window.confirm(`Xóa bài “${item.title}”?`)) return;
+      const status = document.getElementById("classes-status");
+      try {
+        setStatus(status, "Đang xóa...");
+        await api(`/api/classes/${id}`, { method: "DELETE" });
+        if (currentClassId === id) resetClassForm();
+        await loadClasses();
+        setStatus(status, "Đã xóa bài lớp mới", "success");
+      } catch (error) {
+        setStatus(status, error.message, "error");
+      }
+    });
+  });
+}
+
+async function loadClasses() {
+  const status = document.getElementById("classes-status");
+  setStatus(status, "Đang tải danh sách...");
+  try {
+    const data = await api("/api/classes");
+    allClasses = data.classes || [];
+    renderClasses();
+    setStatus(status, `Đã tải ${data.total || 0} bài lớp mới`, "success");
+  } catch (error) {
+    setStatus(status, error.message, "error");
+  }
+}
+
+async function openClasses() {
+  history.replaceState(null, "", "#dang-lop-moi");
+  showView("classes");
+  if (!document.getElementById("class-date").value) resetClassForm();
+  await loadClasses();
+}
+
+async function saveClass() {
+  const status = document.getElementById("classes-status");
+  const isEditing = Boolean(currentClassId);
+  const payload = {
+    title: document.getElementById("class-title").value.trim(),
+    date: document.getElementById("class-date").value,
+    content: document.getElementById("class-content").value.trim(),
+  };
+  try {
+    setStatus(status, isEditing ? "Đang lưu thay đổi..." : "Đang đăng lớp mới...");
+    await api(isEditing ? `/api/classes/${currentClassId}` : "/api/classes", {
+      method: isEditing ? "PUT" : "POST",
+      body: JSON.stringify(payload),
+    });
+    resetClassForm();
+    await loadClasses();
+    setStatus(status, isEditing ? "Đã cập nhật lớp mới" : "Đã đăng lớp mới", "success");
+  } catch (error) {
+    setStatus(status, error.message, "error");
+  }
+}
+
 async function openFromHash() {
   const hash = (location.hash || "").replace(/^#/, "");
   if (hash === "cam-ket-tien-bo-sau-10-buoi" || hash === "featured-cam-ket") {
     await openFeaturedCamKet();
   } else if (hash === "trang-chu" || hash === "homepage") {
     await openHomepage();
+  } else if (hash === "dang-lop-moi" || hash === "lop-moi") {
+    await openClasses();
   }
 }
 
@@ -637,6 +759,9 @@ document.getElementById("logout-btn").addEventListener("click", logout);
 document.getElementById("save-page").addEventListener("click", savePage);
 document.getElementById("save-settings").addEventListener("click", saveSettings);
 document.getElementById("save-homepage").addEventListener("click", saveHomepage);
+document.getElementById("save-class").addEventListener("click", saveClass);
+document.getElementById("new-class").addEventListener("click", resetClassForm);
+document.getElementById("cancel-class-edit").addEventListener("click", resetClassForm);
 document.getElementById("back-to-list").addEventListener("click", () => {
   clearSelectedImage();
   history.replaceState(null, "", " ");
@@ -707,6 +832,9 @@ document.querySelectorAll(".nav-btn").forEach((btn) => {
     }
     if (view === "homepage") {
       await openHomepage();
+    }
+    if (view === "classes") {
+      await openClasses();
     }
     if (view === "featured-cam-ket") {
       await openFeaturedCamKet();

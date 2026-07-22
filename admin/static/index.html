@@ -43,6 +43,13 @@
       </button>
       <button
         class="nav-btn nav-featured"
+        data-view="classes"
+        title="Đăng và quản lý danh sách lớp mới"
+      >
+        Đăng lớp mới
+      </button>
+      <button
+        class="nav-btn nav-featured"
         data-view="featured-cam-ket"
         data-page-id="cam-ket-tien-bo-sau-10-buoi/index.html"
         title="Quản trị trang Cam kết tiến bộ sau 10 buổi"
@@ -257,6 +264,51 @@
         </div>
 
         <div id="homepage-status" class="status"></div>
+      </section>
+
+      <section id="view-classes" class="hidden">
+        <div class="topbar">
+          <h1>Đăng lớp mới</h1>
+          <div class="topbar-actions">
+            <a class="btn btn-secondary" href="/giasubinhminh.com/lop-moi/index.html" target="_blank" rel="noopener">Xem trang lớp mới</a>
+          </div>
+        </div>
+
+        <div class="class-admin-layout">
+          <div class="panel">
+            <h3 id="class-form-title">Tạo bài lớp mới</h3>
+            <input id="class-id" type="hidden" />
+            <div class="field">
+              <label for="class-title">Tiêu đề</label>
+              <input id="class-title" type="text" placeholder="Ví dụ: LỚP MỚI NGÀY 22/7/2026" maxlength="200" />
+            </div>
+            <div class="field">
+              <label for="class-date">Ngày đăng</label>
+              <input id="class-date" type="date" />
+            </div>
+            <div class="field">
+              <label for="class-content">Danh sách lớp</label>
+              <p class="field-hint">Mỗi lớp nên viết thành một đoạn. Có thể dán nguyên nội dung từ Zalo hoặc Facebook.</p>
+              <textarea id="class-content" class="class-content-input" placeholder="➡ Mã lớp, môn, khối, lịch học, học phí, khu vực và yêu cầu gia sư..."></textarea>
+            </div>
+            <div class="class-form-actions">
+              <button id="save-class" class="btn btn-primary" type="button">Đăng lớp mới</button>
+              <button id="cancel-class-edit" class="btn btn-secondary hidden" type="button">Hủy chỉnh sửa</button>
+            </div>
+            <div id="classes-status" class="status"></div>
+          </div>
+
+          <div class="panel">
+            <div class="class-list-head">
+              <div>
+                <h3>Bài lớp mới đã đăng</h3>
+                <p>Chọn chỉnh sửa hoặc xóa bài không còn sử dụng.</p>
+              </div>
+              <button id="new-class" class="btn btn-secondary" type="button">Tạo bài mới</button>
+            </div>
+            <div id="class-admin-list" class="class-admin-list"></div>
+          </div>
+        </div>
       </section>
 
       <section id="view-editor" class="hidden">

@@ -4,6 +4,7 @@ import re
 import uuid
 from datetime import datetime
 from functools import wraps
+from html import escape
 from pathlib import Path
 
 from bs4 import BeautifulSoup
@@ -13,6 +14,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SITE_DIR = BASE_DIR / "giasubinhminh.com"
 ADMIN_DIR = Path(__file__).resolve().parent
 CONFIG_PATH = ADMIN_DIR / "config.json"
+CLASSES_PATH = ADMIN_DIR / "classes.json"
+CLASS_TEMPLATE_PATH = ADMIN_DIR / "templates" / "lop-moi.html"
+CLASS_PUBLIC_DIR = SITE_DIR / "lop-moi"
+CLASS_PUBLIC_PATH = CLASS_PUBLIC_DIR / "index.html"
 UPLOAD_DIR = SITE_DIR / "wp-content" / "uploads" / "cms"
 SLIDE_RECOMMENDED = {"width": 1360, "height": 540}
 LOGO_RECOMMENDED = {"width": 186, "height": 100}
@@ -40,6 +45,93 @@ def load_config():
 def save_config(config):
     with open(CONFIG_PATH, "w", encoding="utf-8") as f:
         json.dump(config, f, ensure_ascii=False, indent=2)
+
+
+def load_classes():
+    if not CLASSES_PATH.exists():
+        return []
+    with open(CLASSES_PATH, encoding="utf-8") as f:
+        data = json.load(f)
+    classes = data if isinstance(data, list) else data.get("classes", [])
+    return sorted(
+        [item for item in classes if isinstance(item, dict)],
+        key=lambda item: (item.get("date", ""), item.get("created_at", "")),
+        reverse=True,
+    )
+
+
+def save_classes(classes):
+    CLASSES_PATH.parent.mkdir(parents=True, exist_ok=True)
+    temp_path = CLASSES_PATH.with_suffix(".json.tmp")
+    with open(temp_path, "w", encoding="utf-8", newline="\n") as f:
+        json.dump(classes, f, ensure_ascii=False, indent=2)
+        f.write("\n")
+    temp_path.replace(CLASSES_PATH)
+
+
+def format_class_date(value: str) -> str:
+    try:
+        return datetime.strptime(value, "%Y-%m-%d").strftime("%d/%m/%Y")
+    except (TypeError, ValueError):
+        return value or ""
+
+
+def normalize_class_payload(data: dict) -> dict:
+    title = str(data.get("title") or "").strip()
+    class_date = str(data.get("date") or "").strip()
+    content = str(data.get("content") or "").strip()
+    if len(title) < 3:
+        raise ValueError("Tiêu đề lớp mới phải có ít nhất 3 ký tự")
+    if len(title) > 200:
+        raise ValueError("Tiêu đề lớp mới không được quá 200 ký tự")
+    try:
+        datetime.strptime(class_date, "%Y-%m-%d")
+    except ValueError as exc:
+        raise ValueError("Ngày đăng không hợp lệ") from exc
+    if len(content) < 3:
+        raise ValueError("Nội dung lớp mới không được để trống")
+    if len(content) > 50000:
+        raise ValueError("Nội dung lớp mới không được quá 50.000 ký tự")
+    return {"title": title, "date": class_date, "content": content}
+
+
+def render_classes_page(classes=None):
+    classes = load_classes() if classes is None else classes
+    template = CLASS_TEMPLATE_PATH.read_text(encoding="utf-8")
+    cards = []
+    for index, item in enumerate(classes):
+        content = str(item.get("content") or "").strip()
+        excerpt = " ".join(content.split())
+        if len(excerpt) > 190:
+            excerpt = f"{excerpt[:187].rstrip()}..."
+        content_html = escape(content).replace("\n", "<br/>\n")
+        cards.append(
+            f'''<article class="class-card" id="lop-{escape(str(item.get("id") or ""))}">
+  <div class="class-card-head">
+    <div>
+      <p class="class-date">{escape(format_class_date(item.get("date", "")))}</p>
+      <h2>{escape(str(item.get("title") or ""))}</h2>
+    </div>
+    <span class="class-status">Đang tuyển gia sư</span>
+  </div>
+  <p class="class-excerpt">{escape(excerpt)}</p>
+  <details{' open' if index == 0 else ''}>
+    <summary>Xem đầy đủ danh sách lớp</summary>
+    <div class="class-content">{content_html}</div>
+  </details>
+</article>'''
+        )
+    if not cards:
+        cards.append(
+            '<div class="empty-state"><h2>Chưa có lớp mới</h2>'
+            '<p>Danh sách lớp cần gia sư sẽ được cập nhật tại đây.</p></div>'
+        )
+    latest = format_class_date(classes[0].get("date", "")) if classes else "—"
+    rendered = template.replace("{{CLASS_ITEMS}}", "\n".join(cards))
+    rendered = rendered.replace("{{UPDATED_AT}}", escape(latest))
+    CLASS_PUBLIC_DIR.mkdir(parents=True, exist_ok=True)
+    CLASS_PUBLIC_PATH.write_text(rendered, encoding="utf-8", newline="\n")
+    return CLASS_PUBLIC_PATH
 
 def login_required(fn):
     @wraps(fn)
@@ -353,6 +445,82 @@ def api_upload_media():
             "size_label": size["size_label"],
         }
     )
+
+
+@app.get("/api/classes")
+@login_required
+def api_classes():
+    classes = load_classes()
+    if not CLASS_PUBLIC_PATH.exists():
+        render_classes_page(classes)
+    return jsonify(
+        {
+            "classes": classes,
+            "total": len(classes),
+            "public_url": "/giasubinhminh.com/lop-moi/index.html",
+        }
+    )
+
+
+@app.post("/api/classes")
+@login_required
+def api_create_class():
+    data = request.get_json(silent=True) or {}
+    try:
+        clean = normalize_class_payload(data)
+    except ValueError as error:
+        return jsonify({"error": str(error)}), 400
+    now = datetime.now().isoformat(timespec="seconds")
+    item = {
+        "id": uuid.uuid4().hex[:10],
+        **clean,
+        "created_at": now,
+        "updated_at": now,
+    }
+    classes = load_classes()
+    classes.append(item)
+    classes.sort(
+        key=lambda entry: (entry.get("date", ""), entry.get("created_at", "")),
+        reverse=True,
+    )
+    save_classes(classes)
+    render_classes_page(classes)
+    return jsonify({"ok": True, "message": "Đã đăng lớp mới", "item": item}), 201
+
+
+@app.put("/api/classes/<class_id>")
+@login_required
+def api_update_class(class_id):
+    data = request.get_json(silent=True) or {}
+    try:
+        clean = normalize_class_payload(data)
+    except ValueError as error:
+        return jsonify({"error": str(error)}), 400
+    classes = load_classes()
+    item = next((entry for entry in classes if entry.get("id") == class_id), None)
+    if item is None:
+        return jsonify({"error": "Không tìm thấy bài lớp mới"}), 404
+    item.update(clean)
+    item["updated_at"] = datetime.now().isoformat(timespec="seconds")
+    classes.sort(
+        key=lambda entry: (entry.get("date", ""), entry.get("created_at", "")),
+        reverse=True,
+    )
+    save_classes(classes)
+    render_classes_page(classes)
+    return jsonify({"ok": True, "message": "Đã cập nhật lớp mới", "item": item})
+
+
+@app.delete("/api/classes/<class_id>")
+@login_required
+def api_delete_class(class_id):
+    classes = load_classes()
+    kept = [entry for entry in classes if entry.get("id") != class_id]
+    if len(kept) == len(classes):
+        return jsonify({"error": "Không tìm thấy bài lớp mới"}), 404
+    save_classes(kept)
+    render_classes_page(kept)
+    return jsonify({"ok": True, "message": "Đã xóa bài lớp mới"})
 
 
 def set_deep_text(tag, text: str) -> bool:
