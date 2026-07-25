@@ -2,6 +2,13 @@ import json
 import os
 import re
 import uuid
+import base64
+import hashlib
+import hmac
+import secrets
+import urllib.error
+import urllib.parse
+import urllib.request
 from datetime import datetime
 from functools import wraps
 from html import escape
@@ -21,6 +28,134 @@ CLASS_PUBLIC_PATH = CLASS_PUBLIC_DIR / "index.html"
 UPLOAD_DIR = SITE_DIR / "wp-content" / "uploads" / "cms"
 SLIDE_RECOMMENDED = {"width": 1360, "height": 540}
 LOGO_RECOMMENDED = {"width": 186, "height": 100}
+FEEDBACK_PAGE_ID = (
+    "gia-su-day-online-tai-nha-tu-lop-1-12-on-thi-tat-ca-cac-mon/index.html"
+)
+PASSWORD_ITERATIONS = 390000
+
+
+def running_on_vercel() -> bool:
+    return bool(os.environ.get("VERCEL"))
+
+
+def github_enabled() -> bool:
+    return bool(os.environ.get("GITHUB_TOKEN")) and bool(
+        os.environ.get("GITHUB_REPO", "quantrinhansu123/webtrungtamgiasu")
+    )
+
+
+def _github_request(method: str, url: str, payload: dict | None = None) -> dict:
+    token = os.environ.get("GITHUB_TOKEN", "")
+    data = None if payload is None else json.dumps(payload).encode("utf-8")
+    req = urllib.request.Request(
+        url,
+        data=data,
+        method=method,
+        headers={
+            "Accept": "application/vnd.github+json",
+            "Authorization": f"Bearer {token}",
+            "Content-Type": "application/json",
+            "User-Agent": "tri-viet-cms",
+            "X-GitHub-Api-Version": "2022-11-28",
+        },
+    )
+    try:
+        with urllib.request.urlopen(req, timeout=60) as response:
+            body = response.read().decode("utf-8")
+            return json.loads(body) if body else {}
+    except urllib.error.HTTPError as exc:
+        detail = exc.read().decode("utf-8", errors="ignore")
+        raise RuntimeError(f"GitHub API {exc.code}: {detail}") from exc
+    except urllib.error.URLError as exc:
+        raise RuntimeError(f"Không kết nối được GitHub: {exc.reason}") from exc
+
+
+def github_file_api(repo_path: str) -> str:
+    repo = os.environ.get("GITHUB_REPO", "quantrinhansu123/webtrungtamgiasu")
+    encoded_path = urllib.parse.quote(repo_path.lstrip("/"), safe="/")
+    return f"https://api.github.com/repos/{repo}/contents/{encoded_path}"
+
+
+def github_read_file(repo_path: str) -> bytes:
+    branch = os.environ.get("GITHUB_BRANCH", "main")
+    payload = _github_request(
+        "GET",
+        f"{github_file_api(repo_path)}?ref={urllib.parse.quote(branch, safe='')}",
+    )
+    encoded = (payload.get("content") or "").replace("\n", "")
+    if not encoded:
+        raise RuntimeError(f"GitHub không trả về nội dung của {repo_path}")
+    return base64.b64decode(encoded)
+
+
+def github_upsert_file(
+    repo_path: str,
+    content: str | bytes,
+    message: str,
+    binary: bool = False,
+):
+    """Create or update a repository file so Vercel redeploys the new content."""
+    branch = os.environ.get("GITHUB_BRANCH", "main")
+    api_url = github_file_api(repo_path)
+    sha = None
+    try:
+        existing = _github_request(
+            "GET",
+            f"{api_url}?ref={urllib.parse.quote(branch, safe='')}",
+        )
+        sha = existing.get("sha")
+    except RuntimeError as exc:
+        if "GitHub API 404" not in str(exc):
+            raise
+
+    if isinstance(content, str):
+        raw = content.encode("utf-8")
+    else:
+        raw = content
+    if not binary:
+        raw = raw.decode("utf-8").encode("utf-8")
+
+    payload = {
+        "message": message,
+        "content": base64.b64encode(raw).decode("ascii"),
+        "branch": branch,
+    }
+    if sha:
+        payload["sha"] = sha
+    return _github_request("PUT", api_url, payload)
+
+
+def hash_password(password: str, salt: str | None = None) -> str:
+    salt = salt or secrets.token_hex(16)
+    digest = hashlib.pbkdf2_hmac(
+        "sha256",
+        password.encode("utf-8"),
+        salt.encode("ascii"),
+        PASSWORD_ITERATIONS,
+    )
+    return (
+        f"pbkdf2_sha256${PASSWORD_ITERATIONS}${salt}$"
+        f"{base64.b64encode(digest).decode('ascii')}"
+    )
+
+
+def verify_password(password: str, encoded: str) -> bool:
+    try:
+        algorithm, iterations, salt, digest = encoded.split("$", 3)
+        if algorithm != "pbkdf2_sha256":
+            return False
+        computed = hashlib.pbkdf2_hmac(
+            "sha256",
+            password.encode("utf-8"),
+            salt.encode("ascii"),
+            int(iterations),
+        )
+        return hmac.compare_digest(
+            base64.b64encode(computed).decode("ascii"),
+            digest,
+        )
+    except (TypeError, ValueError):
+        return False
 
 BLOCKED_PREFIXES = {
     "wp-content",
@@ -37,21 +172,42 @@ app = Flask(__name__, static_folder=str(ADMIN_DIR / "static"), static_url_path="
 app.secret_key = os.environ.get("CMS_SECRET", "tri-viet-cms-local-secret")
 
 
-def load_config():
+def load_config(fresh: bool = False):
+    if fresh and running_on_vercel() and github_enabled():
+        raw = github_read_file("admin/config.json")
+        return json.loads(raw.decode("utf-8"))
     with open(CONFIG_PATH, encoding="utf-8") as f:
         return json.load(f)
 
 
 def save_config(config):
-    with open(CONFIG_PATH, "w", encoding="utf-8") as f:
-        json.dump(config, f, ensure_ascii=False, indent=2)
+    payload = json.dumps(config, ensure_ascii=False, indent=2) + "\n"
+    if running_on_vercel():
+        if not github_enabled():
+            raise RuntimeError(
+                "Chưa cấu hình GITHUB_TOKEN trên Vercel nên chưa thể lưu."
+            )
+        github_upsert_file(
+            "admin/config.json",
+            payload,
+            "cms: update admin settings",
+        )
+        return
+    with open(CONFIG_PATH, "w", encoding="utf-8", newline="\n") as f:
+        f.write(payload)
 
 
-def load_classes():
-    if not CLASSES_PATH.exists():
-        return []
-    with open(CLASSES_PATH, encoding="utf-8") as f:
-        data = json.load(f)
+def load_classes(fresh: bool | None = None):
+    if fresh is None:
+        fresh = running_on_vercel()
+    if fresh and running_on_vercel() and github_enabled():
+        raw = github_read_file("admin/classes.json")
+        data = json.loads(raw.decode("utf-8"))
+    else:
+        if not CLASSES_PATH.exists():
+            return []
+        with open(CLASSES_PATH, encoding="utf-8") as f:
+            data = json.load(f)
     classes = data if isinstance(data, list) else data.get("classes", [])
     return sorted(
         [item for item in classes if isinstance(item, dict)],
@@ -61,11 +217,22 @@ def load_classes():
 
 
 def save_classes(classes):
+    payload = json.dumps(classes, ensure_ascii=False, indent=2) + "\n"
+    if running_on_vercel():
+        if not github_enabled():
+            raise RuntimeError(
+                "Chưa cấu hình GITHUB_TOKEN trên Vercel nên chưa thể lưu lớp mới."
+            )
+        github_upsert_file(
+            "admin/classes.json",
+            payload,
+            "cms: update class list",
+        )
+        return
     CLASSES_PATH.parent.mkdir(parents=True, exist_ok=True)
     temp_path = CLASSES_PATH.with_suffix(".json.tmp")
     with open(temp_path, "w", encoding="utf-8", newline="\n") as f:
-        json.dump(classes, f, ensure_ascii=False, indent=2)
-        f.write("\n")
+        f.write(payload)
     temp_path.replace(CLASSES_PATH)
 
 
@@ -129,18 +296,60 @@ def render_classes_page(classes=None):
     latest = format_class_date(classes[0].get("date", "")) if classes else "—"
     rendered = template.replace("{{CLASS_ITEMS}}", "\n".join(cards))
     rendered = rendered.replace("{{UPDATED_AT}}", escape(latest))
-    CLASS_PUBLIC_DIR.mkdir(parents=True, exist_ok=True)
-    CLASS_PUBLIC_PATH.write_text(rendered, encoding="utf-8", newline="\n")
+    if running_on_vercel():
+        if not github_enabled():
+            raise RuntimeError(
+                "Chưa cấu hình GITHUB_TOKEN trên Vercel nên chưa thể xuất trang lớp mới."
+            )
+        github_upsert_file(
+            "giasubinhminh.com/lop-moi/index.html",
+            rendered,
+            "cms: publish class list",
+        )
+    else:
+        CLASS_PUBLIC_DIR.mkdir(parents=True, exist_ok=True)
+        CLASS_PUBLIC_PATH.write_text(rendered, encoding="utf-8", newline="\n")
     return CLASS_PUBLIC_PATH
 
 def login_required(fn):
     @wraps(fn)
     def wrapper(*args, **kwargs):
-        if not session.get("logged_in"):
-            return jsonify({"error": "Unauthorized"}), 401
+        if not request_is_authenticated():
+            return jsonify({"error": "Phiên đăng nhập đã hết hạn"}), 401
         return fn(*args, **kwargs)
 
     return wrapper
+
+
+def credentials_valid(username: str, password: str) -> bool:
+    env_password = os.environ.get("CMS_PASSWORD")
+    if env_password:
+        expected_username = os.environ.get("CMS_USERNAME", "admin")
+        return hmac.compare_digest(username, expected_username) and hmac.compare_digest(
+            password,
+            env_password,
+        )
+
+    config = load_config(fresh=running_on_vercel() and github_enabled())
+    expected_username = str(config.get("username") or "admin")
+    if not hmac.compare_digest(username, expected_username):
+        return False
+    password_hash = str(config.get("password_hash") or "")
+    if password_hash:
+        return verify_password(password, password_hash)
+
+    # Keep old plaintext config usable only on a local machine for migration.
+    if not running_on_vercel():
+        return hmac.compare_digest(password, str(config.get("password") or ""))
+    return False
+
+
+def request_is_authenticated() -> bool:
+    username = request.headers.get("X-CMS-Username", "")
+    password = request.headers.get("X-CMS-Password", "")
+    if username and password and credentials_valid(username, password):
+        return True
+    return not running_on_vercel() and bool(session.get("logged_in"))
 
 
 def is_editable_page(rel_path: str) -> bool:
@@ -172,14 +381,30 @@ def page_public_url(rel_path: str) -> str:
     return f"/giasubinhminh.com/{slug.strip('/')}/index.html"
 
 
-def read_page_file(rel_path: str) -> str:
+def read_page_file(rel_path: str, fresh: bool = False) -> str:
+    if fresh and running_on_vercel() and github_enabled():
+        repo_path = f"giasubinhminh.com/{rel_path.replace(chr(92), '/')}"
+        return github_read_file(repo_path).decode("utf-8", errors="ignore")
     path = SITE_DIR / rel_path.replace("/", os.sep)
     with open(path, encoding="utf-8", errors="ignore") as f:
         return f.read()
 
 
 def write_page_file(rel_path: str, content: str):
+    if running_on_vercel():
+        if not github_enabled():
+            raise RuntimeError(
+                "Chưa cấu hình GITHUB_TOKEN trên Vercel nên chưa thể lưu nội dung."
+            )
+        repo_path = f"giasubinhminh.com/{rel_path.replace(chr(92), '/')}"
+        github_upsert_file(
+            repo_path,
+            content,
+            f"cms: update {repo_path}",
+        )
+        return
     path = SITE_DIR / rel_path.replace("/", os.sep)
+    path.parent.mkdir(parents=True, exist_ok=True)
     with open(path, "w", encoding="utf-8", newline="") as f:
         f.write(content)
 
@@ -344,8 +569,7 @@ def api_login():
     data = request.get_json(silent=True) or {}
     username = (data.get("username") or "").strip()
     password = data.get("password") or ""
-    config = load_config()
-    if username == config.get("username") and password == config.get("password", ""):
+    if credentials_valid(username, password):
         session["logged_in"] = True
         session["username"] = username
         return jsonify({"ok": True, "username": username})
@@ -360,8 +584,15 @@ def api_logout():
 
 @app.get("/api/me")
 def api_me():
-    if session.get("logged_in"):
-        return jsonify({"logged_in": True, "username": session.get("username")})
+    if request_is_authenticated():
+        username = request.headers.get("X-CMS-Username") or session.get("username")
+        return jsonify(
+            {
+                "logged_in": True,
+                "username": username,
+                "publishing_ready": not running_on_vercel() or github_enabled(),
+            }
+        )
     return jsonify({"logged_in": False})
 
 
@@ -380,8 +611,11 @@ def api_pages():
 def api_get_page(page_id):
     if not is_editable_page(page_id):
         return jsonify({"error": "Trang không được phép chỉnh sửa"}), 400
-    html = read_page_file(page_id)
-    parsed = parse_page(html)
+    try:
+        html = read_page_file(page_id, fresh=running_on_vercel())
+        parsed = parse_page(html)
+    except Exception as exc:
+        return jsonify({"error": str(exc)}), 500
     return jsonify(
         {
             "id": page_id,
@@ -398,10 +632,16 @@ def api_update_page(page_id):
     if not is_editable_page(page_id):
         return jsonify({"error": "Trang không được phép chỉnh sửa"}), 400
     data = request.get_json(silent=True) or {}
-    html = read_page_file(page_id)
-    updated = apply_page_updates(html, data)
-    write_page_file(page_id, updated)
-    return jsonify({"ok": True, "message": "Đã lưu bài viết"})
+    try:
+        html = read_page_file(page_id, fresh=running_on_vercel())
+        updated = apply_page_updates(html, data)
+        write_page_file(page_id, updated)
+    except Exception as exc:
+        return jsonify({"error": str(exc)}), 500
+    message = "Đã lưu bài viết"
+    if running_on_vercel():
+        message += " — website đang cập nhật, vui lòng chờ khoảng 1 phút"
+    return jsonify({"ok": True, "message": message})
 
 
 @app.get("/api/media")
@@ -426,33 +666,175 @@ def api_upload_media():
         return jsonify({"error": "Định dạng ảnh không hỗ trợ"}), 400
 
     now = datetime.now()
-    folder = UPLOAD_DIR / str(now.year) / f"{now.month:02d}"
-    folder.mkdir(parents=True, exist_ok=True)
     filename = f"{uuid.uuid4().hex}{ext}"
-    save_path = folder / filename
-    file.save(save_path)
+    rel = f"wp-content/uploads/cms/{now.year}/{now.month:02d}/{filename}"
+    raw = file.read()
 
-    rel = save_path.relative_to(SITE_DIR).as_posix()
-    size = get_image_size(rel)
+    try:
+        if running_on_vercel():
+            if not github_enabled():
+                return jsonify(
+                    {
+                        "error": (
+                            "Chưa cấu hình GITHUB_TOKEN trên Vercel nên "
+                            "chưa thể tải ảnh."
+                        )
+                    }
+                ), 500
+            github_upsert_file(
+                f"giasubinhminh.com/{rel}",
+                raw,
+                f"cms: upload {rel}",
+                binary=True,
+            )
+        else:
+            save_path = SITE_DIR / rel.replace("/", os.sep)
+            save_path.parent.mkdir(parents=True, exist_ok=True)
+            save_path.write_bytes(raw)
+    except Exception as exc:
+        return jsonify({"error": str(exc)}), 500
+
+    width = height = None
+    size_label = "Đã tải lên"
+    try:
+        from io import BytesIO
+        from PIL import Image
+
+        with Image.open(BytesIO(raw)) as image:
+            width, height = image.size
+            size_label = f"{width} × {height} px"
+    except Exception:
+        size = get_image_size(rel)
+        width = size["width"]
+        height = size["height"]
+        size_label = size["size_label"]
     return jsonify(
         {
             "ok": True,
             "name": filename,
             "path": rel,
             "url": f"/giasubinhminh.com/{rel}",
-            "width": size["width"],
-            "height": size["height"],
-            "size_label": size["size_label"],
+            "width": width,
+            "height": height,
+            "size_label": size_label,
         }
     )
+
+
+def parse_feedback_gallery(html: str) -> dict:
+    soup = BeautifulSoup(html, "html.parser")
+    section = soup.select_one("#parent-feedback-gallery")
+    if not section:
+        return {
+            "title": "Phản hồi thực tế từ phụ huynh",
+            "intro": "",
+            "images": [],
+        }
+    images = []
+    for index, figure in enumerate(section.select(".feedback-item")[:6], start=1):
+        image = figure.select_one("img")
+        caption = figure.select_one("figcaption")
+        images.append(
+            {
+                "url": image.get("src", "") if image else "",
+                "alt": image.get("alt", "") if image else "",
+                "caption": extract_text(caption) or f"Phản hồi phụ huynh {index}",
+            }
+        )
+    return {
+        "title": extract_text(section.select_one(".feedback-title")),
+        "intro": extract_text(section.select_one(".feedback-intro")),
+        "images": images,
+        "public_url": page_public_url(FEEDBACK_PAGE_ID),
+    }
+
+
+def valid_feedback_image_url(value: str) -> bool:
+    value = (value or "").strip()
+    return value.startswith(
+        (
+            "/giasubinhminh.com/",
+            "wp-content/",
+            "https://",
+            "http://",
+        )
+    )
+
+
+def apply_feedback_updates(html: str, data: dict) -> str:
+    soup = BeautifulSoup(html, "html.parser")
+    section = soup.select_one("#parent-feedback-gallery")
+    if not section:
+        raise ValueError("Không tìm thấy khối phản hồi phụ huynh trên trang")
+
+    if data.get("title"):
+        set_deep_text(section.select_one(".feedback-title"), str(data["title"]).strip())
+    if "intro" in data:
+        set_deep_text(section.select_one(".feedback-intro"), str(data["intro"]).strip())
+
+    images = data.get("images") or []
+    figures = section.select(".feedback-item")[:6]
+    for index, figure in enumerate(figures):
+        if index >= len(images):
+            break
+        item = images[index] or {}
+        url = str(item.get("url") or "").strip()
+        if url:
+            if not valid_feedback_image_url(url):
+                raise ValueError(f"Đường dẫn ảnh phản hồi {index + 1} không hợp lệ")
+            image = figure.select_one("img")
+            link = figure.select_one("a")
+            if image:
+                image["src"] = url
+                image["alt"] = str(
+                    item.get("alt")
+                    or f"Phản hồi của phụ huynh về gia sư Trí Việt {index + 1}"
+                ).strip()
+            if link:
+                link["href"] = url
+        if "caption" in item:
+            set_deep_text(
+                figure.select_one("figcaption"),
+                str(item.get("caption") or "").strip(),
+            )
+    return str(soup)
+
+
+@app.get("/api/feedback")
+@login_required
+def api_get_feedback():
+    try:
+        html = read_page_file(FEEDBACK_PAGE_ID, fresh=running_on_vercel())
+        return jsonify(parse_feedback_gallery(html))
+    except Exception as exc:
+        return jsonify({"error": str(exc)}), 500
+
+
+@app.put("/api/feedback")
+@login_required
+def api_update_feedback():
+    data = request.get_json(silent=True) or {}
+    try:
+        html = read_page_file(FEEDBACK_PAGE_ID, fresh=running_on_vercel())
+        updated = apply_feedback_updates(html, data)
+        write_page_file(FEEDBACK_PAGE_ID, updated)
+    except (ValueError, RuntimeError, OSError) as exc:
+        return jsonify({"error": str(exc)}), 500
+    message = "Đã lưu phần phản hồi phụ huynh"
+    if running_on_vercel():
+        message += " — website đang cập nhật, vui lòng chờ khoảng 1 phút"
+    return jsonify({"ok": True, "message": message})
 
 
 @app.get("/api/classes")
 @login_required
 def api_classes():
-    classes = load_classes()
-    if not CLASS_PUBLIC_PATH.exists():
-        render_classes_page(classes)
+    try:
+        classes = load_classes()
+        if not running_on_vercel() and not CLASS_PUBLIC_PATH.exists():
+            render_classes_page(classes)
+    except Exception as exc:
+        return jsonify({"error": str(exc)}), 500
     return jsonify(
         {
             "classes": classes,
@@ -477,15 +859,21 @@ def api_create_class():
         "created_at": now,
         "updated_at": now,
     }
-    classes = load_classes()
-    classes.append(item)
-    classes.sort(
-        key=lambda entry: (entry.get("date", ""), entry.get("created_at", "")),
-        reverse=True,
-    )
-    save_classes(classes)
-    render_classes_page(classes)
-    return jsonify({"ok": True, "message": "Đã đăng lớp mới", "item": item}), 201
+    try:
+        classes = load_classes()
+        classes.append(item)
+        classes.sort(
+            key=lambda entry: (entry.get("date", ""), entry.get("created_at", "")),
+            reverse=True,
+        )
+        save_classes(classes)
+        render_classes_page(classes)
+    except Exception as exc:
+        return jsonify({"error": str(exc)}), 500
+    message = "Đã đăng lớp mới"
+    if running_on_vercel():
+        message += " — website đang cập nhật"
+    return jsonify({"ok": True, "message": message, "item": item}), 201
 
 
 @app.put("/api/classes/<class_id>")
@@ -496,31 +884,43 @@ def api_update_class(class_id):
         clean = normalize_class_payload(data)
     except ValueError as error:
         return jsonify({"error": str(error)}), 400
-    classes = load_classes()
-    item = next((entry for entry in classes if entry.get("id") == class_id), None)
-    if item is None:
-        return jsonify({"error": "Không tìm thấy bài lớp mới"}), 404
-    item.update(clean)
-    item["updated_at"] = datetime.now().isoformat(timespec="seconds")
-    classes.sort(
-        key=lambda entry: (entry.get("date", ""), entry.get("created_at", "")),
-        reverse=True,
-    )
-    save_classes(classes)
-    render_classes_page(classes)
-    return jsonify({"ok": True, "message": "Đã cập nhật lớp mới", "item": item})
+    try:
+        classes = load_classes()
+        item = next((entry for entry in classes if entry.get("id") == class_id), None)
+        if item is None:
+            return jsonify({"error": "Không tìm thấy bài lớp mới"}), 404
+        item.update(clean)
+        item["updated_at"] = datetime.now().isoformat(timespec="seconds")
+        classes.sort(
+            key=lambda entry: (entry.get("date", ""), entry.get("created_at", "")),
+            reverse=True,
+        )
+        save_classes(classes)
+        render_classes_page(classes)
+    except Exception as exc:
+        return jsonify({"error": str(exc)}), 500
+    message = "Đã cập nhật lớp mới"
+    if running_on_vercel():
+        message += " — website đang cập nhật"
+    return jsonify({"ok": True, "message": message, "item": item})
 
 
 @app.delete("/api/classes/<class_id>")
 @login_required
 def api_delete_class(class_id):
-    classes = load_classes()
-    kept = [entry for entry in classes if entry.get("id") != class_id]
-    if len(kept) == len(classes):
-        return jsonify({"error": "Không tìm thấy bài lớp mới"}), 404
-    save_classes(kept)
-    render_classes_page(kept)
-    return jsonify({"ok": True, "message": "Đã xóa bài lớp mới"})
+    try:
+        classes = load_classes()
+        kept = [entry for entry in classes if entry.get("id") != class_id]
+        if len(kept) == len(classes):
+            return jsonify({"error": "Không tìm thấy bài lớp mới"}), 404
+        save_classes(kept)
+        render_classes_page(kept)
+    except Exception as exc:
+        return jsonify({"error": str(exc)}), 500
+    message = "Đã xóa bài lớp mới"
+    if running_on_vercel():
+        message += " — website đang cập nhật"
+    return jsonify({"ok": True, "message": message})
 
 
 def set_deep_text(tag, text: str) -> bool:
@@ -875,24 +1275,33 @@ def apply_homepage_updates(html: str, data: dict) -> str:
 @app.get("/api/homepage")
 @login_required
 def api_get_homepage():
-    html = read_page_file("index.html")
-    return jsonify(parse_homepage(html))
+    try:
+        html = read_page_file("index.html", fresh=running_on_vercel())
+        return jsonify(parse_homepage(html))
+    except Exception as exc:
+        return jsonify({"error": str(exc)}), 500
 
 
 @app.put("/api/homepage")
 @login_required
 def api_update_homepage():
     data = request.get_json(silent=True) or {}
-    html = read_page_file("index.html")
-    updated = apply_homepage_updates(html, data)
-    write_page_file("index.html", updated)
-    return jsonify({"ok": True, "message": "Đã lưu trang chủ"})
+    try:
+        html = read_page_file("index.html", fresh=running_on_vercel())
+        updated = apply_homepage_updates(html, data)
+        write_page_file("index.html", updated)
+    except Exception as exc:
+        return jsonify({"error": str(exc)}), 500
+    message = "Đã lưu trang chủ"
+    if running_on_vercel():
+        message += " — website đang cập nhật, vui lòng chờ khoảng 1 phút"
+    return jsonify({"ok": True, "message": message})
 
 
 @app.get("/api/settings")
 @login_required
 def api_get_settings():
-    config = load_config()
+    config = load_config(fresh=running_on_vercel() and github_enabled())
     homepage = SITE_DIR / "index.html"
     logo = "wp-content/uploads/2018/07/logo-1.png"
     hotline1 = "0962.005.996"
@@ -915,6 +1324,7 @@ def api_get_settings():
             "hotline1": hotline1,
             "hotline2": hotline2,
             "username": config.get("username", "admin"),
+            "publishing_ready": not running_on_vercel() or github_enabled(),
         }
     )
 
@@ -923,64 +1333,98 @@ def api_get_settings():
 @login_required
 def api_update_settings():
     data = request.get_json(silent=True) or {}
-    config = load_config()
+    config = load_config(fresh=running_on_vercel() and github_enabled())
 
     if data.get("site_name"):
         config["site_name"] = data["site_name"]
     if data.get("new_password"):
-        config["password"] = data["new_password"]
-    save_config(config)
+        if os.environ.get("CMS_PASSWORD"):
+            return jsonify(
+                {
+                    "error": (
+                        "Mật khẩu đang được quản lý bằng biến CMS_PASSWORD "
+                        "trên Vercel."
+                    )
+                }
+            ), 400
+        new_password = str(data["new_password"])
+        if len(new_password) < 12:
+            return jsonify({"error": "Mật khẩu mới phải có ít nhất 12 ký tự"}), 400
+        config["password_hash"] = hash_password(new_password)
+        config.pop("password", None)
+    try:
+        save_config(config)
+    except Exception as exc:
+        return jsonify({"error": str(exc)}), 500
 
     site_name = config.get("site_name", "Trung Tâm Gia Sư Trí Việt")
     logo = data.get("logo")
     hotline1 = data.get("hotline1")
     hotline2 = data.get("hotline2")
 
-    for root, _, files in os.walk(SITE_DIR):
-        for name in files:
-            if not name.endswith(".html"):
-                continue
-            rel = (Path(root) / name).relative_to(SITE_DIR).as_posix()
-            if rel.startswith("wp-content/"):
-                continue
-            try:
-                html = read_page_file(rel)
-            except OSError:
-                continue
-            changed = False
-            if site_name and site_name not in html:
-                pass
-            soup = BeautifulSoup(html, "html.parser")
-            if site_name:
-                for tag in soup.select(".header-top-heading h3"):
-                    tag.string = site_name
-                    changed = True
-                for tag in soup.find_all("img", class_=lambda c: c and ("header-logo" in c or "header_logo" in c)):
-                    tag["alt"] = site_name
-                    changed = True
-                for a in soup.select('#logo a[rel="home"]'):
-                    a["title"] = site_name
-                    changed = True
-            if logo:
-                for tag in soup.select(".header_logo, .header-logo, .header-logo-dark"):
-                    tag["src"] = logo
-                    changed = True
-            if hotline1 or hotline2:
-                buttons = soup.select(".header-button a.button")
-                if hotline1 and len(buttons) >= 1:
-                    span = buttons[0].find("span")
-                    if span:
-                        span.string = f"Hotline : {hotline1}"
-                        changed = True
-                if hotline2 and len(buttons) >= 2:
-                    span = buttons[1].find("span")
-                    if span:
-                        span.string = f"Hotline : {hotline2}"
-                        changed = True
-            if changed:
-                write_page_file(rel, str(soup))
+    if running_on_vercel():
+        files_to_update = ["index.html"]
+    else:
+        files_to_update = []
+        for root, _, files in os.walk(SITE_DIR):
+            for name in files:
+                if not name.endswith(".html"):
+                    continue
+                rel = (Path(root) / name).relative_to(SITE_DIR).as_posix()
+                if rel.startswith("wp-content/"):
+                    continue
+                files_to_update.append(rel)
 
-    return jsonify({"ok": True, "message": "Đã cập nhật cài đặt website"})
+    for rel in files_to_update:
+        try:
+            html = read_page_file(
+                rel,
+                fresh=running_on_vercel(),
+            )
+        except (OSError, RuntimeError):
+            continue
+        changed = False
+        soup = BeautifulSoup(html, "html.parser")
+        if site_name:
+            for tag in soup.select(".header-top-heading h3"):
+                tag.string = site_name
+                changed = True
+            for tag in soup.find_all(
+                "img",
+                class_=lambda class_names: class_names
+                and ("header-logo" in class_names or "header_logo" in class_names),
+            ):
+                tag["alt"] = site_name
+                changed = True
+            for anchor in soup.select('#logo a[rel="home"]'):
+                anchor["title"] = site_name
+                changed = True
+        if logo:
+            for tag in soup.select(".header_logo, .header-logo, .header-logo-dark"):
+                tag["src"] = logo
+                changed = True
+        if hotline1 or hotline2:
+            buttons = soup.select(".header-button a.button")
+            if hotline1 and len(buttons) >= 1:
+                span = buttons[0].find("span")
+                if span:
+                    span.string = f"Hotline : {hotline1}"
+                    changed = True
+            if hotline2 and len(buttons) >= 2:
+                span = buttons[1].find("span")
+                if span:
+                    span.string = f"Hotline : {hotline2}"
+                    changed = True
+        if changed:
+            try:
+                write_page_file(rel, str(soup))
+            except Exception as exc:
+                return jsonify({"error": str(exc)}), 500
+
+    message = "Đã cập nhật cài đặt website"
+    if running_on_vercel():
+        message += " — website đang cập nhật"
+    return jsonify({"ok": True, "message": message})
 
 
 @app.route("/", defaults={"path": ""})
@@ -1002,5 +1446,5 @@ if __name__ == "__main__":
     UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
     print("CMS Admin: http://localhost:5050/admin")
     print("Website:   http://localhost:5050/giasubinhminh.com/index.html")
-    print("Login: admin / admin123")
+    print("Login: use the CMS credentials supplied by the site owner")
     app.run(host="0.0.0.0", port=5050, debug=False)

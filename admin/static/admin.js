@@ -7,10 +7,39 @@ let currentClassId = null;
 let allClasses = [];
 
 const FEATURED_CAM_KET_ID = "cam-ket-tien-bo-sau-10-buoi/index.html";
+const CMS_USERNAME_KEY = "tri_viet_cms_username";
+const CMS_PASSWORD_KEY = "tri_viet_cms_password";
+
+function getCmsCredentials() {
+  return {
+    username: sessionStorage.getItem(CMS_USERNAME_KEY) || "",
+    password: sessionStorage.getItem(CMS_PASSWORD_KEY) || "",
+  };
+}
+
+function setCmsCredentials(username, password) {
+  if (username && password) {
+    sessionStorage.setItem(CMS_USERNAME_KEY, username);
+    sessionStorage.setItem(CMS_PASSWORD_KEY, password);
+    return;
+  }
+  sessionStorage.removeItem(CMS_USERNAME_KEY);
+  sessionStorage.removeItem(CMS_PASSWORD_KEY);
+}
+
+function cmsAuthHeaders() {
+  const credentials = getCmsCredentials();
+  if (!credentials.username || !credentials.password) return {};
+  return {
+    "X-CMS-Username": credentials.username,
+    "X-CMS-Password": credentials.password,
+  };
+}
 
 const views = {
   pages: document.getElementById("view-pages"),
   homepage: document.getElementById("view-homepage"),
+  feedback: document.getElementById("view-feedback"),
   classes: document.getElementById("view-classes"),
   editor: document.getElementById("view-editor"),
   media: document.getElementById("view-media"),
@@ -29,13 +58,15 @@ function setActiveNav(viewName, pageId = null) {
 }
 
 async function api(url, options = {}) {
+  const optionHeaders = options.headers || {};
   const response = await fetch(url, {
     credentials: "same-origin",
+    ...options,
     headers: {
       "Content-Type": "application/json",
-      ...(options.headers || {}),
+      ...cmsAuthHeaders(),
+      ...optionHeaders,
     },
-    ...options,
   });
   const data = await response.json().catch(() => ({}));
   if (!response.ok) {
@@ -154,14 +185,20 @@ async function login(event) {
       method: "POST",
       body: JSON.stringify({ username, password }),
     });
+    setCmsCredentials(username, password);
     await enterAdmin();
   } catch (error) {
+    setCmsCredentials("", "");
     setStatus(document.getElementById("login-status"), error.message, "error");
   }
 }
 
 async function logout() {
-  await api("/api/logout", { method: "POST" });
+  try {
+    await api("/api/logout", { method: "POST" });
+  } finally {
+    setCmsCredentials("", "");
+  }
   location.reload();
 }
 
@@ -567,6 +604,119 @@ async function loadClasses() {
   }
 }
 
+function renderFeedbackImages(images = []) {
+  const wrap = document.getElementById("feedback-images");
+  wrap.innerHTML = Array.from({ length: 6 }, (_, index) => {
+    const item = images[index] || {};
+    return `
+      <div class="feedback-admin-card" data-index="${index}">
+        <h3>Ảnh phản hồi ${index + 1}</h3>
+        <img
+          class="feedback-admin-preview"
+          src="${escapeAttr(normalizeAssetUrl(item.url || ""))}"
+          alt="Xem trước phản hồi ${index + 1}"
+        />
+        <div class="field">
+          <label>Đường dẫn ảnh</label>
+          <input
+            class="feedback-image-url"
+            type="text"
+            value="${escapeAttr(item.url || "")}"
+          />
+        </div>
+        <div class="field">
+          <label>Chú thích</label>
+          <input
+            class="feedback-image-caption"
+            type="text"
+            value="${escapeAttr(item.caption || `Phản hồi phụ huynh ${index + 1}`)}"
+          />
+        </div>
+        <label class="btn btn-secondary" for="upload-feedback-${index}">Tải ảnh mới</label>
+        <input
+          id="upload-feedback-${index}"
+          class="feedback-image-upload hidden"
+          type="file"
+          accept="image/*"
+        />
+      </div>`;
+  }).join("");
+
+  wrap.querySelectorAll(".feedback-admin-card").forEach((card) => {
+    const urlInput = card.querySelector(".feedback-image-url");
+    const preview = card.querySelector(".feedback-admin-preview");
+    urlInput.addEventListener("input", () => {
+      preview.src = normalizeAssetUrl(urlInput.value.trim());
+    });
+  });
+
+  wrap.querySelectorAll(".feedback-image-upload").forEach((input) => {
+    input.addEventListener("change", async (event) => {
+      const file = event.target.files[0];
+      if (!file) return;
+      const card = event.target.closest(".feedback-admin-card");
+      const status = document.getElementById("feedback-status");
+      try {
+        setStatus(status, "Đang tải ảnh phản hồi...");
+        await uploadFile(file, (data) => {
+          card.querySelector(".feedback-image-url").value = data.url;
+          card.querySelector(".feedback-admin-preview").src = data.url;
+          setStatus(
+            status,
+            "Đã tải ảnh. Bấm “Lưu phản hồi” để cập nhật trang.",
+            "success"
+          );
+        });
+      } catch (error) {
+        setStatus(status, error.message, "error");
+      } finally {
+        event.target.value = "";
+      }
+    });
+  });
+}
+
+async function openFeedback() {
+  const status = document.getElementById("feedback-status");
+  showView("feedback");
+  setStatus(status, "Đang tải phản hồi...");
+  try {
+    const data = await api("/api/feedback");
+    document.getElementById("feedback-title").value = data.title || "";
+    document.getElementById("feedback-intro").value = data.intro || "";
+    renderFeedbackImages(data.images || []);
+    setStatus(status, "");
+  } catch (error) {
+    setStatus(status, error.message, "error");
+  }
+}
+
+async function saveFeedback() {
+  const status = document.getElementById("feedback-status");
+  const images = Array.from(
+    document.querySelectorAll(".feedback-admin-card")
+  ).map((card, index) => ({
+    url: card.querySelector(".feedback-image-url").value.trim(),
+    caption:
+      card.querySelector(".feedback-image-caption").value.trim() ||
+      `Phản hồi phụ huynh ${index + 1}`,
+  }));
+  setStatus(status, "Đang lưu phản hồi...");
+  try {
+    const data = await api("/api/feedback", {
+      method: "PUT",
+      body: JSON.stringify({
+        title: document.getElementById("feedback-title").value.trim(),
+        intro: document.getElementById("feedback-intro").value.trim(),
+        images,
+      }),
+    });
+    setStatus(status, data.message || "Đã lưu phản hồi", "success");
+  } catch (error) {
+    setStatus(status, error.message, "error");
+  }
+}
+
 async function openClasses() {
   history.replaceState(null, "", "#dang-lop-moi");
   showView("classes");
@@ -694,6 +844,7 @@ async function uploadFile(file, onDone) {
   const response = await fetch("/api/media/upload", {
     method: "POST",
     credentials: "same-origin",
+    headers: cmsAuthHeaders(),
     body: formData,
   });
   const data = await response.json();
@@ -728,6 +879,10 @@ async function saveSettings() {
       method: "PUT",
       body: JSON.stringify(payload),
     });
+    if (newPassword) {
+      const credentials = getCmsCredentials();
+      setCmsCredentials(credentials.username || "admin", newPassword);
+    }
     setStatus(status, "Đã cập nhật cài đặt", "success");
     document.getElementById("setting-password").value = "";
   } catch (error) {
@@ -759,6 +914,7 @@ document.getElementById("logout-btn").addEventListener("click", logout);
 document.getElementById("save-page").addEventListener("click", savePage);
 document.getElementById("save-settings").addEventListener("click", saveSettings);
 document.getElementById("save-homepage").addEventListener("click", saveHomepage);
+document.getElementById("save-feedback").addEventListener("click", saveFeedback);
 document.getElementById("save-class").addEventListener("click", saveClass);
 document.getElementById("new-class").addEventListener("click", resetClassForm);
 document.getElementById("cancel-class-edit").addEventListener("click", resetClassForm);
@@ -832,6 +988,9 @@ document.querySelectorAll(".nav-btn").forEach((btn) => {
     }
     if (view === "homepage") {
       await openHomepage();
+    }
+    if (view === "feedback") {
+      await openFeedback();
     }
     if (view === "classes") {
       await openClasses();

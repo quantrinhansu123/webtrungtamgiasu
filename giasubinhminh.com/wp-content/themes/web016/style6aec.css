@@ -32,3 +32,129 @@ h1,h2,h3,h4,h5,h6, .heading-font{
 
 
 }
+
+/*
+ * Typography override
+ * Keep Vietnamese content familiar and easy to scan. The higher-specificity
+ * selectors intentionally override the old per-page Nunito/Playfair rules.
+ */
+html body,
+html body p,
+html body a,
+html body li,
+html body strong,
+html body input,
+html body select,
+html body textarea,
+html body button,
+html body .nav > li > a {
+	font-family: Arial, Helvetica, sans-serif !important;
+}
+
+html body {
+	font-size: 16px;
+	line-height: 1.65 !important;
+}
+
+html body h1,
+html body h2,
+html body h3,
+html body h4,
+html body h5,
+html body h6,
+html body h1 span,
+html body h2 span,
+html body h3 span,
+html body h4 span,
+html body .heading-font {
+	font-family: Arial, Helvetica, sans-serif !important;
+	font-weight: 700 !important;
+	line-height: 1.35;
+	letter-spacing: 0;
+}
+
+html body .header-bottom-nav > li > a {
+	font-weight: 600 !important;
+	letter-spacing: 0;
+}
+
+/* Parent feedback gallery on the online tutoring page. */
+.parent-feedback {
+	margin: 34px auto;
+	padding: 28px;
+	background: #f7fbf9;
+	border: 1px solid #dbe9e2;
+	border-radius: 14px;
+}
+
+.parent-feedback .feedback-title {
+	margin: 0 0 8px;
+	color: #096f47;
+	text-align: center;
+	font-size: 28px;
+}
+
+.parent-feedback .feedback-intro {
+	margin: 0 auto 24px;
+	max-width: 760px;
+	color: #444;
+	text-align: center;
+}
+
+.parent-feedback .feedback-grid {
+	display: grid;
+	grid-template-columns: repeat(3, minmax(0, 1fr));
+	align-items: start;
+	gap: 20px;
+}
+
+.parent-feedback .feedback-item {
+	margin: 0;
+	overflow: hidden;
+	background: #fff;
+	border: 1px solid #dfe7e3;
+	border-radius: 10px;
+	box-shadow: 0 4px 16px rgba(9, 111, 71, 0.08);
+}
+
+.parent-feedback .feedback-item a,
+.parent-feedback .feedback-item img {
+	display: block;
+	width: 100%;
+}
+
+.parent-feedback .feedback-item img {
+	height: auto;
+}
+
+.parent-feedback .feedback-item figcaption {
+	padding: 10px 12px;
+	color: #3f4a45;
+	font-size: 14px;
+	text-align: center;
+}
+
+@media only screen and (max-width: 849px) {
+	.parent-feedback .feedback-grid {
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+	}
+}
+
+@media only screen and (max-width: 549px) {
+	html body {
+		font-size: 16px;
+	}
+
+	.parent-feedback {
+		padding: 18px 14px;
+	}
+
+	.parent-feedback .feedback-title {
+		font-size: 23px;
+	}
+
+	.parent-feedback .feedback-grid {
+		grid-template-columns: 1fr;
+		gap: 16px;
+	}
+}

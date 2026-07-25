@@ -1,6 +1,6 @@
 {
   "username": "admin",
-  "password": "admin123",
+  "password_hash": "pbkdf2_sha256$390000$0f1e4338b8eb1745936fe5aaad730265$biYakAP/Mkk2rDYxXcmVimxIkH0IiuT85+wRNYdrydk=",
   "site_name": "Trung Tâm Gia Sư Trí Việt",
   "hotline1": "0962.005.996",
   "hotline2": "0987.005.996",

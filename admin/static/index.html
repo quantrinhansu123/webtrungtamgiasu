@@ -19,7 +19,7 @@
         </div>
         <div class="field">
           <label for="password">Mật khẩu</label>
-          <input id="password" type="password" value="admin123" autocomplete="current-password" />
+          <input id="password" type="password" autocomplete="current-password" />
         </div>
         <button class="btn btn-primary" type="submit" style="width:100%">Đăng nhập</button>
         <div id="login-status" class="status error"></div>
@@ -40,6 +40,13 @@
         title="Quản trị trang chủ"
       >
         Trang chủ
+      </button>
+      <button
+        class="nav-btn nav-featured"
+        data-view="feedback"
+        title="Quản lý ảnh phản hồi phụ huynh"
+      >
+        Phản hồi phụ huynh
       </button>
       <button
         class="nav-btn nav-featured"
@@ -368,6 +375,36 @@
               <input id="upload-thumbnail" type="file" accept="image/*" class="hidden" />
             </div>
           </div>
+        </div>
+      </section>
+
+      <section id="view-feedback" class="hidden">
+        <div class="topbar">
+          <h1>Phản hồi phụ huynh</h1>
+          <div class="topbar-actions">
+            <a
+              class="btn btn-secondary"
+              href="/giasubinhminh.com/gia-su-day-online-tai-nha-tu-lop-1-12-on-thi-tat-ca-cac-mon/index.html"
+              target="_blank"
+              rel="noopener"
+            >Xem trang</a>
+            <button id="save-feedback" class="btn btn-primary" type="button">Lưu phản hồi</button>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="field">
+            <label for="feedback-title">Tiêu đề</label>
+            <input id="feedback-title" type="text" />
+          </div>
+          <div class="field">
+            <label for="feedback-intro">Mô tả ngắn</label>
+            <textarea id="feedback-intro" rows="3"></textarea>
+          </div>
+          <p class="field-hint">
+            Bấm “Tải ảnh mới” tại từng ô. Ảnh sẽ được lưu vào website và tự thay đúng vị trí.
+          </p>
+          <div id="feedback-images" class="feedback-admin-grid"></div>
+          <div id="feedback-status" class="status"></div>
         </div>
       </section>
 
