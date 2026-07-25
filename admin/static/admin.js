@@ -95,7 +95,6 @@ function setStatus(el, message, type = "") {
 function clearSelectedImage() {
   inlineImageTarget = null;
   document.getElementById("image-toolbar").classList.add("hidden");
-  document.getElementById("inline-image-url").value = "";
   quill?.root.querySelectorAll("img.image-selected").forEach((img) => {
     img.classList.remove("image-selected");
   });
@@ -108,7 +107,6 @@ function selectInlineImage(img) {
   });
   img.classList.add("image-selected");
   document.getElementById("selected-image-preview").src = img.getAttribute("src") || "";
-  document.getElementById("inline-image-url").value = img.getAttribute("src") || "";
   document.getElementById("image-toolbar").classList.remove("hidden");
 }
 
@@ -332,9 +330,10 @@ function renderSlides(slides = []) {
         <div class="field" style="margin-bottom:0">
           <label>Ảnh slide ${i + 1}</label>
           <div class="home-media-row">
-            <input class="home-slide-image" type="text" value="${escapeAttr(item.image || "")}" />
-            <label class="btn btn-secondary" for="upload-home-slide-${i}">Tải ảnh</label>
+            <input class="home-slide-image" type="hidden" value="${escapeAttr(item.image || "")}" />
+            <label class="btn btn-primary" for="upload-home-slide-${i}">Chọn ảnh slide ${i + 1}</label>
             <input id="upload-home-slide-${i}" class="home-slide-upload hidden" type="file" accept="image/*" data-index="${i}" />
+            <span class="selected-file-name home-slide-file">${escapeHtml(assetFileName(item.image))}</span>
           </div>
           <div class="home-size-meta">
             <span class="size-badge home-slide-size">Khổ ảnh: ${escapeHtml(sizeLabel || "—")}</span>
@@ -369,8 +368,10 @@ function renderSlides(slides = []) {
           const field = card.querySelector(".home-slide-image");
           const preview = card.querySelector(".home-slide-preview");
           const badge = card.querySelector(".home-slide-size");
+          const fileName = card.querySelector(".home-slide-file");
           field.value = data.path;
           preview.src = data.url;
+          fileName.textContent = assetFileName(data.path);
           badge.textContent = `Khổ ảnh: ${data.size_label || formatSizeLabel(data.width, data.height)}`;
           setStatus(status, "Đã tải ảnh — đang lưu vào slide...", "success");
           await saveHomepage();
@@ -401,7 +402,7 @@ function renderTutors(tutors = []) {
   wrap.innerHTML = Array.from({ length: 4 }, (_, i) => {
     const item = tutors[i] || { title: "", text: "", image: "" };
     return `
-      <div class="home-tutor-card">
+      <div class="home-tutor-card" data-index="${i}">
         <div class="field">
           <label>Gia sư ${i + 1} — môn / vai trò</label>
           <input class="home-tutor-title" type="text" value="${escapeAttr(item.title || "")}" />
@@ -411,11 +412,41 @@ function renderTutors(tutors = []) {
           <textarea class="home-tutor-text">${escapeHtml(item.text || "")}</textarea>
         </div>
         <div class="field" style="margin-bottom:0">
-          <label>Ảnh (URL)</label>
-          <input class="home-tutor-image" type="text" value="${escapeAttr(item.image || "")}" />
+          <label for="upload-home-tutor-${i}">Ảnh gia sư ${i + 1}</label>
+          <input class="home-tutor-image" type="hidden" value="${escapeAttr(item.image || "")}" />
+          <div class="asset-picker asset-picker-compact">
+            <img class="asset-picker-preview home-tutor-preview" src="${escapeAttr(normalizeAssetUrl(item.image || ""))}" alt="Ảnh gia sư ${i + 1}" />
+            <div class="asset-picker-actions">
+              <label class="btn btn-primary" for="upload-home-tutor-${i}">Chọn ảnh</label>
+              <input id="upload-home-tutor-${i}" class="home-tutor-upload hidden" type="file" accept="image/*" />
+              <span class="selected-file-name home-tutor-file">${escapeHtml(assetFileName(item.image))}</span>
+            </div>
+          </div>
         </div>
       </div>`;
   }).join("");
+
+  wrap.querySelectorAll(".home-tutor-upload").forEach((input) => {
+    input.addEventListener("change", async (event) => {
+      const file = event.target.files[0];
+      if (!file) return;
+      const card = event.target.closest(".home-tutor-card");
+      const status = document.getElementById("homepage-status");
+      try {
+        setStatus(status, "Đang tải ảnh gia sư...");
+        await uploadFile(file, (data) => {
+          card.querySelector(".home-tutor-image").value = data.path;
+          card.querySelector(".home-tutor-preview").src = data.url;
+          card.querySelector(".home-tutor-file").textContent = assetFileName(data.path);
+          setStatus(status, "Đã chọn ảnh. Bấm “Lưu trang chủ” để cập nhật.", "success");
+        });
+      } catch (error) {
+        setStatus(status, error.message, "error");
+      } finally {
+        event.target.value = "";
+      }
+    });
+  });
 }
 
 async function loadHomepage() {
@@ -427,6 +458,7 @@ async function loadHomepage() {
     document.getElementById("home-description").value = data.description || "";
     document.getElementById("home-logo").value = data.logo || "";
     document.getElementById("home-logo-preview").src = normalizeAssetUrl(data.logo || "");
+    document.getElementById("home-logo-file").textContent = assetFileName(data.logo);
     document.getElementById("home-logo-size").textContent =
       `Khổ ảnh: ${data.logo_size_label || formatSizeLabel(data.logo_width, data.logo_height)}`;
     bindPreviewSize(
@@ -442,6 +474,8 @@ async function loadHomepage() {
     document.getElementById("home-subjects-intro").value = data.subjects_intro || "";
     document.getElementById("home-commit-title").value = data.commit_title || "";
     document.getElementById("home-commit-image").value = data.commit_image || "";
+    document.getElementById("home-commit-preview").src = normalizeAssetUrl(data.commit_image || "");
+    document.getElementById("home-commit-file").textContent = assetFileName(data.commit_image);
     renderCommitItems(data.commit_items || []);
     document.getElementById("home-banner-title").value = data.banner_title || "";
     document.getElementById("home-banner-subtitle").value = data.banner_subtitle || "";
@@ -624,17 +658,16 @@ function renderFeedbackImages(images = []) {
           alt="Xem trước phản hồi ${index + 1}"
         />
         <div class="field">
-          <label>Đường dẫn ảnh</label>
+          <label>Ảnh đang sử dụng</label>
           <input
             class="feedback-image-url"
-            type="text"
+            type="hidden"
             value="${escapeAttr(item.url || "")}"
           />
-          <p class="field-hint">Có thể dán link chia sẻ Google Drive.</p>
+          <span class="selected-file-name feedback-file-name">${escapeHtml(assetFileName(item.url))}</span>
         </div>
         <div class="image-toolbar-actions">
-          <button class="btn btn-primary normalize-feedback-url" type="button">Kiểm tra link</button>
-          <label class="btn btn-secondary" for="upload-feedback-${index}">Tải ảnh mới</label>
+          <label class="btn btn-primary" for="upload-feedback-${index}">Chọn ảnh</label>
         </div>
         <input
           id="upload-feedback-${index}"
@@ -651,16 +684,6 @@ function renderFeedbackImages(images = []) {
     urlInput.addEventListener("input", () => {
       preview.src = normalizeAssetUrl(urlInput.value.trim());
     });
-    card.querySelector(".normalize-feedback-url").addEventListener("click", () => {
-      const normalized = normalizeAssetUrl(urlInput.value.trim());
-      urlInput.value = normalized;
-      preview.src = normalized;
-      setStatus(
-        document.getElementById("feedback-status"),
-        normalized ? "Link ảnh hợp lệ. Bấm “Lưu phản hồi” để cập nhật." : "Chưa có đường dẫn ảnh.",
-        normalized ? "success" : "error"
-      );
-    });
   });
 
   wrap.querySelectorAll(".feedback-image-upload").forEach((input) => {
@@ -674,9 +697,10 @@ function renderFeedbackImages(images = []) {
         await uploadFile(file, (data) => {
           card.querySelector(".feedback-image-url").value = data.url;
           card.querySelector(".feedback-admin-preview").src = data.url;
+          card.querySelector(".feedback-file-name").textContent = assetFileName(data.path || data.url);
           setStatus(
             status,
-            "Đã tải ảnh. Bấm “Lưu phản hồi” để cập nhật trang.",
+            "Đã chọn ảnh. Bấm “Lưu phản hồi” để cập nhật trang.",
             "success"
           );
         });
@@ -869,6 +893,7 @@ async function loadSettings() {
   document.getElementById("setting-hotline1").value = data.hotline1 || "";
   document.getElementById("setting-hotline2").value = data.hotline2 || "";
   document.getElementById("setting-logo-preview").src = normalizeAssetUrl(data.logo);
+  document.getElementById("setting-logo-file").textContent = assetFileName(data.logo);
   document
     .getElementById("cms-publishing-warning")
     .classList.toggle("hidden", data.publishing_ready !== false);
@@ -915,6 +940,19 @@ function googleDriveFileId(value) {
   return "";
 }
 
+function assetFileName(value) {
+  const raw = String(value || "").trim();
+  if (!raw) return "Chưa chọn ảnh";
+  if (raw.includes("drive.google.com")) return "Ảnh Google Drive";
+  const clean = raw.split(/[?#]/)[0].replace(/\/+$/, "");
+  const name = clean.split("/").pop() || "";
+  try {
+    return decodeURIComponent(name) || "Ảnh hiện tại";
+  } catch (_) {
+    return name || "Ảnh hiện tại";
+  }
+}
+
 function normalizeAssetUrl(path) {
   const value = String(path || "").trim();
   if (!value) return "";
@@ -939,32 +977,6 @@ function renderRatingPreview() {
   target.innerHTML =
     `${"★".repeat(filled)}<span style="color:#d6d6d6">${"☆".repeat(5 - filled)}</span>` +
     `<small>${score.toFixed(1)}/5 — ${count} bình chọn</small>`;
-}
-
-function previewDriveImage() {
-  const source = document.getElementById("drive-image-url").value.trim();
-  const normalized = normalizeAssetUrl(source);
-  const status = document.getElementById("drive-status");
-  if (!source || !googleDriveFileId(source)) {
-    document.getElementById("drive-preview-wrap").classList.add("hidden");
-    setStatus(status, "Link chưa đúng định dạng Google Drive.", "error");
-    return;
-  }
-  const preview = document.getElementById("drive-image-preview");
-  document.getElementById("drive-normalized-url").value = normalized;
-  preview.src = normalized;
-  preview.onload = () => {
-    document.getElementById("drive-preview-wrap").classList.remove("hidden");
-    setStatus(status, "Ảnh đã tải được. Có thể sao chép đường dẫn để dùng.", "success");
-  };
-  preview.onerror = () => {
-    document.getElementById("drive-preview-wrap").classList.remove("hidden");
-    setStatus(
-      status,
-      "Không xem được ảnh. Hãy bật quyền “Bất kỳ ai có liên kết — Người xem” trong Drive.",
-      "error"
-    );
-  };
 }
 
 function escapeHtml(value) {
@@ -1013,33 +1025,6 @@ document.querySelectorAll("[data-quick-view]").forEach((button) => {
   });
 });
 
-document.getElementById("apply-inline-image-url").addEventListener("click", () => {
-  const field = document.getElementById("inline-image-url");
-  const url = normalizeAssetUrl(field.value.trim());
-  if (!url) {
-    setStatus(document.getElementById("editor-status"), "Chưa có đường dẫn ảnh.", "error");
-    return;
-  }
-  field.value = url;
-  applyInlineImage(url);
-});
-
-document.getElementById("preview-drive-image").addEventListener("click", previewDriveImage);
-document.getElementById("drive-image-url").addEventListener("keydown", (event) => {
-  if (event.key === "Enter") previewDriveImage();
-});
-document.getElementById("copy-drive-image-url").addEventListener("click", async () => {
-  const field = document.getElementById("drive-normalized-url");
-  try {
-    await navigator.clipboard.writeText(field.value);
-    setStatus(document.getElementById("drive-status"), "Đã sao chép đường dẫn ảnh.", "success");
-  } catch (_) {
-    field.select();
-    document.execCommand("copy");
-    setStatus(document.getElementById("drive-status"), "Đã sao chép đường dẫn ảnh.", "success");
-  }
-});
-
 document.getElementById("home-logo").addEventListener("input", (event) => {
   document.getElementById("home-logo-preview").src = normalizeAssetUrl(event.target.value.trim());
 });
@@ -1053,9 +1038,29 @@ document.getElementById("upload-home-logo").addEventListener("change", async (ev
     await uploadFile(file, (data) => {
       document.getElementById("home-logo").value = data.path;
       document.getElementById("home-logo-preview").src = data.url;
+      document.getElementById("home-logo-file").textContent = assetFileName(data.path);
       document.getElementById("home-logo-size").textContent =
         `Khổ ảnh: ${data.size_label || formatSizeLabel(data.width, data.height)}`;
-      setStatus(status, "Đã tải logo", "success");
+      setStatus(status, "Đã chọn logo. Bấm “Lưu trang chủ” để cập nhật.", "success");
+    });
+  } catch (error) {
+    setStatus(status, error.message, "error");
+  } finally {
+    event.target.value = "";
+  }
+});
+
+document.getElementById("upload-home-commit-image").addEventListener("change", async (event) => {
+  const file = event.target.files[0];
+  if (!file) return;
+  const status = document.getElementById("homepage-status");
+  try {
+    setStatus(status, "Đang tải ảnh minh họa...");
+    await uploadFile(file, (data) => {
+      document.getElementById("home-commit-image").value = data.path;
+      document.getElementById("home-commit-preview").src = data.url;
+      document.getElementById("home-commit-file").textContent = assetFileName(data.path);
+      setStatus(status, "Đã chọn ảnh. Bấm “Lưu trang chủ” để cập nhật.", "success");
     });
   } catch (error) {
     setStatus(status, error.message, "error");
@@ -1078,6 +1083,25 @@ document.getElementById("field-thumbnail").addEventListener("input", (event) => 
 
 document.getElementById("setting-logo").addEventListener("input", (event) => {
   document.getElementById("setting-logo-preview").src = normalizeAssetUrl(event.target.value.trim());
+});
+
+document.getElementById("upload-setting-logo").addEventListener("change", async (event) => {
+  const file = event.target.files[0];
+  if (!file) return;
+  const status = document.getElementById("settings-status");
+  try {
+    setStatus(status, "Đang tải logo...");
+    await uploadFile(file, (data) => {
+      document.getElementById("setting-logo").value = data.path;
+      document.getElementById("setting-logo-preview").src = data.url;
+      document.getElementById("setting-logo-file").textContent = assetFileName(data.path);
+      setStatus(status, "Đã chọn logo. Bấm “Lưu cài đặt” để cập nhật.", "success");
+    });
+  } catch (error) {
+    setStatus(status, error.message, "error");
+  } finally {
+    event.target.value = "";
+  }
 });
 
 document.getElementById("pick-thumbnail").addEventListener("click", async () => {

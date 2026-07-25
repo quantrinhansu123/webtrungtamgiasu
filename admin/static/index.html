@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Quản trị website - Trí Việt CMS</title>
-  <link rel="stylesheet" href="/admin/static/admin.css?v=20260725-2" />
+  <link rel="stylesheet" href="/admin/static/admin.css?v=20260725-3" />
   <link href="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.snow.css" rel="stylesheet" />
 </head>
 <body>
@@ -101,8 +101,8 @@
         <div class="welcome-card">
           <div>
             <span class="eyebrow">TRÍ VIỆT CMS</span>
-            <h1>Quản lý website dễ dàng</h1>
-            <p>Chọn đúng mục cần sửa, kiểm tra lại nội dung rồi bấm Lưu. Website sẽ tự cập nhật sau khoảng 1 phút.</p>
+            <h1>Quản lý website</h1>
+            <p>Chọn đúng mục cần sửa, kiểm tra lại nội dung rồi bấm Lưu. Website sẽ tự cập nhật.</p>
           </div>
           <a class="btn btn-light" href="/giasubinhminh.com/index.html" target="_blank" rel="noopener">Xem website đang chạy</a>
         </div>
@@ -200,9 +200,10 @@
           <div class="field">
             <label for="home-logo">Logo website</label>
             <div class="home-media-row">
-              <input id="home-logo" type="text" placeholder="Đường dẫn ảnh logo..." />
-              <label class="btn btn-secondary" for="upload-home-logo">Tải ảnh</label>
+              <input id="home-logo" type="hidden" />
+              <label class="btn btn-primary" for="upload-home-logo">Chọn ảnh logo</label>
               <input id="upload-home-logo" type="file" accept="image/*" class="hidden" />
+              <span id="home-logo-file" class="selected-file-name">Chưa chọn ảnh</span>
             </div>
             <div class="home-size-meta">
               <span class="size-badge" id="home-logo-size">Khổ ảnh: —</span>
@@ -261,8 +262,16 @@
             <input id="home-commit-title" type="text" />
           </div>
           <div class="field">
-            <label for="home-commit-image">Ảnh minh họa (URL)</label>
-            <input id="home-commit-image" type="text" />
+            <label for="upload-home-commit-image">Ảnh minh họa</label>
+            <input id="home-commit-image" type="hidden" />
+            <div class="asset-picker">
+              <img id="home-commit-preview" class="asset-picker-preview" alt="Ảnh minh họa cam kết" />
+              <div class="asset-picker-actions">
+                <label class="btn btn-primary" for="upload-home-commit-image">Chọn ảnh</label>
+                <input id="upload-home-commit-image" type="file" accept="image/*" class="hidden" />
+                <span id="home-commit-file" class="selected-file-name">Chưa chọn ảnh</span>
+              </div>
+            </div>
           </div>
           <div id="home-commit-items" class="home-commit-list"></div>
         </div>
@@ -419,11 +428,6 @@
                   <label class="btn btn-primary" for="inline-image-input">Tải ảnh mới</label>
                   <button id="replace-image-library" class="btn btn-secondary" type="button">Chọn từ thư viện</button>
                 </div>
-                <div class="drive-inline-row">
-                  <input id="inline-image-url" type="text" placeholder="Hoặc dán link ảnh Google Drive..." />
-                  <button id="apply-inline-image-url" class="btn btn-secondary" type="button">Dùng link này</button>
-                </div>
-                <p class="field-hint drive-hint">Ảnh Drive phải bật “Bất kỳ ai có liên kết” trước khi dùng.</p>
               </div>
               <input id="inline-image-input" type="file" accept="image/*" class="hidden" />
             </div>
@@ -432,13 +436,13 @@
 
           <div class="panel editor-preview">
             <div class="field">
-              <label for="field-thumbnail">Ảnh đại diện (URL)</label>
-              <input id="field-thumbnail" type="text" />
+              <label for="upload-thumbnail">Ảnh đại diện</label>
+              <input id="field-thumbnail" type="hidden" />
             </div>
             <img id="thumbnail-preview" alt="Ảnh đại diện" />
             <div style="margin-top:16px; display:flex; gap:10px; flex-wrap:wrap;">
-              <button id="pick-thumbnail" class="btn btn-secondary" type="button">Chọn từ thư viện</button>
-              <label class="btn btn-secondary" for="upload-thumbnail">Tải ảnh mới</label>
+              <button id="pick-thumbnail" class="btn btn-secondary" type="button">Chọn ảnh có sẵn</button>
+              <label class="btn btn-primary" for="upload-thumbnail">Chọn ảnh từ máy</label>
               <input id="upload-thumbnail" type="file" accept="image/*" class="hidden" />
             </div>
             <div class="editor-rating-box">
@@ -478,13 +482,13 @@
         <div class="panel">
           <div class="drive-guide">
             <div>
-              <span class="drive-mark">G</span>
+              <span class="drive-mark">✓</span>
               <div>
-                <strong>Dùng ảnh từ Google Drive</strong>
-                <p>Dán link chia sẻ vào đúng ô bên dưới. Nhớ bật quyền “Bất kỳ ai có liên kết — Người xem”.</p>
+                <strong>Thay ảnh phản hồi</strong>
+                <p>Bấm “Chọn ảnh” tại đúng vị trí cần thay, kiểm tra ảnh xem trước rồi bấm “Lưu phản hồi”.</p>
               </div>
             </div>
-            <a class="btn btn-secondary" href="https://drive.google.com/drive/folders/1ZZbFZyprqiOIOq9mxlvtf6Uls5KRKO0N" target="_blank" rel="noopener">Mở thư mục ảnh Trí Việt</a>
+            <a class="btn btn-secondary" href="https://drive.google.com/drive/folders/1ZZbFZyprqiOIOq9mxlvtf6Uls5KRKO0N" target="_blank" rel="noopener">Mở kho ảnh Drive</a>
           </div>
           <div id="feedback-images" class="feedback-admin-grid"></div>
           <div id="feedback-status" class="status"></div>
@@ -504,24 +508,11 @@
           <div class="drive-manager-copy">
             <span class="drive-mark">G</span>
             <div>
-              <h3>Ảnh từ Google Drive</h3>
-              <p>Dán link Drive để kiểm tra ảnh rồi sao chép đường dẫn đã chuẩn hóa. Không tốn dung lượng website.</p>
+              <h3>Kho ảnh Google Drive</h3>
+              <p>Dùng để lưu và theo dõi ảnh gốc. Khi sửa website, nhân viên chỉ cần bấm “Chọn ảnh”.</p>
             </div>
+            <a class="btn btn-primary" href="https://drive.google.com/drive/folders/1ZZbFZyprqiOIOq9mxlvtf6Uls5KRKO0N" target="_blank" rel="noopener">Mở kho ảnh Drive</a>
           </div>
-          <div class="drive-manager-form">
-            <input id="drive-image-url" type="text" placeholder="Dán link chia sẻ Google Drive tại đây..." />
-            <button id="preview-drive-image" class="btn btn-primary" type="button">Kiểm tra ảnh</button>
-            <a class="btn btn-secondary" href="https://drive.google.com/drive/folders/1ZZbFZyprqiOIOq9mxlvtf6Uls5KRKO0N" target="_blank" rel="noopener">Mở Drive</a>
-          </div>
-          <div id="drive-preview-wrap" class="drive-preview-wrap hidden">
-            <img id="drive-image-preview" alt="Ảnh Google Drive xem trước" />
-            <div>
-              <label for="drive-normalized-url">Đường dẫn dùng cho website</label>
-              <input id="drive-normalized-url" type="text" readonly />
-              <button id="copy-drive-image-url" class="btn btn-secondary" type="button">Sao chép đường dẫn</button>
-            </div>
-          </div>
-          <div id="drive-status" class="status"></div>
         </div>
         <div class="panel">
           <div class="panel-heading">
@@ -547,8 +538,11 @@
               <input id="setting-site-name" type="text" />
             </div>
             <div class="field">
-              <label for="setting-logo">Logo (URL)</label>
-              <input id="setting-logo" type="text" />
+              <label for="upload-setting-logo">Logo website</label>
+              <input id="setting-logo" type="hidden" />
+              <label class="btn btn-primary" for="upload-setting-logo">Chọn logo</label>
+              <input id="upload-setting-logo" type="file" accept="image/*" class="hidden" />
+              <span id="setting-logo-file" class="selected-file-name">Chưa chọn ảnh</span>
             </div>
             <div class="field">
               <label for="setting-hotline1">Hotline 1</label>
@@ -573,6 +567,6 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.js"></script>
-  <script src="/admin/static/admin.js?v=20260725-2"></script>
+  <script src="/admin/static/admin.js?v=20260725-3"></script>
 </body>
 </html>

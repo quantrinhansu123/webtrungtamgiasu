@@ -1272,6 +1272,14 @@ label {
   margin: 0;
 }
 
+.drive-manager-copy {
+  justify-content: space-between;
+}
+
+.drive-manager-copy > div {
+  flex: 1;
+}
+
 .drive-manager-form {
   gap: 10px;
   margin-top: 18px;
@@ -1319,6 +1327,65 @@ label {
 
 .drive-hint {
   margin-top: 8px;
+}
+
+.selected-file-name {
+  display: inline-flex;
+  align-items: center;
+  min-height: 36px;
+  max-width: 100%;
+  padding: 7px 11px;
+  color: #52645b;
+  background: #f4f8f6;
+  border: 1px solid #dce8e1;
+  border-radius: 9px;
+  font-size: 0.8rem;
+  overflow-wrap: anywhere;
+}
+
+.asset-picker {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  padding: 14px;
+  background: #f8fbf9;
+  border: 1px solid #dce8e1;
+  border-radius: 13px;
+}
+
+.asset-picker-preview {
+  display: block;
+  width: 240px;
+  height: 160px;
+  object-fit: contain;
+  background: #fff;
+  border: 1px solid #dce8e1;
+  border-radius: 10px;
+}
+
+.asset-picker-actions {
+  display: flex;
+  flex: 1;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.asset-picker-compact {
+  align-items: flex-start;
+}
+
+.asset-picker-compact .asset-picker-preview {
+  width: 150px;
+  height: 130px;
+}
+
+.feedback-admin-card .selected-file-name {
+  width: 100%;
+}
+
+#setting-logo-file {
+  margin-top: 10px;
 }
 
 .editor-rating-box {
@@ -1442,9 +1509,11 @@ label {
 
   .welcome-card,
   .drive-guide,
+  .drive-manager-copy,
   .drive-preview-wrap,
   .drive-manager-form,
   .drive-inline-row,
+  .asset-picker,
   .panel-heading {
     flex-direction: column;
     align-items: stretch;
@@ -1468,6 +1537,12 @@ label {
   }
 
   .drive-preview-wrap img {
+    width: 100%;
+    height: 220px;
+  }
+
+  .asset-picker-preview,
+  .asset-picker-compact .asset-picker-preview {
     width: 100%;
     height: 220px;
   }
