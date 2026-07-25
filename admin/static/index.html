@@ -4,14 +4,23 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Quản trị website - Trí Việt CMS</title>
-  <link rel="stylesheet" href="/admin/static/admin.css" />
+  <link rel="stylesheet" href="/admin/static/admin.css?v=20260725-2" />
   <link href="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.snow.css" rel="stylesheet" />
 </head>
 <body>
   <div id="login-screen">
     <div class="login-card">
-      <h1>Trí Việt CMS</h1>
-      <p>Đăng nhập để quản lý nội dung website</p>
+      <div class="login-brand">
+        <img
+          src="/giasubinhminh.com/wp-content/uploads/cms/2026/07/b60442c2c31d48ab8146e213a27ac28c.jpg"
+          alt="Logo Trung Tâm Gia Sư Trí Việt"
+        />
+        <div>
+          <span>TRUNG TÂM GIA SƯ TRÍ VIỆT</span>
+          <h1>Hệ thống quản trị</h1>
+          <p>Quản lý nội dung website dành cho nhân viên</p>
+        </div>
+      </div>
       <form id="login-form">
         <div class="field">
           <label for="username">Tên đăng nhập</label>
@@ -21,39 +30,47 @@
           <label for="password">Mật khẩu</label>
           <input id="password" type="password" autocomplete="current-password" />
         </div>
-        <button class="btn btn-primary" type="submit" style="width:100%">Đăng nhập</button>
+        <button class="btn btn-primary btn-large" type="submit" style="width:100%">Đăng nhập quản trị</button>
         <div id="login-status" class="status error"></div>
       </form>
+      <div class="login-note">Nội dung chỉ được cập nhật sau khi bấm nút Lưu.</div>
     </div>
   </div>
 
   <div id="app" class="hidden">
     <aside class="sidebar">
       <div class="brand">
-        <h2>Trí Việt CMS</h2>
-        <p>Quản trị nội dung website</p>
+        <img
+          src="/giasubinhminh.com/wp-content/uploads/cms/2026/07/b60442c2c31d48ab8146e213a27ac28c.jpg"
+          alt="Logo Trí Việt"
+        />
+        <div>
+          <h2>Trí Việt</h2>
+          <p>Quản trị website</p>
+        </div>
       </div>
-      <button class="nav-btn active" data-view="pages">Bài viết / Trang</button>
+      <div class="nav-label">NỘI DUNG WEBSITE</div>
+      <button class="nav-btn active" data-view="pages"><span class="nav-icon">▦</span>Bài viết / Trang</button>
       <button
         class="nav-btn nav-featured"
         data-view="homepage"
         title="Quản trị trang chủ"
       >
-        Trang chủ
+        <span class="nav-icon">⌂</span>Trang chủ
       </button>
       <button
         class="nav-btn nav-featured"
         data-view="feedback"
         title="Quản lý ảnh phản hồi phụ huynh"
       >
-        Phản hồi phụ huynh
+        <span class="nav-icon">★</span>Phản hồi phụ huynh
       </button>
       <button
         class="nav-btn nav-featured"
         data-view="classes"
         title="Đăng và quản lý danh sách lớp mới"
       >
-        Đăng lớp mới
+        <span class="nav-icon">＋</span>Đăng lớp mới
       </button>
       <button
         class="nav-btn nav-featured"
@@ -61,12 +78,17 @@
         data-page-id="cam-ket-tien-bo-sau-10-buoi/index.html"
         title="Quản trị trang Cam kết tiến bộ sau 10 buổi"
       >
-        Cam kết 10 buổi
+        <span class="nav-icon">✓</span>Cam kết 10 buổi
       </button>
-      <button class="nav-btn" data-view="media">Thư viện ảnh</button>
-      <button class="nav-btn" data-view="settings">Cài đặt chung</button>
+      <div class="nav-label">HÌNH ẢNH &amp; HỆ THỐNG</div>
+      <button class="nav-btn" data-view="media"><span class="nav-icon">▧</span>Thư viện ảnh</button>
+      <button class="nav-btn" data-view="settings"><span class="nav-icon">⚙</span>Cài đặt chung</button>
       <div class="sidebar-footer">
-        <a class="btn btn-secondary" href="/giasubinhminh.com/index.html" target="_blank" rel="noopener">Xem website</a>
+        <div class="staff-card">
+          <span class="staff-avatar">NV</span>
+          <div><strong>Nhân viên nội dung</strong><small>Đang đăng nhập</small></div>
+        </div>
+        <a class="btn btn-secondary" href="/giasubinhminh.com/index.html" target="_blank" rel="noopener">Mở website</a>
         <button id="logout-btn" class="btn btn-danger" type="button">Đăng xuất</button>
       </div>
     </aside>
@@ -76,11 +98,44 @@
         Trang quản trị đang ở chế độ xem. Cần cấu hình quyền xuất bản GitHub trên Vercel để nút Lưu hoạt động.
       </div>
       <section id="view-pages">
+        <div class="welcome-card">
+          <div>
+            <span class="eyebrow">TRÍ VIỆT CMS</span>
+            <h1>Quản lý website dễ dàng</h1>
+            <p>Chọn đúng mục cần sửa, kiểm tra lại nội dung rồi bấm Lưu. Website sẽ tự cập nhật sau khoảng 1 phút.</p>
+          </div>
+          <a class="btn btn-light" href="/giasubinhminh.com/index.html" target="_blank" rel="noopener">Xem website đang chạy</a>
+        </div>
         <div class="topbar">
-          <h1>Danh sách bài viết</h1>
+          <div>
+            <span class="section-kicker">QUẢN LÝ NỘI DUNG</span>
+            <h1>Trang thường dùng</h1>
+          </div>
           <div class="topbar-actions">
             <input id="page-search" type="search" placeholder="Tìm theo tiêu đề..." />
           </div>
+        </div>
+        <div class="quick-grid">
+          <button class="quick-card" type="button" data-quick-view="homepage">
+            <span class="quick-icon quick-green">⌂</span>
+            <span><strong>Sửa trang chủ</strong><small>Logo, slider, nội dung chính</small></span>
+            <b>›</b>
+          </button>
+          <button class="quick-card" type="button" data-quick-view="feedback">
+            <span class="quick-icon quick-orange">★</span>
+            <span><strong>Đổi ảnh phản hồi</strong><small>Quản lý 6 ảnh phụ huynh</small></span>
+            <b>›</b>
+          </button>
+          <button class="quick-card" type="button" data-quick-view="classes">
+            <span class="quick-icon quick-blue">＋</span>
+            <span><strong>Đăng lớp mới</strong><small>Dán nội dung từ Zalo/Facebook</small></span>
+            <b>›</b>
+          </button>
+          <button class="quick-card" type="button" data-quick-view="media">
+            <span class="quick-icon quick-purple">▧</span>
+            <span><strong>Quản lý hình ảnh</strong><small>Dùng ảnh website hoặc Google Drive</small></span>
+            <b>›</b>
+          </button>
         </div>
         <div class="panel featured-page-card" id="featured-home-card">
           <div class="featured-page-info">
@@ -118,7 +173,11 @@
             >Xem trang</a>
           </div>
         </div>
-        <div class="panel">
+        <div class="panel page-library-panel">
+          <div class="panel-heading">
+            <div><span class="section-kicker">TẤT CẢ NỘI DUNG</span><h3>Danh sách bài viết / trang con</h3></div>
+            <span class="field-hint">Bấm vào một dòng để chỉnh sửa</span>
+          </div>
           <div id="page-list" class="page-list"></div>
           <div id="pages-status" class="status"></div>
         </div>
@@ -360,6 +419,11 @@
                   <label class="btn btn-primary" for="inline-image-input">Tải ảnh mới</label>
                   <button id="replace-image-library" class="btn btn-secondary" type="button">Chọn từ thư viện</button>
                 </div>
+                <div class="drive-inline-row">
+                  <input id="inline-image-url" type="text" placeholder="Hoặc dán link ảnh Google Drive..." />
+                  <button id="apply-inline-image-url" class="btn btn-secondary" type="button">Dùng link này</button>
+                </div>
+                <p class="field-hint drive-hint">Ảnh Drive phải bật “Bất kỳ ai có liên kết” trước khi dùng.</p>
               </div>
               <input id="inline-image-input" type="file" accept="image/*" class="hidden" />
             </div>
@@ -376,6 +440,23 @@
               <button id="pick-thumbnail" class="btn btn-secondary" type="button">Chọn từ thư viện</button>
               <label class="btn btn-secondary" for="upload-thumbnail">Tải ảnh mới</label>
               <input id="upload-thumbnail" type="file" accept="image/*" class="hidden" />
+            </div>
+            <div class="editor-rating-box">
+              <div class="rating-box-title">
+                <span>★</span>
+                <div><strong>Đánh giá hiển thị</strong><small>Điều chỉnh số sao của bài viết</small></div>
+              </div>
+              <div class="grid-2">
+                <div class="field">
+                  <label for="field-rating-score">Điểm sao (0–5)</label>
+                  <input id="field-rating-score" type="number" min="0" max="5" step="0.1" />
+                </div>
+                <div class="field">
+                  <label for="field-rating-count">Số bình chọn</label>
+                  <input id="field-rating-count" type="number" min="0" step="1" />
+                </div>
+              </div>
+              <div id="rating-live-preview" class="rating-live-preview" aria-label="Xem trước số sao"></div>
             </div>
           </div>
         </div>
@@ -395,10 +476,16 @@
           </div>
         </div>
         <div class="panel">
-          <p class="field-hint">
-            Chỉ quản lý 6 ảnh feedback trong phần 3 của bài “Gia sư dạy Online/Tại Nhà”.
-            Bấm “Tải ảnh mới” tại từng ô để thay đúng vị trí.
-          </p>
+          <div class="drive-guide">
+            <div>
+              <span class="drive-mark">G</span>
+              <div>
+                <strong>Dùng ảnh từ Google Drive</strong>
+                <p>Dán link chia sẻ vào đúng ô bên dưới. Nhớ bật quyền “Bất kỳ ai có liên kết — Người xem”.</p>
+              </div>
+            </div>
+            <a class="btn btn-secondary" href="https://drive.google.com/drive/folders/1ZZbFZyprqiOIOq9mxlvtf6Uls5KRKO0N" target="_blank" rel="noopener">Mở thư mục ảnh Trí Việt</a>
+          </div>
           <div id="feedback-images" class="feedback-admin-grid"></div>
           <div id="feedback-status" class="status"></div>
         </div>
@@ -413,7 +500,34 @@
             <input id="upload-media" type="file" accept="image/*" class="hidden" />
           </div>
         </div>
+        <div class="panel drive-manager">
+          <div class="drive-manager-copy">
+            <span class="drive-mark">G</span>
+            <div>
+              <h3>Ảnh từ Google Drive</h3>
+              <p>Dán link Drive để kiểm tra ảnh rồi sao chép đường dẫn đã chuẩn hóa. Không tốn dung lượng website.</p>
+            </div>
+          </div>
+          <div class="drive-manager-form">
+            <input id="drive-image-url" type="text" placeholder="Dán link chia sẻ Google Drive tại đây..." />
+            <button id="preview-drive-image" class="btn btn-primary" type="button">Kiểm tra ảnh</button>
+            <a class="btn btn-secondary" href="https://drive.google.com/drive/folders/1ZZbFZyprqiOIOq9mxlvtf6Uls5KRKO0N" target="_blank" rel="noopener">Mở Drive</a>
+          </div>
+          <div id="drive-preview-wrap" class="drive-preview-wrap hidden">
+            <img id="drive-image-preview" alt="Ảnh Google Drive xem trước" />
+            <div>
+              <label for="drive-normalized-url">Đường dẫn dùng cho website</label>
+              <input id="drive-normalized-url" type="text" readonly />
+              <button id="copy-drive-image-url" class="btn btn-secondary" type="button">Sao chép đường dẫn</button>
+            </div>
+          </div>
+          <div id="drive-status" class="status"></div>
+        </div>
         <div class="panel">
+          <div class="panel-heading">
+            <div><span class="section-kicker">ẢNH ĐANG LƯU TRÊN WEBSITE</span><h3>Thư viện nội bộ</h3></div>
+            <span class="field-hint">Dùng khi không có link Drive</span>
+          </div>
           <div id="media-grid" class="media-grid"></div>
           <div id="media-status" class="status"></div>
         </div>
@@ -459,6 +573,6 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.js"></script>
-  <script src="/admin/static/admin.js"></script>
+  <script src="/admin/static/admin.js?v=20260725-2"></script>
 </body>
 </html>

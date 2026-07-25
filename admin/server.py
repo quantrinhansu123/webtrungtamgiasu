@@ -440,6 +440,17 @@ def extract_text(tag):
     return tag.get_text(strip=True)
 
 
+def parse_page_rating(soup: BeautifulSoup) -> tuple[float | None, int | None]:
+    rating = soup.select_one(".kk-star-ratings[data-payload]")
+    if not rating:
+        return None, None
+    try:
+        payload = json.loads(rating.get("data-payload") or "{}")
+        return float(payload.get("score")), int(payload.get("count"))
+    except (TypeError, ValueError, json.JSONDecodeError):
+        return None, None
+
+
 def parse_page(html: str) -> dict:
     soup = BeautifulSoup(html, "html.parser")
     title_tag = soup.find("title")
@@ -456,6 +467,7 @@ def parse_page(html: str) -> dict:
     content = ""
     if entry:
         content = entry.decode_contents()
+    rating_score, rating_count = parse_page_rating(soup)
 
     return {
         "title": extract_text(title_tag),
@@ -466,6 +478,8 @@ def parse_page(html: str) -> dict:
         "content": content,
         "page_type": page_type,
         "has_entry_content": bool(entry),
+        "rating_score": rating_score,
+        "rating_count": rating_count,
     }
 
 
@@ -480,6 +494,69 @@ def update_meta_content(soup: BeautifulSoup, name: str, value: str, attr_name="n
             new_tag[attr_name] = name
             new_tag["content"] = value
             head.append(new_tag)
+
+
+def update_jsonld_rating(value, score: float, count: int):
+    if isinstance(value, dict):
+        aggregate = value.get("aggregateRating")
+        if isinstance(aggregate, dict):
+            aggregate["ratingValue"] = score
+            aggregate["ratingCount"] = count
+            if "reviewCount" in aggregate:
+                aggregate["reviewCount"] = count
+        for child in value.values():
+            update_jsonld_rating(child, score, count)
+    elif isinstance(value, list):
+        for child in value:
+            update_jsonld_rating(child, score, count)
+
+
+def apply_rating_updates(soup: BeautifulSoup, score_value, count_value):
+    if score_value in (None, "") and count_value in (None, ""):
+        return
+
+    current_score, current_count = parse_page_rating(soup)
+    if current_score is None:
+        return
+
+    try:
+        score = current_score if score_value in (None, "") else float(score_value)
+        count = current_count if count_value in (None, "") else int(count_value)
+    except (TypeError, ValueError) as exc:
+        raise ValueError("Điểm sao hoặc số bình chọn không hợp lệ") from exc
+
+    score = max(0.0, min(5.0, round(score, 1)))
+    count = max(0, count or 0)
+    score_text = f"{score:.1f}"
+    legend_text = f"{score_text}/5 - ({count} bình chọn)"
+
+    for rating in soup.select(".kk-star-ratings[data-payload]"):
+        try:
+            payload = json.loads(rating.get("data-payload") or "{}")
+        except json.JSONDecodeError:
+            payload = {}
+        size = float(payload.get("size") or 24)
+        gap = float(payload.get("gap") or 4)
+        width = max(0.0, score * (size + gap) - (gap / 2))
+        payload["score"] = score_text
+        payload["count"] = str(count)
+        payload["legend"] = legend_text
+        payload["width"] = f"{width:.1f}"
+        rating["data-payload"] = json.dumps(payload, ensure_ascii=False, separators=(",", ":"))
+        active = rating.select_one(".kksr-stars-active")
+        if active:
+            active["style"] = f"width: {width:.1f}px;"
+        legend = rating.select_one(".kksr-legend")
+        if legend:
+            legend.string = legend_text
+
+    for script in soup.select('script[type="application/ld+json"]'):
+        try:
+            structured = json.loads(script.string or script.get_text() or "")
+        except (TypeError, json.JSONDecodeError):
+            continue
+        update_jsonld_rating(structured, score, count)
+        script.string = json.dumps(structured, ensure_ascii=False, separators=(",", ":"))
 
 
 def apply_page_updates(html: str, data: dict) -> str:
@@ -515,6 +592,8 @@ def apply_page_updates(html: str, data: dict) -> str:
             fragment = BeautifulSoup(data["content"] or "", "html.parser")
             for child in list(fragment.children):
                 entry.append(child)
+
+    apply_rating_updates(soup, data.get("rating_score"), data.get("rating_count"))
 
     return str(soup)
 

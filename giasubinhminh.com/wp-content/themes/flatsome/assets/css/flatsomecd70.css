@@ -9921,3 +9921,35 @@ li.wc-layered-nav-rating .star-rating {
 .stars a.star-5:after {
 	content: '\e005\e005\e005\e005\e005'
 }
+
+/* Trí Việt: kiểu chữ thống nhất, rõ ràng trên toàn bộ website */
+html,
+body,
+button,
+input,
+select,
+textarea,
+.nav,
+.entry-content,
+.entry-content p,
+.entry-content li,
+.entry-content table {
+	font-family: Arial, "Helvetica Neue", sans-serif !important;
+}
+
+.entry-content h1,
+.entry-content h2,
+.entry-content h3,
+.entry-content h4,
+.entry-content h5,
+.entry-content h6,
+.entry-content strong,
+.entry-content b {
+	font-family: Arial, "Helvetica Neue", sans-serif !important;
+	letter-spacing: 0 !important;
+}
+
+.entry-content p,
+.entry-content li {
+	line-height: 1.68;
+}

@@ -95,6 +95,7 @@ function setStatus(el, message, type = "") {
 function clearSelectedImage() {
   inlineImageTarget = null;
   document.getElementById("image-toolbar").classList.add("hidden");
+  document.getElementById("inline-image-url").value = "";
   quill?.root.querySelectorAll("img.image-selected").forEach((img) => {
     img.classList.remove("image-selected");
   });
@@ -107,6 +108,7 @@ function selectInlineImage(img) {
   });
   img.classList.add("image-selected");
   document.getElementById("selected-image-preview").src = img.getAttribute("src") || "";
+  document.getElementById("inline-image-url").value = img.getAttribute("src") || "";
   document.getElementById("image-toolbar").classList.remove("hidden");
 }
 
@@ -256,6 +258,11 @@ async function openEditor(pageId) {
     document.getElementById("field-description").value = page.description || "";
     document.getElementById("field-thumbnail").value = page.thumbnail || "";
     document.getElementById("thumbnail-preview").src = normalizeAssetUrl(page.thumbnail);
+    document.getElementById("field-rating-score").value =
+      page.rating_score === null || page.rating_score === undefined ? "" : page.rating_score;
+    document.getElementById("field-rating-count").value =
+      page.rating_count === null || page.rating_count === undefined ? "" : page.rating_count;
+    renderRatingPreview();
     document.getElementById("preview-link").href = page.public_url;
     quill.root.innerHTML = page.content || "<p></p>";
     showView("editor");
@@ -469,7 +476,7 @@ async function saveHomepage() {
   }));
   const slides = Array.from(document.querySelectorAll(".home-slide-card")).map((card) => ({
     id: card.dataset.slideId || "",
-    image: card.querySelector(".home-slide-image").value.trim(),
+    image: normalizeAssetUrl(card.querySelector(".home-slide-image").value.trim()),
   }));
   const commitItems = Array.from(document.querySelectorAll(".home-commit-item")).map((input) =>
     input.value.trim()
@@ -477,7 +484,7 @@ async function saveHomepage() {
   const tutors = Array.from(document.querySelectorAll(".home-tutor-card")).map((card) => ({
     title: card.querySelector(".home-tutor-title").value.trim(),
     text: card.querySelector(".home-tutor-text").value.trim(),
-    image: card.querySelector(".home-tutor-image").value.trim(),
+    image: normalizeAssetUrl(card.querySelector(".home-tutor-image").value.trim()),
   }));
 
   try {
@@ -486,7 +493,7 @@ async function saveHomepage() {
       body: JSON.stringify({
         title: document.getElementById("home-title").value.trim(),
         description: document.getElementById("home-description").value.trim(),
-        logo: document.getElementById("home-logo").value.trim(),
+        logo: normalizeAssetUrl(document.getElementById("home-logo").value.trim()),
         slides,
         why_title: document.getElementById("home-why-title").value.trim(),
         why_subtitle: document.getElementById("home-why-subtitle").value.trim(),
@@ -494,7 +501,7 @@ async function saveHomepage() {
         subjects_title: document.getElementById("home-subjects-title").value.trim(),
         subjects_intro: document.getElementById("home-subjects-intro").value.trim(),
         commit_title: document.getElementById("home-commit-title").value.trim(),
-        commit_image: document.getElementById("home-commit-image").value.trim(),
+        commit_image: normalizeAssetUrl(document.getElementById("home-commit-image").value.trim()),
         commit_items: commitItems,
         banner_title: document.getElementById("home-banner-title").value.trim(),
         banner_subtitle: document.getElementById("home-banner-subtitle").value.trim(),
@@ -623,8 +630,12 @@ function renderFeedbackImages(images = []) {
             type="text"
             value="${escapeAttr(item.url || "")}"
           />
+          <p class="field-hint">Có thể dán link chia sẻ Google Drive.</p>
         </div>
-        <label class="btn btn-secondary" for="upload-feedback-${index}">Tải ảnh mới</label>
+        <div class="image-toolbar-actions">
+          <button class="btn btn-primary normalize-feedback-url" type="button">Kiểm tra link</button>
+          <label class="btn btn-secondary" for="upload-feedback-${index}">Tải ảnh mới</label>
+        </div>
         <input
           id="upload-feedback-${index}"
           class="feedback-image-upload hidden"
@@ -639,6 +650,16 @@ function renderFeedbackImages(images = []) {
     const preview = card.querySelector(".feedback-admin-preview");
     urlInput.addEventListener("input", () => {
       preview.src = normalizeAssetUrl(urlInput.value.trim());
+    });
+    card.querySelector(".normalize-feedback-url").addEventListener("click", () => {
+      const normalized = normalizeAssetUrl(urlInput.value.trim());
+      urlInput.value = normalized;
+      preview.src = normalized;
+      setStatus(
+        document.getElementById("feedback-status"),
+        normalized ? "Link ảnh hợp lệ. Bấm “Lưu phản hồi” để cập nhật." : "Chưa có đường dẫn ảnh.",
+        normalized ? "success" : "error"
+      );
     });
   });
 
@@ -686,7 +707,7 @@ async function saveFeedback() {
   const images = Array.from(
     document.querySelectorAll(".feedback-admin-card")
   ).map((card) => ({
-    url: card.querySelector(".feedback-image-url").value.trim(),
+    url: normalizeAssetUrl(card.querySelector(".feedback-image-url").value.trim()),
   }));
   setStatus(status, "Đang lưu phản hồi...");
   try {
@@ -753,7 +774,9 @@ async function savePage() {
         title: document.getElementById("field-title").value.trim(),
         heading: document.getElementById("field-heading").value.trim(),
         description: document.getElementById("field-description").value.trim(),
-        thumbnail: document.getElementById("field-thumbnail").value.trim(),
+        thumbnail: normalizeAssetUrl(document.getElementById("field-thumbnail").value.trim()),
+        rating_score: document.getElementById("field-rating-score").value,
+        rating_count: document.getElementById("field-rating-count").value,
         content: quill.root.innerHTML,
       }),
     });
@@ -857,7 +880,7 @@ async function saveSettings() {
   try {
     const payload = {
       site_name: document.getElementById("setting-site-name").value.trim(),
-      logo: document.getElementById("setting-logo").value.trim(),
+      logo: normalizeAssetUrl(document.getElementById("setting-logo").value.trim()),
       hotline1: document.getElementById("setting-hotline1").value.trim(),
       hotline2: document.getElementById("setting-hotline2").value.trim(),
     };
@@ -878,11 +901,70 @@ async function saveSettings() {
   }
 }
 
+function googleDriveFileId(value) {
+  const pathMatch = String(value || "").match(/drive\.google\.com\/file\/d\/([a-zA-Z0-9_-]+)/i);
+  if (pathMatch) return pathMatch[1];
+  try {
+    const url = new URL(String(value || ""));
+    if (/drive\.google\.com$/i.test(url.hostname)) {
+      return url.searchParams.get("id") || "";
+    }
+  } catch (_) {
+    return "";
+  }
+  return "";
+}
+
 function normalizeAssetUrl(path) {
-  if (!path) return "";
-  if (path.startsWith("http")) return path;
-  if (path.startsWith("/")) return path;
-  return `/giasubinhminh.com/${path.replace(/^\.?\//, "")}`;
+  const value = String(path || "").trim();
+  if (!value) return "";
+  const driveId = googleDriveFileId(value);
+  if (driveId) return `https://drive.google.com/thumbnail?id=${driveId}&sz=w2000`;
+  if (value.startsWith("http")) return value;
+  if (value.startsWith("/")) return value;
+  const cleaned = value.replace(/^(?:\.\.\/)+/, "").replace(/^\.?\//, "");
+  if (cleaned.startsWith("giasubinhminh.com/")) return `/${cleaned}`;
+  return `/giasubinhminh.com/${cleaned}`;
+}
+
+function renderRatingPreview() {
+  const scoreInput = document.getElementById("field-rating-score");
+  const countInput = document.getElementById("field-rating-count");
+  const target = document.getElementById("rating-live-preview");
+  if (!scoreInput || !countInput || !target) return;
+  const rawScore = Number(scoreInput.value);
+  const score = Number.isFinite(rawScore) ? Math.min(5, Math.max(0, rawScore)) : 0;
+  const count = Math.max(0, Number.parseInt(countInput.value || "0", 10) || 0);
+  const filled = Math.round(score);
+  target.innerHTML =
+    `${"★".repeat(filled)}<span style="color:#d6d6d6">${"☆".repeat(5 - filled)}</span>` +
+    `<small>${score.toFixed(1)}/5 — ${count} bình chọn</small>`;
+}
+
+function previewDriveImage() {
+  const source = document.getElementById("drive-image-url").value.trim();
+  const normalized = normalizeAssetUrl(source);
+  const status = document.getElementById("drive-status");
+  if (!source || !googleDriveFileId(source)) {
+    document.getElementById("drive-preview-wrap").classList.add("hidden");
+    setStatus(status, "Link chưa đúng định dạng Google Drive.", "error");
+    return;
+  }
+  const preview = document.getElementById("drive-image-preview");
+  document.getElementById("drive-normalized-url").value = normalized;
+  preview.src = normalized;
+  preview.onload = () => {
+    document.getElementById("drive-preview-wrap").classList.remove("hidden");
+    setStatus(status, "Ảnh đã tải được. Có thể sao chép đường dẫn để dùng.", "success");
+  };
+  preview.onerror = () => {
+    document.getElementById("drive-preview-wrap").classList.remove("hidden");
+    setStatus(
+      status,
+      "Không xem được ảnh. Hãy bật quyền “Bất kỳ ai có liên kết — Người xem” trong Drive.",
+      "error"
+    );
+  };
 }
 
 function escapeHtml(value) {
@@ -914,6 +996,49 @@ document.getElementById("back-to-list").addEventListener("click", () => {
 document.getElementById("close-image-toolbar").addEventListener("click", clearSelectedImage);
 document.getElementById("open-featured-cam-ket").addEventListener("click", openFeaturedCamKet);
 document.getElementById("open-homepage").addEventListener("click", openHomepage);
+document.getElementById("field-rating-score").addEventListener("input", renderRatingPreview);
+document.getElementById("field-rating-count").addEventListener("input", renderRatingPreview);
+
+document.querySelectorAll("[data-quick-view]").forEach((button) => {
+  button.addEventListener("click", async () => {
+    const view = button.dataset.quickView;
+    if (view === "homepage") await openHomepage();
+    if (view === "feedback") await openFeedback();
+    if (view === "classes") await openClasses();
+    if (view === "media") {
+      mediaPickMode = null;
+      showView("media");
+      await loadMedia();
+    }
+  });
+});
+
+document.getElementById("apply-inline-image-url").addEventListener("click", () => {
+  const field = document.getElementById("inline-image-url");
+  const url = normalizeAssetUrl(field.value.trim());
+  if (!url) {
+    setStatus(document.getElementById("editor-status"), "Chưa có đường dẫn ảnh.", "error");
+    return;
+  }
+  field.value = url;
+  applyInlineImage(url);
+});
+
+document.getElementById("preview-drive-image").addEventListener("click", previewDriveImage);
+document.getElementById("drive-image-url").addEventListener("keydown", (event) => {
+  if (event.key === "Enter") previewDriveImage();
+});
+document.getElementById("copy-drive-image-url").addEventListener("click", async () => {
+  const field = document.getElementById("drive-normalized-url");
+  try {
+    await navigator.clipboard.writeText(field.value);
+    setStatus(document.getElementById("drive-status"), "Đã sao chép đường dẫn ảnh.", "success");
+  } catch (_) {
+    field.select();
+    document.execCommand("copy");
+    setStatus(document.getElementById("drive-status"), "Đã sao chép đường dẫn ảnh.", "success");
+  }
+});
 
 document.getElementById("home-logo").addEventListener("input", (event) => {
   document.getElementById("home-logo-preview").src = normalizeAssetUrl(event.target.value.trim());
