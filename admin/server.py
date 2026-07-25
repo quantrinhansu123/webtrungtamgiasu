@@ -76,6 +76,21 @@ def github_file_api(repo_path: str) -> str:
     return f"https://api.github.com/repos/{repo}/contents/{encoded_path}"
 
 
+def github_repository_tree() -> list[dict]:
+    repo = os.environ.get("GITHUB_REPO", "quantrinhansu123/webtrungtamgiasu")
+    branch = os.environ.get("GITHUB_BRANCH", "main")
+    payload = _github_request(
+        "GET",
+        (
+            f"https://api.github.com/repos/{repo}/git/trees/"
+            f"{urllib.parse.quote(branch, safe='')}?recursive=1"
+        ),
+    )
+    if payload.get("truncated"):
+        raise RuntimeError("Danh sách tệp GitHub quá lớn và đã bị cắt bớt")
+    return payload.get("tree") or []
+
+
 def github_read_file(repo_path: str) -> bytes:
     branch = os.environ.get("GITHUB_BRANCH", "main")
     payload = _github_request(
@@ -503,6 +518,36 @@ def apply_page_updates(html: str, data: dict) -> str:
 
 
 def collect_pages():
+    if running_on_vercel():
+        if not github_enabled():
+            return []
+        pages = []
+        prefix = "giasubinhminh.com/"
+        for item in github_repository_tree():
+            repo_path = str(item.get("path") or "")
+            if item.get("type") != "blob" or not repo_path.startswith(prefix):
+                continue
+            rel = repo_path[len(prefix) :]
+            if not is_editable_page(rel):
+                continue
+            slug = page_slug(rel)
+            if slug == "/":
+                title = "Trang chủ"
+            else:
+                title = slug.rsplit("/", 1)[-1].replace("-", " ").strip().title()
+            pages.append(
+                {
+                    "id": rel,
+                    "slug": slug,
+                    "title": title or slug,
+                    "page_type": "page",
+                    "editable_content": True,
+                    "public_url": page_public_url(rel),
+                }
+            )
+        pages.sort(key=lambda page: page["title"].lower())
+        return pages
+
     pages = []
     for root, _, files in os.walk(SITE_DIR):
         for name in files:
@@ -532,6 +577,33 @@ def collect_pages():
 
 
 def collect_media(limit=200, search=""):
+    if running_on_vercel():
+        if not github_enabled():
+            return []
+        media = []
+        prefix = "giasubinhminh.com/wp-content/uploads/"
+        extensions = {".jpg", ".jpeg", ".png", ".gif", ".webp", ".svg"}
+        for item in github_repository_tree():
+            repo_path = str(item.get("path") or "")
+            if item.get("type") != "blob" or not repo_path.startswith(prefix):
+                continue
+            name = repo_path.rsplit("/", 1)[-1]
+            if Path(name).suffix.lower() not in extensions:
+                continue
+            if search and search.lower() not in name.lower():
+                continue
+            rel = repo_path[len("giasubinhminh.com/") :]
+            media.append(
+                {
+                    "name": name,
+                    "path": rel,
+                    "url": f"/giasubinhminh.com/{rel}",
+                    "size": item.get("size") or 0,
+                }
+            )
+        media.sort(key=lambda image: image["name"].lower())
+        return media[:limit]
+
     media = []
     uploads = SITE_DIR / "wp-content" / "uploads"
     if not uploads.exists():
@@ -1302,16 +1374,22 @@ def api_update_homepage():
 @login_required
 def api_get_settings():
     config = load_config(fresh=running_on_vercel() and github_enabled())
-    homepage = SITE_DIR / "index.html"
     logo = "wp-content/uploads/2018/07/logo-1.png"
     hotline1 = "0962.005.996"
     hotline2 = "0987.005.996"
-    if homepage.exists():
-        soup = BeautifulSoup(read_page_file("index.html"), "html.parser")
+    try:
+        homepage_html = read_page_file(
+            "index.html",
+            fresh=running_on_vercel(),
+        )
+    except (OSError, RuntimeError):
+        homepage_html = ""
+    if homepage_html:
+        soup = BeautifulSoup(homepage_html, "html.parser")
         logo_img = soup.select_one(".header_logo, .header-logo")
         if logo_img and logo_img.get("src"):
             logo = logo_img["src"]
-        phones = re.findall(r"Hotline\s*:\s*([^<]+)", read_page_file("index.html"))
+        phones = re.findall(r"Hotline\s*:\s*([^<]+)", homepage_html)
         if len(phones) >= 1:
             hotline1 = phones[0].strip()
         if len(phones) >= 2:
