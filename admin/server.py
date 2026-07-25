@@ -10,7 +10,7 @@ import urllib.error
 import urllib.parse
 import urllib.request
 from datetime import datetime
-from functools import wraps
+from functools import lru_cache, wraps
 from html import escape
 from pathlib import Path
 
@@ -21,6 +21,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SITE_DIR = BASE_DIR / "giasubinhminh.com"
 ADMIN_DIR = Path(__file__).resolve().parent
 CONFIG_PATH = ADMIN_DIR / "config.json"
+PAGE_TITLES_PATH = ADMIN_DIR / "page-titles.json"
 CLASSES_PATH = ADMIN_DIR / "classes.json"
 CLASS_TEMPLATE_PATH = ADMIN_DIR / "templates" / "lop-moi.html"
 CLASS_PUBLIC_DIR = SITE_DIR / "lop-moi"
@@ -212,6 +213,42 @@ def save_config(config):
         return
     with open(CONFIG_PATH, "w", encoding="utf-8", newline="\n") as f:
         f.write(payload)
+
+
+def load_page_titles(fresh: bool = False) -> dict:
+    if fresh and running_on_vercel() and github_enabled():
+        raw = github_read_file("admin/page-titles.json")
+        data = json.loads(raw.decode("utf-8"))
+    else:
+        if not PAGE_TITLES_PATH.exists():
+            return {"titles": {}, "redirects": []}
+        with open(PAGE_TITLES_PATH, encoding="utf-8") as source:
+            data = json.load(source)
+    if not isinstance(data, dict):
+        return {"titles": {}, "redirects": []}
+    titles = data.get("titles") if isinstance(data.get("titles"), dict) else {}
+    redirects = data.get("redirects") if isinstance(data.get("redirects"), list) else []
+    return {
+        "titles": {str(key): str(value) for key, value in titles.items() if value},
+        "redirects": [str(value) for value in redirects],
+    }
+
+
+def save_page_titles(data: dict):
+    payload = json.dumps(data, ensure_ascii=False, indent=2, sort_keys=True) + "\n"
+    if running_on_vercel():
+        if not github_enabled():
+            raise RuntimeError(
+                "Chưa cấu hình GITHUB_TOKEN trên Vercel nên chưa thể lưu tiêu đề trang."
+            )
+        github_upsert_file(
+            "admin/page-titles.json",
+            payload,
+            "cms: update Vietnamese page title",
+        )
+        return
+    with open(PAGE_TITLES_PATH, "w", encoding="utf-8", newline="\n") as source:
+        source.write(payload)
 
 
 def load_classes(fresh: bool | None = None):
@@ -598,10 +635,52 @@ def apply_page_updates(html: str, data: dict) -> str:
     return str(soup)
 
 
+@lru_cache(maxsize=512)
+def page_list_metadata(rel_path: str) -> tuple[str, bool]:
+    """Read a concise Vietnamese title without parsing the full archived page."""
+    path = SITE_DIR / rel_path.replace("/", os.sep)
+    if not path.is_file():
+        return "", False
+    try:
+        with open(path, encoding="utf-8", errors="ignore") as source:
+            preview = source.read(600_000)
+    except OSError:
+        return "", False
+
+    title_match = re.search(r"<title\b[^>]*>(.*?)</title>", preview, re.I | re.S)
+    raw_title = title_match.group(1) if title_match else ""
+    title_text = BeautifulSoup(raw_title, "html.parser").get_text(" ", strip=True)
+    is_redirect = bool(
+        re.search(
+            r"<meta\b[^>]*http-equiv=[\"']?refresh[\"']?[^>]*>",
+            preview,
+            re.I,
+        )
+    ) or title_text.casefold() == "page has moved"
+    if is_redirect:
+        return "", True
+
+    heading_match = re.search(
+        r"<h1\b[^>]*class=[\"'][^\"']*\bentry-title\b[^\"']*[\"'][^>]*>(.*?)</h1>",
+        preview,
+        re.I | re.S,
+    )
+    if heading_match:
+        heading_text = BeautifulSoup(
+            heading_match.group(1), "html.parser"
+        ).get_text(" ", strip=True)
+        if heading_text:
+            return heading_text, False
+    return title_text, False
+
+
 def collect_pages():
     if running_on_vercel():
         pages = []
         prefix = "giasubinhminh.com/"
+        catalog = load_page_titles(fresh=github_enabled())
+        saved_titles = catalog["titles"]
+        redirects = set(catalog["redirects"])
         for item in github_repository_tree():
             repo_path = str(item.get("path") or "")
             if item.get("type") != "blob" or not repo_path.startswith(prefix):
@@ -609,10 +688,18 @@ def collect_pages():
             rel = repo_path[len(prefix) :]
             if not is_editable_page(rel):
                 continue
+            if rel in redirects:
+                continue
             slug = page_slug(rel)
+            title = saved_titles.get(rel, "")
+            local_title, is_redirect = page_list_metadata(rel)
+            if is_redirect:
+                continue
+            if not title:
+                title = local_title
             if slug == "/":
                 title = "Trang chủ"
-            else:
+            elif not title:
                 title = slug.rsplit("/", 1)[-1].replace("-", " ").strip().title()
             pages.append(
                 {
@@ -628,6 +715,9 @@ def collect_pages():
         return pages
 
     pages = []
+    catalog = load_page_titles()
+    saved_titles = catalog["titles"]
+    redirects = set(catalog["redirects"])
     for root, _, files in os.walk(SITE_DIR):
         for name in files:
             if name != "index.html":
@@ -636,18 +726,19 @@ def collect_pages():
             rel = full.relative_to(SITE_DIR).as_posix()
             if not is_editable_page(rel):
                 continue
-            try:
-                html = read_page_file(rel)
-                parsed = parse_page(html)
-            except OSError:
+            if rel in redirects:
                 continue
+            list_title, is_redirect = page_list_metadata(rel)
+            if is_redirect:
+                continue
+            title = saved_titles.get(rel) or list_title or page_slug(rel)
             pages.append(
                 {
                     "id": rel,
                     "slug": page_slug(rel),
-                    "title": parsed["title"] or parsed["heading"] or page_slug(rel),
-                    "page_type": parsed["page_type"],
-                    "editable_content": parsed["has_entry_content"],
+                    "title": title,
+                    "page_type": "page",
+                    "editable_content": True,
                     "public_url": page_public_url(rel),
                 }
             )
@@ -785,6 +876,15 @@ def api_update_page(page_id):
         html = read_page_file(page_id, fresh=running_on_vercel())
         updated = apply_page_updates(html, data)
         write_page_file(page_id, updated)
+        display_title = str(data.get("heading") or data.get("title") or "").strip()
+        if display_title:
+            catalog = load_page_titles(fresh=running_on_vercel() and github_enabled())
+            clean_title = BeautifulSoup(
+                display_title, "html.parser"
+            ).get_text(" ", strip=True)
+            if catalog["titles"].get(page_id) != clean_title:
+                catalog["titles"][page_id] = clean_title
+                save_page_titles(catalog)
     except Exception as exc:
         return jsonify({"error": str(exc)}), 500
     message = "Đã lưu bài viết"
