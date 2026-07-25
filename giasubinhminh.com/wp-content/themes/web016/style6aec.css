@@ -86,27 +86,9 @@ html body .header-bottom-nav > li > a {
 	letter-spacing: 0 !important;
 }
 
-/* Parent feedback gallery on the online tutoring page. */
+/* Six supplied parent feedback images on the online tutoring page. */
 .parent-feedback {
 	margin: 34px auto;
-	padding: 28px;
-	background: #f7fbf9;
-	border: 1px solid #dbe9e2;
-	border-radius: 14px;
-}
-
-.parent-feedback .feedback-title {
-	margin: 0 0 8px;
-	color: #096f47;
-	text-align: center;
-	font-size: 28px;
-}
-
-.parent-feedback .feedback-intro {
-	margin: 0 auto 24px;
-	max-width: 760px;
-	color: #444;
-	text-align: center;
 }
 
 .parent-feedback .feedback-grid {
@@ -135,13 +117,6 @@ html body .header-bottom-nav > li > a {
 	height: auto;
 }
 
-.parent-feedback .feedback-item figcaption {
-	padding: 10px 12px;
-	color: #3f4a45;
-	font-size: 14px;
-	text-align: center;
-}
-
 @media only screen and (max-width: 849px) {
 	.parent-feedback .feedback-grid {
 		grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -151,14 +126,6 @@ html body .header-bottom-nav > li > a {
 @media only screen and (max-width: 549px) {
 	html body {
 		font-size: 16px;
-	}
-
-	.parent-feedback {
-		padding: 18px 14px;
-	}
-
-	.parent-feedback .feedback-title {
-		font-size: 23px;
 	}
 
 	.parent-feedback .feedback-grid {

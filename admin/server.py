@@ -796,24 +796,18 @@ def parse_feedback_gallery(html: str) -> dict:
     section = soup.select_one("#parent-feedback-gallery")
     if not section:
         return {
-            "title": "Phản hồi thực tế từ phụ huynh",
-            "intro": "",
             "images": [],
         }
     images = []
-    for index, figure in enumerate(section.select(".feedback-item")[:6], start=1):
+    for figure in section.select(".feedback-item")[:6]:
         image = figure.select_one("img")
-        caption = figure.select_one("figcaption")
         images.append(
             {
                 "url": image.get("src", "") if image else "",
                 "alt": image.get("alt", "") if image else "",
-                "caption": extract_text(caption) or f"Phản hồi phụ huynh {index}",
             }
         )
     return {
-        "title": extract_text(section.select_one(".feedback-title")),
-        "intro": extract_text(section.select_one(".feedback-intro")),
         "images": images,
         "public_url": page_public_url(FEEDBACK_PAGE_ID),
     }
@@ -837,11 +831,6 @@ def apply_feedback_updates(html: str, data: dict) -> str:
     if not section:
         raise ValueError("Không tìm thấy khối phản hồi phụ huynh trên trang")
 
-    if data.get("title"):
-        set_deep_text(section.select_one(".feedback-title"), str(data["title"]).strip())
-    if "intro" in data:
-        set_deep_text(section.select_one(".feedback-intro"), str(data["intro"]).strip())
-
     images = data.get("images") or []
     figures = section.select(".feedback-item")[:6]
     for index, figure in enumerate(figures):
@@ -862,11 +851,6 @@ def apply_feedback_updates(html: str, data: dict) -> str:
                 ).strip()
             if link:
                 link["href"] = url
-        if "caption" in item:
-            set_deep_text(
-                figure.select_one("figcaption"),
-                str(item.get("caption") or "").strip(),
-            )
     return str(soup)
 
 

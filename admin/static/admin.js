@@ -624,14 +624,6 @@ function renderFeedbackImages(images = []) {
             value="${escapeAttr(item.url || "")}"
           />
         </div>
-        <div class="field">
-          <label>Chú thích</label>
-          <input
-            class="feedback-image-caption"
-            type="text"
-            value="${escapeAttr(item.caption || `Phản hồi phụ huynh ${index + 1}`)}"
-          />
-        </div>
         <label class="btn btn-secondary" for="upload-feedback-${index}">Tải ảnh mới</label>
         <input
           id="upload-feedback-${index}"
@@ -682,8 +674,6 @@ async function openFeedback() {
   setStatus(status, "Đang tải phản hồi...");
   try {
     const data = await api("/api/feedback");
-    document.getElementById("feedback-title").value = data.title || "";
-    document.getElementById("feedback-intro").value = data.intro || "";
     renderFeedbackImages(data.images || []);
     setStatus(status, "");
   } catch (error) {
@@ -695,19 +685,14 @@ async function saveFeedback() {
   const status = document.getElementById("feedback-status");
   const images = Array.from(
     document.querySelectorAll(".feedback-admin-card")
-  ).map((card, index) => ({
+  ).map((card) => ({
     url: card.querySelector(".feedback-image-url").value.trim(),
-    caption:
-      card.querySelector(".feedback-image-caption").value.trim() ||
-      `Phản hồi phụ huynh ${index + 1}`,
   }));
   setStatus(status, "Đang lưu phản hồi...");
   try {
     const data = await api("/api/feedback", {
       method: "PUT",
       body: JSON.stringify({
-        title: document.getElementById("feedback-title").value.trim(),
-        intro: document.getElementById("feedback-intro").value.trim(),
         images,
       }),
     });
