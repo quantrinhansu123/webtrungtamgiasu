@@ -206,6 +206,15 @@ textarea {
   flex-shrink: 0;
 }
 
+.cms-warning {
+  margin-bottom: 16px;
+  padding: 12px 14px;
+  color: #ffdca8;
+  background: rgba(255, 147, 8, 0.12);
+  border: 1px solid rgba(255, 147, 8, 0.45);
+  border-radius: 12px;
+}
+
 .homepage-block {
   margin-bottom: 16px;
 }

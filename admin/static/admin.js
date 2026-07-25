@@ -861,6 +861,9 @@ async function loadSettings() {
   document.getElementById("setting-hotline1").value = data.hotline1 || "";
   document.getElementById("setting-hotline2").value = data.hotline2 || "";
   document.getElementById("setting-logo-preview").src = normalizeAssetUrl(data.logo);
+  document
+    .getElementById("cms-publishing-warning")
+    .classList.toggle("hidden", data.publishing_ready !== false);
 }
 
 async function saveSettings() {

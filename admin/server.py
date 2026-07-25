@@ -47,17 +47,19 @@ def github_enabled() -> bool:
 def _github_request(method: str, url: str, payload: dict | None = None) -> dict:
     token = os.environ.get("GITHUB_TOKEN", "")
     data = None if payload is None else json.dumps(payload).encode("utf-8")
+    headers = {
+        "Accept": "application/vnd.github+json",
+        "Content-Type": "application/json",
+        "User-Agent": "tri-viet-cms",
+        "X-GitHub-Api-Version": "2022-11-28",
+    }
+    if token:
+        headers["Authorization"] = f"Bearer {token}"
     req = urllib.request.Request(
         url,
         data=data,
         method=method,
-        headers={
-            "Accept": "application/vnd.github+json",
-            "Authorization": f"Bearer {token}",
-            "Content-Type": "application/json",
-            "User-Agent": "tri-viet-cms",
-            "X-GitHub-Api-Version": "2022-11-28",
-        },
+        headers=headers,
     )
     try:
         with urllib.request.urlopen(req, timeout=60) as response:
@@ -397,7 +399,7 @@ def page_public_url(rel_path: str) -> str:
 
 
 def read_page_file(rel_path: str, fresh: bool = False) -> str:
-    if fresh and running_on_vercel() and github_enabled():
+    if fresh and running_on_vercel():
         repo_path = f"giasubinhminh.com/{rel_path.replace(chr(92), '/')}"
         return github_read_file(repo_path).decode("utf-8", errors="ignore")
     path = SITE_DIR / rel_path.replace("/", os.sep)
@@ -519,8 +521,6 @@ def apply_page_updates(html: str, data: dict) -> str:
 
 def collect_pages():
     if running_on_vercel():
-        if not github_enabled():
-            return []
         pages = []
         prefix = "giasubinhminh.com/"
         for item in github_repository_tree():
@@ -578,8 +578,6 @@ def collect_pages():
 
 def collect_media(limit=200, search=""):
     if running_on_vercel():
-        if not github_enabled():
-            return []
         media = []
         prefix = "giasubinhminh.com/wp-content/uploads/"
         extensions = {".jpg", ".jpeg", ".png", ".gif", ".webp", ".svg"}
