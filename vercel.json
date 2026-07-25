@@ -3,7 +3,7 @@
   "functions": {
     "api/**/*.py": {
       "maxDuration": 60,
-      "excludeFiles": "{1.bp.blogspot.com/**,3.bp.blogspot.com/**,ajax.googleapis.com/**,bang.vn/**,biquyetonthibrands.com.vn/**,cdn-images-1.medium.com/**,cdnjs.cloudflare.com/**,connect.facebook.net/**,d1plicc6iqzi9y.cloudfront.net/**,dayhoctainha.com/**,daykemvungtau.com/**,demogiasu.vntsc.vn/**,dwbxi9io9o7ce.cloudfront.net/**,giasu99.com/**,giasubaoanh.com.vn/**,giasubinhminh.com/**,giasubinhminh.net/**,giasuchatluongcao.vn/**,giasudaihocsupham.net/**,giasugiatri.com/**,giasugioi24h.com/**,giasuhanoi.net/**,giasuhanoigioi.edu.vn/**,giasuinfo.com/**,giasuminhhanh.com.vn/**,giasuongmattroi.com/**,giasusupham.com.vn/**,giasutainang.edu.vn/**,giasutamtaiduc.com/**,giasuthienviet.com/**,giasutienphong.com.vn/**,giasutrianh.com/**,giasutriviet.edu.vn/**,giasuvanhien.com/**,giasuviet.com.vn/**,giasuviet.net/**,hiokivietnam.vn/**,hts-cache/**,i2.wp.com/**,mola.vn/**,mpod.vn/**,myteacher.edu.vn/**,nhathuoclongchau.com/**,timgiasu.edu.vn/**,tritue24h.com/**,www.giasudanang.edu.vn/**,www.giasutaigia.net/**,www.google.com/**,www.googletagmanager.com/**,znews-photo-td.zadn.vn/**}"
+      "excludeFiles": "{giasubinhminh.com/**,hts-cache/**}"
     }
   },
   "rewrites": [
