@@ -234,8 +234,15 @@ def production_mode() -> bool:
     return running_on_vercel() or environment.strip().casefold() == "production"
 
 
+def session_secret_configured() -> bool:
+    return any(
+        os.environ.get(name)
+        for name in ("CMS_SECRET", "CMS_PASSWORD", "GITHUB_TOKEN")
+    )
+
+
 def derive_session_secret() -> bytes:
-    """Return a stable production key or an unpredictable local process key."""
+    """Return a stable configured key or an unpredictable process-local key."""
     material = [
         os.environ[name].encode("utf-8")
         for name in ("CMS_SECRET", "CMS_PASSWORD", "GITHUB_TOKEN")
@@ -245,11 +252,6 @@ def derive_session_secret() -> bytes:
         return hashlib.sha256(
             b"tri-viet-cms-session-v1\0" + b"\0".join(material)
         ).digest()
-    if production_mode():
-        raise RuntimeError(
-            "Production CMS requires CMS_SECRET, CMS_PASSWORD, or GITHUB_TOKEN "
-            "to sign administrator sessions."
-        )
     return secrets.token_bytes(32)
 
 
@@ -533,6 +535,28 @@ app.config.update(
     LOGIN_RATE_LIMIT=LOGIN_RATE_LIMIT,
     LOGIN_RATE_WINDOW_SECONDS=LOGIN_RATE_WINDOW_SECONDS,
 )
+
+
+@app.before_request
+def require_production_session_secret():
+    if (
+        production_mode()
+        and not session_secret_configured()
+        and request.path != "/api/health"
+    ):
+        return (
+            jsonify(
+                {
+                    "ok": False,
+                    "error": (
+                        "CMS chưa được cấu hình secret phiên đăng nhập trên Vercel"
+                    ),
+                    "code": "MISSING_SESSION_SECRET",
+                }
+            ),
+            503,
+        )
+    return None
 
 
 def canonical_site_path(
@@ -2092,6 +2116,9 @@ def api_health():
         {
             "ok": True,
             "version": "1",
+            "session_secret_ready": (
+                not production_mode() or session_secret_configured()
+            ),
             "publishing_ready": not running_on_vercel() or github_enabled(),
         }
     )

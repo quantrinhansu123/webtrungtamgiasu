@@ -298,6 +298,7 @@ def test_upload_rejects_unsafe_or_invalid_images(
         lambda fresh=False: auth_config,
     )
     monkeypatch.setattr(server, "running_on_vercel", lambda: True)
+    monkeypatch.setattr(server, "session_secret_configured", lambda: True)
     monkeypatch.setattr(server, "github_enabled", lambda: True)
     monkeypatch.setattr(
         server,
@@ -341,6 +342,7 @@ def test_valid_raster_upload_is_published_after_validation(client, monkeypatch):
         lambda fresh=False: auth_config,
     )
     monkeypatch.setattr(server, "running_on_vercel", lambda: True)
+    monkeypatch.setattr(server, "session_secret_configured", lambda: True)
     monkeypatch.setattr(server, "github_enabled", lambda: True)
     monkeypatch.setattr(
         server,
@@ -731,6 +733,7 @@ def test_github_config_transaction_retries_and_publishes_one_visible_commit(
         raise AssertionError(f"Unexpected GitHub request: {method} {url}")
 
     monkeypatch.setattr(server, "running_on_vercel", lambda: True)
+    monkeypatch.setattr(server, "session_secret_configured", lambda: True)
     monkeypatch.setattr(server, "github_enabled", lambda: True)
     monkeypatch.setattr(server, "_github_request", fake_github_request)
 
@@ -825,7 +828,10 @@ def test_local_atomic_file_replace_rolls_back_partial_failure(
     assert list(tmp_path.glob(".*.rollback")) == []
 
 
-def test_production_secret_fails_closed_and_allowed_material_is_stable(monkeypatch):
+def test_production_secret_blocks_requests_and_allowed_material_is_stable(
+    monkeypatch,
+    client,
+):
     for name in (
         "CMS_SECRET",
         "CMS_PASSWORD",
@@ -837,8 +843,15 @@ def test_production_secret_fails_closed_and_allowed_material_is_stable(monkeypat
         monkeypatch.delenv(name, raising=False)
     monkeypatch.setenv("CMS_ENV", "production")
 
-    with pytest.raises(RuntimeError):
-        server.derive_session_secret()
+    first_ephemeral = server.derive_session_secret()
+    second_ephemeral = server.derive_session_secret()
+    assert first_ephemeral != second_ephemeral
+    health = client.get("/api/health")
+    assert health.status_code == 200
+    assert health.get_json()["session_secret_ready"] is False
+    blocked = client.get("/api/me")
+    assert blocked.status_code == 503
+    assert blocked.get_json()["code"] == "MISSING_SESSION_SECRET"
 
     monkeypatch.setenv("CMS_PASSWORD", "a-strong-deployment-password")
     first = server.derive_session_secret()
