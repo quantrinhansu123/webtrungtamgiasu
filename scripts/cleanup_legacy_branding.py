@@ -211,6 +211,13 @@ OLD_FACEBOOK_RE = re.compile(
     re.IGNORECASE,
 )
 CURRENT_FACEBOOK = "https://www.facebook.com/profile.php?id=100063564159935"
+OWNED_ASSET_OLD_HOST_RE = re.compile(
+    r"https?:(?:\\/|/){2}(?:www\.)?giasubinhminh\.com"
+    r"(?:\\/|/)wp-content(?:\\/|/)uploads(?:\\/|/)cms"
+    r"(?:\\/|/)2026(?:\\/|/)07(?:\\/|/)",
+    re.IGNORECASE,
+)
+OWNED_ASSET_BASE = f"https://giasutriviet.vercel.app{ASSET_ROOT}/"
 
 VISIBLE_BRAND_REPLACEMENTS = (
     (
@@ -481,7 +488,8 @@ def clean_html(relative_path: str, content: str) -> tuple[str, int]:
             image_replacements += 1
         return replacement
 
-    cleaned = IMG_RE.sub(counted_image_replace, content)
+    cleaned = OWNED_ASSET_OLD_HOST_RE.sub(OWNED_ASSET_BASE, content)
+    cleaned = IMG_RE.sub(counted_image_replace, cleaned)
     cleaned = replace_legacy_asset_references(cleaned)
     cleaned = OLD_FACEBOOK_RE.sub(CURRENT_FACEBOOK, cleaned)
 
@@ -504,7 +512,8 @@ def clean_html(relative_path: str, content: str) -> tuple[str, int]:
 
 
 def clean_snapshot(content: str) -> str:
-    cleaned = replace_legacy_asset_references(content)
+    cleaned = OWNED_ASSET_OLD_HOST_RE.sub(OWNED_ASSET_BASE, content)
+    cleaned = replace_legacy_asset_references(cleaned)
     for pattern, replacement in VISIBLE_BRAND_REPLACEMENTS:
         cleaned = pattern.sub(replacement, cleaned)
     cleaned = replace_corrupted_bullet_markers(cleaned)
