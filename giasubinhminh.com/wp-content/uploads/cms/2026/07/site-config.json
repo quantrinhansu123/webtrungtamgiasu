@@ -1,6 +1,4 @@
 {
-  "username": "admin",
-  "password_hash": "pbkdf2_sha256$390000$0f1e4338b8eb1745936fe5aaad730265$biYakAP/Mkk2rDYxXcmVimxIkH0IiuT85+wRNYdrydk=",
   "site_name": "Trung Tâm Gia Sư Trí Việt",
   "logo": "/giasubinhminh.com/wp-content/uploads/cms/2026/07/b60442c2c31d48ab8146e213a27ac28c.jpg",
   "hotline1": "0962.005.996",
@@ -112,9 +110,5 @@
       "url": "/giasubinhminh.com/wp-content/uploads/cms/2026/07/phu-huynh-phan-hoi/phan-hoi-21.jpg",
       "alt": "Phản hồi phụ huynh 21"
     }
-  ],
-  "website": "http://giasusuphamtriviet.vn",
-  "address1": "Số 263 đường Nguyễn Văn Linh, phường Xuân Hòa, tỉnh Phú Thọ, Việt Nam",
-  "address2": "",
-  "session_epoch": "b12131e82840185fe9a10c7185059232"
+  ]
 }

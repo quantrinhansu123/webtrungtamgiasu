@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Quản trị website - Trí Việt CMS</title>
-  <link rel="stylesheet" href="/admin/static/admin.css?v=20260725-3" />
+  <link rel="stylesheet" href="/admin/static/admin.css?v=20260727-1" />
   <link href="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.snow.css" rel="stylesheet" />
 </head>
 <body>
@@ -24,14 +24,21 @@
       <form id="login-form">
         <div class="field">
           <label for="username">Tên đăng nhập</label>
-          <input id="username" type="text" value="admin" autocomplete="username" />
+          <input
+            id="username"
+            type="text"
+            autocomplete="username"
+            autocapitalize="none"
+            spellcheck="false"
+            required
+          />
         </div>
         <div class="field">
           <label for="password">Mật khẩu</label>
-          <input id="password" type="password" autocomplete="current-password" />
+          <input id="password" type="password" autocomplete="current-password" required />
         </div>
-        <button class="btn btn-primary btn-large" type="submit" style="width:100%">Đăng nhập quản trị</button>
-        <div id="login-status" class="status error"></div>
+        <button id="login-submit" class="btn btn-primary btn-large" type="submit" style="width:100%">Đăng nhập quản trị</button>
+        <div id="login-status" class="status" role="status" aria-live="polite"></div>
       </form>
       <div class="login-note">Nội dung chỉ được cập nhật sau khi bấm nút Lưu.</div>
     </div>
@@ -50,11 +57,12 @@
         </div>
       </div>
       <div class="nav-label">NỘI DUNG WEBSITE</div>
-      <button class="nav-btn active" data-view="pages"><span class="nav-icon">▦</span>Bài viết / Trang</button>
+      <button class="nav-btn active" data-view="pages" type="button" aria-current="page"><span class="nav-icon">▦</span>Bài viết / Trang</button>
       <button
         class="nav-btn nav-featured"
         data-view="homepage"
         title="Quản trị trang chủ"
+        type="button"
       >
         <span class="nav-icon">⌂</span>Trang chủ
       </button>
@@ -62,6 +70,7 @@
         class="nav-btn nav-featured"
         data-view="feedback"
         title="Quản lý ảnh phản hồi phụ huynh"
+        type="button"
       >
         <span class="nav-icon">★</span>Phản hồi phụ huynh
       </button>
@@ -69,6 +78,7 @@
         class="nav-btn nav-featured"
         data-view="classes"
         title="Đăng và quản lý danh sách lớp mới"
+        type="button"
       >
         <span class="nav-icon">＋</span>Đăng lớp mới
       </button>
@@ -77,12 +87,13 @@
         data-view="featured-cam-ket"
         data-page-id="cam-ket-tien-bo-sau-10-buoi/index.html"
         title="Quản trị trang Cam kết tiến bộ sau 10 buổi"
+        type="button"
       >
         <span class="nav-icon">✓</span>Cam kết 10 buổi
       </button>
       <div class="nav-label">HÌNH ẢNH &amp; HỆ THỐNG</div>
-      <button class="nav-btn" data-view="media"><span class="nav-icon">▧</span>Thư viện ảnh</button>
-      <button class="nav-btn" data-view="settings"><span class="nav-icon">⚙</span>Cài đặt chung</button>
+      <button class="nav-btn" data-view="media" type="button"><span class="nav-icon">▧</span>Thư viện ảnh</button>
+      <button class="nav-btn" data-view="settings" type="button"><span class="nav-icon">⚙</span>Cài đặt chung</button>
       <div class="sidebar-footer">
         <div class="staff-card">
           <span class="staff-avatar">NV</span>
@@ -94,7 +105,7 @@
     </aside>
 
     <main class="main">
-      <div id="cms-publishing-warning" class="cms-warning hidden">
+      <div id="cms-publishing-warning" class="cms-warning hidden" role="status">
         Trang quản trị đang ở chế độ xem. Cần cấu hình quyền xuất bản GitHub trên Vercel để nút Lưu hoạt động.
       </div>
       <section id="view-pages">
@@ -112,7 +123,7 @@
             <h1>Trang thường dùng</h1>
           </div>
           <div class="topbar-actions">
-            <input id="page-search" type="search" placeholder="Tìm theo tiêu đề..." />
+            <input id="page-search" type="search" placeholder="Tìm theo tiêu đề..." aria-label="Tìm trang theo tiêu đề" />
           </div>
         </div>
         <div class="quick-grid">
@@ -123,7 +134,7 @@
           </button>
           <button class="quick-card" type="button" data-quick-view="feedback">
             <span class="quick-icon quick-orange">★</span>
-            <span><strong>Đổi ảnh phản hồi</strong><small>Quản lý 6 ảnh phụ huynh</small></span>
+            <span><strong>Đổi ảnh phản hồi</strong><small>Quản lý ảnh trên toàn website</small></span>
             <b>›</b>
           </button>
           <button class="quick-card" type="button" data-quick-view="classes">
@@ -201,8 +212,8 @@
             <label for="home-logo">Logo website</label>
             <div class="home-media-row">
               <input id="home-logo" type="hidden" />
-              <label class="btn btn-primary" for="upload-home-logo">Chọn ảnh logo</label>
-              <input id="upload-home-logo" type="file" accept="image/*" class="hidden" />
+              <label class="btn btn-primary" for="upload-home-logo" role="button" tabindex="0">Chọn ảnh logo</label>
+              <input id="upload-home-logo" type="file" accept=".jpg,.jpeg,.png,.gif,.webp" class="hidden" />
               <span id="home-logo-file" class="selected-file-name">Chưa chọn ảnh</span>
             </div>
             <div class="home-size-meta">
@@ -267,8 +278,8 @@
             <div class="asset-picker">
               <img id="home-commit-preview" class="asset-picker-preview" alt="Ảnh minh họa cam kết" />
               <div class="asset-picker-actions">
-                <label class="btn btn-primary" for="upload-home-commit-image">Chọn ảnh</label>
-                <input id="upload-home-commit-image" type="file" accept="image/*" class="hidden" />
+                <label class="btn btn-primary" for="upload-home-commit-image" role="button" tabindex="0">Chọn ảnh</label>
+                <input id="upload-home-commit-image" type="file" accept=".jpg,.jpeg,.png,.gif,.webp" class="hidden" />
                 <span id="home-commit-file" class="selected-file-name">Chưa chọn ảnh</span>
               </div>
             </div>
@@ -425,11 +436,11 @@
                 </div>
                 <img id="selected-image-preview" alt="Ảnh đang chọn" />
                 <div class="image-toolbar-actions">
-                  <label class="btn btn-primary" for="inline-image-input">Tải ảnh mới</label>
+                  <label class="btn btn-primary" for="inline-image-input" role="button" tabindex="0">Tải ảnh mới</label>
                   <button id="replace-image-library" class="btn btn-secondary" type="button">Chọn từ thư viện</button>
                 </div>
               </div>
-              <input id="inline-image-input" type="file" accept="image/*" class="hidden" />
+              <input id="inline-image-input" type="file" accept=".jpg,.jpeg,.png,.gif,.webp" class="hidden" />
             </div>
             <div id="editor-status" class="status"></div>
           </div>
@@ -442,8 +453,8 @@
             <img id="thumbnail-preview" alt="Ảnh đại diện" />
             <div style="margin-top:16px; display:flex; gap:10px; flex-wrap:wrap;">
               <button id="pick-thumbnail" class="btn btn-secondary" type="button">Chọn ảnh có sẵn</button>
-              <label class="btn btn-primary" for="upload-thumbnail">Chọn ảnh từ máy</label>
-              <input id="upload-thumbnail" type="file" accept="image/*" class="hidden" />
+              <label class="btn btn-primary" for="upload-thumbnail" role="button" tabindex="0">Chọn ảnh từ máy</label>
+              <input id="upload-thumbnail" type="file" accept=".jpg,.jpeg,.png,.gif,.webp" class="hidden" />
             </div>
             <div class="editor-rating-box">
               <div class="rating-box-title">
@@ -472,10 +483,16 @@
           <div class="topbar-actions">
             <a
               class="btn btn-secondary"
+              href="/giasubinhminh.com/index.html#section_1286639660"
+              target="_blank"
+              rel="noopener"
+            >Xem trang chủ</a>
+            <a
+              class="btn btn-secondary"
               href="/giasubinhminh.com/gia-su-day-online-tai-nha-tu-lop-1-12-on-thi-tat-ca-cac-mon/index.html"
               target="_blank"
               rel="noopener"
-            >Xem trang</a>
+            >Xem trang nội dung</a>
             <button id="save-feedback" class="btn btn-primary" type="button">Lưu phản hồi</button>
           </div>
         </div>
@@ -485,10 +502,10 @@
               <span class="drive-mark">✓</span>
               <div>
                 <strong>Thay ảnh phản hồi</strong>
-                <p>Bấm “Chọn ảnh” tại đúng vị trí cần thay, kiểm tra ảnh xem trước rồi bấm “Lưu phản hồi”.</p>
+                <p>Quản lý tập trung ảnh phản hồi ở trang chủ và các khối phản hồi trong trang nội dung. Chọn ảnh tại đúng vị trí rồi bấm “Lưu phản hồi”.</p>
               </div>
             </div>
-            <a class="btn btn-secondary" href="https://drive.google.com/drive/folders/1ZZbFZyprqiOIOq9mxlvtf6Uls5KRKO0N" target="_blank" rel="noopener">Mở kho ảnh Drive</a>
+            <a class="btn btn-secondary drive-folder-link hidden" data-drive-folder-link target="_blank" rel="noopener noreferrer">Mở kho ảnh Drive</a>
           </div>
           <div id="feedback-images" class="feedback-admin-grid"></div>
           <div id="feedback-status" class="status"></div>
@@ -499,9 +516,9 @@
         <div class="topbar">
           <h1>Thư viện ảnh</h1>
           <div class="topbar-actions">
-            <input id="media-search" type="search" placeholder="Tìm ảnh..." />
-            <label class="btn btn-primary" for="upload-media">Tải ảnh lên</label>
-            <input id="upload-media" type="file" accept="image/*" class="hidden" />
+            <input id="media-search" type="search" placeholder="Tìm ảnh..." aria-label="Tìm ảnh trong thư viện" />
+            <label class="btn btn-primary" for="upload-media" role="button" tabindex="0">Tải ảnh lên</label>
+            <input id="upload-media" type="file" accept=".jpg,.jpeg,.png,.gif,.webp" class="hidden" />
           </div>
         </div>
         <div class="panel drive-manager">
@@ -511,7 +528,7 @@
               <h3>Kho ảnh Google Drive</h3>
               <p>Dùng để lưu và theo dõi ảnh gốc. Khi sửa website, nhân viên chỉ cần bấm “Chọn ảnh”.</p>
             </div>
-            <a class="btn btn-primary" href="https://drive.google.com/drive/folders/1ZZbFZyprqiOIOq9mxlvtf6Uls5KRKO0N" target="_blank" rel="noopener">Mở kho ảnh Drive</a>
+            <a class="btn btn-primary drive-folder-link hidden" data-drive-folder-link target="_blank" rel="noopener noreferrer">Mở kho ảnh Drive</a>
           </div>
         </div>
         <div class="panel">
@@ -540,8 +557,8 @@
             <div class="field">
               <label for="upload-setting-logo">Logo website</label>
               <input id="setting-logo" type="hidden" />
-              <label class="btn btn-primary" for="upload-setting-logo">Chọn logo</label>
-              <input id="upload-setting-logo" type="file" accept="image/*" class="hidden" />
+              <label class="btn btn-primary" for="upload-setting-logo" role="button" tabindex="0">Chọn logo</label>
+              <input id="upload-setting-logo" type="file" accept=".jpg,.jpeg,.png,.gif,.webp" class="hidden" />
               <span id="setting-logo-file" class="selected-file-name">Chưa chọn ảnh</span>
             </div>
             <div class="field">
@@ -556,7 +573,7 @@
           <div>
             <div class="field">
               <label for="setting-password">Đổi mật khẩu admin</label>
-              <input id="setting-password" type="password" placeholder="Để trống nếu không đổi" />
+              <input id="setting-password" type="password" placeholder="Để trống nếu không đổi" autocomplete="new-password" />
             </div>
             <img id="setting-logo-preview" alt="Logo" style="max-width:220px; border-radius:12px; border:1px solid var(--border);" />
           </div>
@@ -567,6 +584,6 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.js"></script>
-  <script src="/admin/static/admin.js?v=20260725-3"></script>
+  <script src="/admin/static/admin.js?v=20260727-1"></script>
 </body>
 </html>

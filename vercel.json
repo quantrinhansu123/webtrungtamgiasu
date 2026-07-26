@@ -1,14 +1,71 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
+  "buildCommand": "python scripts/build_public.py",
+  "outputDirectory": "public",
   "functions": {
     "api/**/*.py": {
       "maxDuration": 60,
-      "excludeFiles": "{giasubinhminh.com/**,hts-cache/**}"
+      "includeFiles": "{admin/static/**,admin/*.json,admin/templates/**}",
+      "excludeFiles": "{giasubinhminh.com/**,hts-cache/**,public/**,tests/**,scripts/**,admin/__pycache__/**,*.jpg,*.jpeg,*.png,*.webp}"
     }
   },
+  "routes": [
+    {
+      "src": "/admin/(?:config\\.json|classes\\.json|page-titles\\.json|requirements\\.txt|server\\.py|templates(?:/.*)?|__pycache__(?:/.*)?)",
+      "status": 404
+    },
+    { "src": "/(?:scripts|tests)(?:/.*)?", "status": 404 },
+    {
+      "src": "/(?:requirements\\.txt|start-admin\\.bat|vercel\\.json|cookies\\.txt|hts-log\\.txt)",
+      "status": 404
+    },
+    {
+      "src": "/giasubinhminh\\.com/(?:wp-admin(?:/.*)?|wp-login[^/]*)",
+      "status": 404
+    }
+  ],
+  "redirects": [
+    {
+      "source": "/",
+      "destination": "/giasubinhminh.com/",
+      "permanent": false
+    }
+  ],
   "rewrites": [
     { "source": "/admin", "destination": "/api/cms" },
-    { "source": "/admin/", "destination": "/api/cms" },
-    { "source": "/api/(.*)", "destination": "/api/cms" }
+    { "source": "/admin/:path*", "destination": "/api/cms" },
+    { "source": "/giasubinhminh.com/wp-admin/:path*", "destination": "/api/cms" },
+    { "source": "/giasubinhminh.com/(wp-login.*)", "destination": "/api/cms" },
+    { "source": "/scripts/:path*", "destination": "/api/cms" },
+    { "source": "/requirements.txt", "destination": "/api/cms" },
+    { "source": "/start-admin.bat", "destination": "/api/cms" },
+    { "source": "/vercel.json", "destination": "/api/cms" },
+    { "source": "/cookies.txt", "destination": "/api/cms" },
+    { "source": "/hts-log.txt", "destination": "/api/cms" },
+    { "source": "/api/:path*", "destination": "/api/cms" }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        { "key": "Strict-Transport-Security", "value": "max-age=31536000; includeSubDomains" },
+        { "key": "X-Content-Type-Options", "value": "nosniff" },
+        { "key": "X-Frame-Options", "value": "SAMEORIGIN" },
+        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" },
+        { "key": "Permissions-Policy", "value": "camera=(), microphone=(), geolocation=()" }
+      ]
+    },
+    {
+      "source": "/giasubinhminh.com/wp-content/uploads/cms/2026/07/site-config.json",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" }
+      ]
+    },
+    {
+      "source": "/giasubinhminh.com/wp-content/uploads/cms/2026/07/image-fallback.js",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" }
+      ]
+    }
   ]
 }

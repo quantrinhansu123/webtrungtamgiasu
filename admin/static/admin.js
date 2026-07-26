@@ -5,36 +5,11 @@ let mediaPickMode = null;
 let inlineImageTarget = null;
 let currentClassId = null;
 let allClasses = [];
+let csrfToken = "";
 
 const FEATURED_CAM_KET_ID = "cam-ket-tien-bo-sau-10-buoi/index.html";
-const CMS_USERNAME_KEY = "tri_viet_cms_username";
-const CMS_PASSWORD_KEY = "tri_viet_cms_password";
-
-function getCmsCredentials() {
-  return {
-    username: sessionStorage.getItem(CMS_USERNAME_KEY) || "",
-    password: sessionStorage.getItem(CMS_PASSWORD_KEY) || "",
-  };
-}
-
-function setCmsCredentials(username, password) {
-  if (username && password) {
-    sessionStorage.setItem(CMS_USERNAME_KEY, username);
-    sessionStorage.setItem(CMS_PASSWORD_KEY, password);
-    return;
-  }
-  sessionStorage.removeItem(CMS_USERNAME_KEY);
-  sessionStorage.removeItem(CMS_PASSWORD_KEY);
-}
-
-function cmsAuthHeaders() {
-  const credentials = getCmsCredentials();
-  if (!credentials.username || !credentials.password) return {};
-  return {
-    "X-CMS-Username": credentials.username,
-    "X-CMS-Password": credentials.password,
-  };
-}
+const MUTATING_METHODS = new Set(["POST", "PUT", "PATCH", "DELETE"]);
+const SESSION_EXPIRED_MESSAGE = "Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.";
 
 const views = {
   pages: document.getElementById("view-pages"),
@@ -53,24 +28,80 @@ function setActiveNav(viewName, pageId = null) {
       pageId === FEATURED_CAM_KET_ID &&
       viewName === "editor";
     const isMatch = btn.dataset.view === viewName;
-    btn.classList.toggle("active", isFeatured || (isMatch && viewName !== "editor"));
+    const isActive = isFeatured || (isMatch && viewName !== "editor");
+    btn.classList.toggle("active", isActive);
+    if (isActive) {
+      btn.setAttribute("aria-current", "page");
+    } else {
+      btn.removeAttribute("aria-current");
+    }
   });
 }
 
+function clearClientSession(message = "") {
+  csrfToken = "";
+  currentPageId = null;
+  currentClassId = null;
+  allPages = [];
+  allClasses = [];
+  mediaPickMode = null;
+  inlineImageTarget = null;
+
+  const loginForm = document.getElementById("login-form");
+  loginForm.reset();
+  document.querySelectorAll('input[type="password"]').forEach((input) => {
+    input.value = "";
+  });
+  setDriveFolderLinks("");
+  document.getElementById("app").classList.add("hidden");
+  document.getElementById("login-screen").classList.remove("hidden");
+  setStatus(document.getElementById("login-status"), message, message ? "error" : "");
+  document.getElementById("username").focus();
+}
+
 async function api(url, options = {}) {
-  const optionHeaders = options.headers || {};
+  const {
+    headers: optionHeaders = {},
+    credentials: _ignoredCredentials,
+    ...requestOptions
+  } = options;
+  const method = String(requestOptions.method || "GET").toUpperCase();
+  const headers = new Headers(optionHeaders);
+
+  if (
+    requestOptions.body !== undefined &&
+    !(requestOptions.body instanceof FormData) &&
+    !headers.has("Content-Type")
+  ) {
+    headers.set("Content-Type", "application/json");
+  }
+  if (csrfToken && MUTATING_METHODS.has(method)) {
+    headers.set("X-CSRF-Token", csrfToken);
+  }
+
   const response = await fetch(url, {
+    ...requestOptions,
     credentials: "same-origin",
-    ...options,
-    headers: {
-      "Content-Type": "application/json",
-      ...cmsAuthHeaders(),
-      ...optionHeaders,
-    },
+    headers,
   });
   const data = await response.json().catch(() => ({}));
+  if (typeof data.csrf_token === "string" && data.csrf_token) {
+    csrfToken = data.csrf_token;
+  }
   if (!response.ok) {
-    throw new Error(data.error || "Có lỗi xảy ra");
+    const isLoginRequest = url === "/api/login";
+    const message =
+      response.status === 401
+        ? isLoginRequest
+          ? "Tên đăng nhập hoặc mật khẩu không đúng."
+          : SESSION_EXPIRED_MESSAGE
+        : data.error || "Có lỗi xảy ra. Vui lòng thử lại.";
+    if (response.status === 401 && !isLoginRequest) {
+      clearClientSession(message);
+    }
+    const error = new Error(message);
+    error.status = response.status;
+    throw error;
   }
   return data;
 }
@@ -88,8 +119,11 @@ function showView(name) {
 }
 
 function setStatus(el, message, type = "") {
+  if (!el) return;
   el.textContent = message || "";
   el.className = `status ${type}`.trim();
+  el.setAttribute("role", type === "error" ? "alert" : "status");
+  el.setAttribute("aria-live", type === "error" ? "assertive" : "polite");
 }
 
 function clearSelectedImage() {
@@ -172,34 +206,112 @@ async function enterAdmin() {
 async function checkSession() {
   const me = await api("/api/me");
   if (me.logged_in) {
+    if (!csrfToken) {
+      clearClientSession("Không thể xác minh phiên đăng nhập. Vui lòng đăng nhập lại.");
+      return false;
+    }
+    return true;
+  }
+  clearClientSession();
+  return false;
+}
+
+function handleAdminLoadError(error) {
+  if (error.status === 401) return;
+  showView("pages");
+  setStatus(
+    document.getElementById("pages-status"),
+    "Đã đăng nhập nhưng không thể tải đầy đủ dữ liệu. Vui lòng thử lại.",
+    "error"
+  );
+}
+
+async function initializeSession() {
+  const submitButton = document.getElementById("login-submit");
+  let authenticated = false;
+  submitButton.disabled = true;
+  setStatus(document.getElementById("login-status"), "Đang kiểm tra phiên đăng nhập...");
+  try {
+    authenticated = await checkSession();
+  } catch (error) {
+    clearClientSession(
+      error.status === 401
+        ? SESSION_EXPIRED_MESSAGE
+        : "Không thể kiểm tra phiên đăng nhập. Bạn vẫn có thể thử đăng nhập."
+    );
+  } finally {
+    submitButton.disabled = false;
+  }
+
+  if (!authenticated) return;
+  try {
     await enterAdmin();
+  } catch (error) {
+    handleAdminLoadError(error);
   }
 }
 
 async function login(event) {
   event.preventDefault();
+  const form = event.currentTarget;
+  const submitButton = form.querySelector('button[type="submit"]');
   const username = document.getElementById("username").value.trim();
   const password = document.getElementById("password").value;
+  let authenticated = false;
+  setStatus(document.getElementById("login-status"), "");
+  submitButton.disabled = true;
+  submitButton.setAttribute("aria-busy", "true");
+
   try {
-    await api("/api/login", {
+    const data = await api("/api/login", {
       method: "POST",
       body: JSON.stringify({ username, password }),
     });
-    setCmsCredentials(username, password);
+    if (!data.csrf_token || !csrfToken) {
+      clearClientSession("Không thể khởi tạo phiên đăng nhập. Vui lòng thử lại.");
+      return;
+    }
+    authenticated = true;
+  } catch (error) {
+    const message =
+      error.status
+        ? error.message
+        : "Không thể đăng nhập. Vui lòng kiểm tra kết nối và thử lại.";
+    setStatus(document.getElementById("login-status"), message, "error");
+    document.getElementById("password").value = "";
+    document.getElementById(error.status === 401 ? "password" : "username").focus();
+  } finally {
+    submitButton.disabled = false;
+    submitButton.removeAttribute("aria-busy");
+  }
+
+  if (!authenticated) return;
+  document.getElementById("password").value = "";
+  try {
     await enterAdmin();
   } catch (error) {
-    setCmsCredentials("", "");
-    setStatus(document.getElementById("login-status"), error.message, "error");
+    handleAdminLoadError(error);
   }
 }
 
 async function logout() {
+  const button = document.getElementById("logout-btn");
+  button.disabled = true;
   try {
     await api("/api/logout", { method: "POST" });
+    clearClientSession();
+  } catch (error) {
+    if (error.status !== 401) {
+      showView("pages");
+      setStatus(
+        document.getElementById("pages-status"),
+        "Không thể đăng xuất. Vui lòng kiểm tra kết nối và thử lại.",
+        "error"
+      );
+    }
   } finally {
-    setCmsCredentials("", "");
+    button.disabled = false;
   }
-  location.reload();
 }
 
 async function loadPages(search = "") {
@@ -225,13 +337,13 @@ function renderPageList() {
   list.innerHTML = allPages
     .map(
       (page) => `
-      <div class="page-item" data-id="${page.id}">
-        <div>
+      <button class="page-item" data-id="${escapeAttr(page.id)}" type="button">
+        <span>
           <strong>${escapeHtml(page.title)}</strong>
           <small>${escapeHtml(page.slug)}</small>
-        </div>
+        </span>
         <span class="badge">${page.editable_content ? "Có nội dung" : "Trang tĩnh"}</span>
-      </div>`
+      </button>`
     )
     .join("");
 
@@ -331,8 +443,8 @@ function renderSlides(slides = []) {
           <label>Ảnh slide ${i + 1}</label>
           <div class="home-media-row">
             <input class="home-slide-image" type="hidden" value="${escapeAttr(item.image || "")}" />
-            <label class="btn btn-primary" for="upload-home-slide-${i}">Chọn ảnh slide ${i + 1}</label>
-            <input id="upload-home-slide-${i}" class="home-slide-upload hidden" type="file" accept="image/*" data-index="${i}" />
+            <label class="btn btn-primary" for="upload-home-slide-${i}" role="button" tabindex="0">Chọn ảnh slide ${i + 1}</label>
+            <input id="upload-home-slide-${i}" class="home-slide-upload hidden" type="file" accept=".jpg,.jpeg,.png,.gif,.webp" data-index="${i}" />
             <span class="selected-file-name home-slide-file">${escapeHtml(assetFileName(item.image))}</span>
           </div>
           <div class="home-size-meta">
@@ -417,8 +529,8 @@ function renderTutors(tutors = []) {
           <div class="asset-picker asset-picker-compact">
             <img class="asset-picker-preview home-tutor-preview" src="${escapeAttr(normalizeAssetUrl(item.image || ""))}" alt="Ảnh gia sư ${i + 1}" />
             <div class="asset-picker-actions">
-              <label class="btn btn-primary" for="upload-home-tutor-${i}">Chọn ảnh</label>
-              <input id="upload-home-tutor-${i}" class="home-tutor-upload hidden" type="file" accept="image/*" />
+              <label class="btn btn-primary" for="upload-home-tutor-${i}" role="button" tabindex="0">Chọn ảnh</label>
+              <input id="upload-home-tutor-${i}" class="home-tutor-upload hidden" type="file" accept=".jpg,.jpeg,.png,.gif,.webp" />
               <span class="selected-file-name home-tutor-file">${escapeHtml(assetFileName(item.image))}</span>
             </div>
           </div>
@@ -645,12 +757,13 @@ async function loadClasses() {
   }
 }
 
-function renderFeedbackImages(images = []) {
-  const wrap = document.getElementById("feedback-images");
-  wrap.innerHTML = Array.from({ length: 6 }, (_, index) => {
+function renderFeedbackGroup(images, group, title, description) {
+  const count = group === "homepage" ? 20 : 6;
+  const cards = Array.from({ length: count }, (_, index) => {
     const item = images[index] || {};
+    const uploadId = `upload-feedback-${group}-${index}`;
     return `
-      <div class="feedback-admin-card" data-index="${index}">
+      <div class="feedback-admin-card" data-group="${group}" data-index="${index}">
         <h3>Ảnh phản hồi ${index + 1}</h3>
         <img
           class="feedback-admin-preview"
@@ -664,19 +777,48 @@ function renderFeedbackImages(images = []) {
             type="hidden"
             value="${escapeAttr(item.url || "")}"
           />
+          <input
+            class="feedback-image-alt"
+            type="hidden"
+            value="${escapeAttr(item.alt || "")}"
+          />
           <span class="selected-file-name feedback-file-name">${escapeHtml(assetFileName(item.url))}</span>
         </div>
         <div class="image-toolbar-actions">
-          <label class="btn btn-primary" for="upload-feedback-${index}">Chọn ảnh</label>
+          <label class="btn btn-primary" for="${uploadId}" role="button" tabindex="0">Chọn ảnh</label>
         </div>
         <input
-          id="upload-feedback-${index}"
+          id="${uploadId}"
           class="feedback-image-upload hidden"
           type="file"
-          accept="image/*"
+          accept=".jpg,.jpeg,.png,.gif,.webp"
         />
       </div>`;
   }).join("");
+  return `
+    <div class="feedback-group-heading">
+      <h2>${escapeHtml(title)}</h2>
+      <p>${escapeHtml(description)}</p>
+    </div>
+    ${cards}`;
+}
+
+function renderFeedbackImages(homepageImages = [], sharedImages = []) {
+  const wrap = document.getElementById("feedback-images");
+  wrap.innerHTML = [
+    renderFeedbackGroup(
+      homepageImages,
+      "homepage",
+      "Feedback trên trang chủ",
+      "20 ảnh trong khu vực phản hồi phụ huynh ở trang chủ."
+    ),
+    renderFeedbackGroup(
+      sharedImages,
+      "shared",
+      "Feedback trong trang nội dung",
+      "6 ảnh dùng chung cho mọi khối phản hồi trong các trang nội dung."
+    ),
+  ].join("");
 
   wrap.querySelectorAll(".feedback-admin-card").forEach((card) => {
     const urlInput = card.querySelector(".feedback-image-url");
@@ -719,7 +861,7 @@ async function openFeedback() {
   setStatus(status, "Đang tải phản hồi...");
   try {
     const data = await api("/api/feedback");
-    renderFeedbackImages(data.images || []);
+    renderFeedbackImages(data.homepage_images || [], data.images || []);
     setStatus(status, "");
   } catch (error) {
     setStatus(status, error.message, "error");
@@ -728,17 +870,23 @@ async function openFeedback() {
 
 async function saveFeedback() {
   const status = document.getElementById("feedback-status");
-  const images = Array.from(
-    document.querySelectorAll(".feedback-admin-card")
-  ).map((card) => ({
-    url: normalizeAssetUrl(card.querySelector(".feedback-image-url").value.trim()),
-  }));
+  const groups = {
+    homepage: [],
+    shared: [],
+  };
+  document.querySelectorAll(".feedback-admin-card").forEach((card) => {
+    groups[card.dataset.group].push({
+      url: normalizeAssetUrl(card.querySelector(".feedback-image-url").value.trim()),
+      alt: card.querySelector(".feedback-image-alt").value.trim(),
+    });
+  });
   setStatus(status, "Đang lưu phản hồi...");
   try {
     const data = await api("/api/feedback", {
       method: "PUT",
       body: JSON.stringify({
-        images,
+        images: groups.shared,
+        homepage_images: groups.homepage,
       }),
     });
     setStatus(status, data.message || "Đã lưu phản hồi", "success");
@@ -853,10 +1001,10 @@ function renderMedia(items) {
   grid.innerHTML = items
     .map(
       (item) => `
-      <div class="media-card" data-url="${escapeAttr(item.url)}" data-path="${escapeAttr(item.path)}">
+      <button class="media-card" data-url="${escapeAttr(item.url)}" data-path="${escapeAttr(item.path)}" type="button">
         <img src="${escapeAttr(item.url)}" alt="${escapeAttr(item.name)}" loading="lazy" />
         <p>${escapeHtml(item.name)}</p>
-      </div>`
+      </button>`
     )
     .join("");
 
@@ -873,21 +1021,16 @@ function renderMedia(items) {
 async function uploadFile(file, onDone) {
   const formData = new FormData();
   formData.append("file", file);
-  const response = await fetch("/api/media/upload", {
+  const data = await api("/api/media/upload", {
     method: "POST",
-    credentials: "same-origin",
-    headers: cmsAuthHeaders(),
     body: formData,
   });
-  const data = await response.json();
-  if (!response.ok) {
-    throw new Error(data.error || "Upload thất bại");
-  }
   onDone(data);
 }
 
 async function loadSettings() {
   const data = await api("/api/settings");
+  setDriveFolderLinks(data.drive_folder_url);
   document.getElementById("setting-site-name").value = data.site_name || "";
   document.getElementById("setting-logo").value = data.logo || "";
   document.getElementById("setting-hotline1").value = data.hotline1 || "";
@@ -897,6 +1040,28 @@ async function loadSettings() {
   document
     .getElementById("cms-publishing-warning")
     .classList.toggle("hidden", data.publishing_ready !== false);
+}
+
+function setDriveFolderLinks(value) {
+  let href = "";
+  try {
+    const url = new URL(String(value || ""));
+    if (url.protocol === "https:" && url.hostname === "drive.google.com") {
+      href = url.href;
+    }
+  } catch (_) {
+    href = "";
+  }
+
+  document.querySelectorAll("[data-drive-folder-link]").forEach((link) => {
+    if (href) {
+      link.href = href;
+      link.classList.remove("hidden");
+    } else {
+      link.removeAttribute("href");
+      link.classList.add("hidden");
+    }
+  });
 }
 
 async function saveSettings() {
@@ -911,13 +1076,18 @@ async function saveSettings() {
     };
     const newPassword = document.getElementById("setting-password").value;
     if (newPassword) payload.new_password = newPassword;
-    await api("/api/settings", {
+    const data = await api("/api/settings", {
       method: "PUT",
       body: JSON.stringify(payload),
     });
-    if (newPassword) {
-      const credentials = getCmsCredentials();
-      setCmsCredentials(credentials.username || "admin", newPassword);
+    if (data.reauthenticate) {
+      clearClientSession();
+      setStatus(
+        document.getElementById("login-status"),
+        "Mật khẩu đã được đổi. Vui lòng đăng nhập lại bằng mật khẩu mới.",
+        "success"
+      );
+      return;
     }
     setStatus(status, "Đã cập nhật cài đặt", "success");
     document.getElementById("setting-password").value = "";
@@ -1010,6 +1180,16 @@ document.getElementById("open-featured-cam-ket").addEventListener("click", openF
 document.getElementById("open-homepage").addEventListener("click", openHomepage);
 document.getElementById("field-rating-score").addEventListener("input", renderRatingPreview);
 document.getElementById("field-rating-count").addEventListener("input", renderRatingPreview);
+
+document.addEventListener("keydown", (event) => {
+  if (event.key !== "Enter" && event.key !== " ") return;
+  const pickerLabel = event.target.closest('label[role="button"][for]');
+  if (!pickerLabel) return;
+  const input = document.getElementById(pickerLabel.htmlFor);
+  if (!input || input.disabled) return;
+  event.preventDefault();
+  input.click();
+});
 
 document.querySelectorAll("[data-quick-view]").forEach((button) => {
   button.addEventListener("click", async () => {
@@ -1202,4 +1382,4 @@ window.addEventListener("hashchange", () => {
   openFromHash().catch(() => {});
 });
 
-checkSession().catch(() => {});
+initializeSession();
