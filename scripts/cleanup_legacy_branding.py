@@ -1,7 +1,10 @@
 from __future__ import annotations
 
+import gzip
 import html
+import json
 import re
+import xml.etree.ElementTree as ET
 from pathlib import Path
 from urllib.parse import unquote
 
@@ -144,9 +147,13 @@ LEGACY_BRAND_MARKERS = tuple(
         "2018/09/ly-do-nen-thue-gia-su-toan-lop-3",
         "2018/09/nen-thue-sinh-vien-hay-giao-vien",
         "2018/09/quyen-loi-khi-den-voi-trung-tam",
+        "4.45.44-ch.png",
+        "4.49.11-ch-300x184.png",
         "2018/09/Toan-6.png",
         "2018/09/Toan-7.png",
         "2018/09/Toan-8.png",
+        "11.34.30-ch-300x196.png",
+        "9.25.25-ch-300x211.png",
         "2018-10-26-lu",
         "2018/10/gia-su-van-lop-8-copy",
         "2018/10/hoc-gia-su-la-gi",
@@ -171,7 +178,9 @@ LEGACY_BRAND_MARKERS = tuple(
         "2020/08/GIA-SU-HOA-1",
         "2020/08/gia-su-mon-dia",
         "2020/08/gia-su-mon-ly",
+        "2020/08/gia-su-mon-sinh",
         "2020/08/gia-su-mon-su",
+        "2020/08/GIA-SU-NGOAI-NGU",
         "2020/08/gia-su-tieng-han",
         "2020/08/gia-su-tieng-nhat",
         "2020/08/Gia-su-Tieng-Trung",
@@ -184,6 +193,7 @@ LEGACY_BRAND_MARKERS = tuple(
         "2024/05/QUY-DINH-HOC-THU",
         "2024/05/Toan-12",
         "2024/05/Toan-9",
+        "2025/01/2-1.19.delayed",
     )
 )
 BRAND_RE = re.compile(
@@ -215,6 +225,12 @@ VISIBLE_BRAND_REPLACEMENTS = (
     (re.compile(r"BÌNH\s*MÌNH"), "TRÍ VIỆT"),
     (re.compile(r"Bình\s*Mình"), "Trí Việt"),
     (re.compile(r"bình\s*mình"), "Trí Việt"),
+    (re.compile(r"BÌNH\s*MỊNH"), "TRÍ VIỆT"),
+    (re.compile(r"Bình\s*Mịnh"), "Trí Việt"),
+    (re.compile(r"bình\s*mịnh"), "Trí Việt"),
+    (re.compile(r"BÌNH\s*MINH"), "TRÍ VIỆT"),
+    (re.compile(r"Bình\s*Minh"), "Trí Việt"),
+    (re.compile(r"bình\s*minh"), "Trí Việt"),
     (re.compile(r"\bHT\s*Con\b", re.IGNORECASE), "Trí Việt"),
     (re.compile(r"TẬP CHUNG"), "TẬP TRUNG"),
     (re.compile(r"Tập chung"), "Tập trung"),
@@ -385,7 +401,7 @@ def replace_legacy_image(match: re.Match[str]) -> str:
 
 def replacement_asset_path(normalized_reference: str) -> str | None:
     if FEEDBACK_RE.search(normalized_reference):
-        return f"{ASSET_ROOT}/feedback/fb1.jpg"
+        return f"{ASSET_ROOT}/feedback-tri-viet.png"
     if LOGO_RE.search(normalized_reference):
         return LOGO_SRC
     if ONLINE_PRICE_RE.search(normalized_reference):
@@ -435,6 +451,12 @@ def replace_corrupted_bullet_markers(content: str) -> str:
     )
     content = content.replace('alt="????"', 'alt="🔹"')
     content = content.replace("alt='????'", "alt='🔹'")
+    content = re.sub(
+        r"""(<img\b(?=[^>]*\b(?:src|data-src)=["'][^"']*/1f449\.svg["'])[^>]*?\balt=)(["'])\?\2""",
+        lambda match: f"{match.group(1)}{match.group(2)}👉{match.group(2)}",
+        content,
+        flags=re.IGNORECASE,
+    )
 
     def repair_text_node(match: re.Match[str]) -> str:
         text_node = match.group(1)
@@ -481,9 +503,39 @@ def clean_html(relative_path: str, content: str) -> tuple[str, int]:
     return cleaned, image_replacements
 
 
+def clean_snapshot(content: str) -> str:
+    cleaned = replace_legacy_asset_references(content)
+    for pattern, replacement in VISIBLE_BRAND_REPLACEMENTS:
+        cleaned = pattern.sub(replacement, cleaned)
+    cleaned = replace_corrupted_bullet_markers(cleaned)
+    return cleaned.replace("Array<div", "<div")
+
+
+def clean_json_value(value):
+    if isinstance(value, str):
+        return clean_snapshot(value)
+    if isinstance(value, list):
+        return [clean_json_value(item) for item in value]
+    if isinstance(value, dict):
+        return {key: clean_json_value(item) for key, item in value.items()}
+    return value
+
+
+def clean_xml_tree(root: ET.Element) -> None:
+    for element in root.iter():
+        if element.text:
+            element.text = clean_snapshot(element.text)
+        if element.tail:
+            element.tail = clean_snapshot(element.tail)
+        for key, value in element.attrib.items():
+            element.attrib[key] = clean_snapshot(value)
+
+
 def main() -> None:
     changed_files = 0
     replaced_images = 0
+    changed_snapshots = 0
+    changed_gzip_snapshots = 0
 
     for html_file in SITE_ROOT.rglob("*.html"):
         raw = html_file.read_bytes()
@@ -496,8 +548,68 @@ def main() -> None:
         changed_files += 1
         replaced_images += image_count
 
+    snapshot_root = SITE_ROOT / "wp-json"
+    for snapshot_file in snapshot_root.rglob("*"):
+        if not snapshot_file.is_file() or snapshot_file.suffix.lower() == ".html":
+            continue
+        raw = snapshot_file.read_bytes()
+        original = raw.decode("utf-8")
+        if original.lstrip().startswith(("{", "[")):
+            original_value = json.loads(original)
+            cleaned_value = clean_json_value(original_value)
+            if cleaned_value == original_value:
+                continue
+            cleaned = json.dumps(
+                cleaned_value,
+                ensure_ascii=False,
+                separators=(",", ":"),
+            )
+            if original.endswith(("\r\n", "\n")):
+                cleaned += "\n"
+            json.loads(cleaned)
+        elif original.lstrip().startswith(("<?xml", "<oembed")):
+            root = ET.fromstring(original)
+            original_tree = ET.tostring(root, encoding="unicode")
+            clean_xml_tree(root)
+            cleaned_tree = ET.tostring(root, encoding="unicode")
+            if cleaned_tree == original_tree:
+                continue
+            cleaned = ET.tostring(
+                root,
+                encoding="utf-8",
+                xml_declaration=original.lstrip().startswith("<?xml"),
+            ).decode("utf-8")
+            ET.fromstring(cleaned)
+        else:
+            cleaned = clean_snapshot(original)
+            if cleaned == original:
+                continue
+
+        snapshot_file.write_bytes(cleaned.encode("utf-8"))
+        changed_snapshots += 1
+
+    for gzip_file in SITE_ROOT.rglob("*.z"):
+        raw = gzip_file.read_bytes()
+        if not raw.startswith(b"\x1f\x8b"):
+            continue
+        original_bytes = gzip.decompress(raw)
+        original = original_bytes.decode("utf-8")
+        relative_path = gzip_file.relative_to(SITE_ROOT).as_posix()
+        cleaned, image_count = clean_html(relative_path, original)
+        if cleaned == original:
+            continue
+        cleaned_bytes = cleaned.encode("utf-8")
+        rewritten = gzip.compress(cleaned_bytes, mtime=0)
+        if gzip.decompress(rewritten) != cleaned_bytes:
+            raise ValueError(f"Failed to validate rewritten gzip snapshot: {gzip_file}")
+        gzip_file.write_bytes(rewritten)
+        changed_gzip_snapshots += 1
+        replaced_images += image_count
+
     print(f"Changed HTML files: {changed_files}")
     print(f"Replaced legacy image tags: {replaced_images}")
+    print(f"Changed WordPress snapshots: {changed_snapshots}")
+    print(f"Changed gzip snapshots: {changed_gzip_snapshots}")
 
 
 if __name__ == "__main__":
