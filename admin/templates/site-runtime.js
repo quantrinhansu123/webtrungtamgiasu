@@ -156,12 +156,6 @@
       ".tri-viet-parent-requests__inner{max-width:1180px;margin:0 auto}",
       ".tri-viet-parent-requests__heading{text-align:center;margin:0 auto 32px;",
       "max-width:820px}",
-      ".tri-viet-parent-requests__badge{display:inline-flex;align-items:center;",
-      "gap:8px;margin:0 0 12px;padding:8px 16px;border-radius:999px;",
-      "background:#dff3e9;color:#087849;font-size:14px;font-weight:700;",
-      "letter-spacing:.04em;text-transform:uppercase}",
-      ".tri-viet-parent-requests__badge:before{content:'';width:9px;height:9px;",
-      "border-radius:50%;background:#0b8a55;box-shadow:0 0 0 4px #bce5d1}",
       ".tri-viet-parent-requests__title{margin:0;color:#0b7448;",
       "font-size:clamp(27px,3vw,42px);line-height:1.16;font-weight:800}",
       ".tri-viet-parent-requests__subtitle{margin:12px auto 0;color:#435c52;",
@@ -267,7 +261,6 @@
     inner.className = "tri-viet-parent-requests__inner";
     inner.innerHTML = [
       '<header class="tri-viet-parent-requests__heading">',
-      '<p class="tri-viet-parent-requests__badge">50 yêu cầu thực tế</p>',
       '<h2 class="tri-viet-parent-requests__title" ',
       'id="tri-viet-parent-requests-title">',
       "Phụ huynh đăng ký tìm gia sư</h2>",
