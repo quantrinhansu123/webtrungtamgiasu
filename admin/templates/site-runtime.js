@@ -186,7 +186,7 @@
       ".tri-viet-parent-requests__image{display:block;width:100%;height:100%;",
       "object-fit:contain;background:#edf4f1}",
       ".tri-viet-parent-requests__caption{display:flex;align-items:center;",
-      "justify-content:space-between;gap:10px;padding:13px 4px 5px;",
+      "justify-content:center;gap:10px;padding:13px 4px 5px;",
       "font-size:15px;line-height:1.4;font-weight:700}",
       ".tri-viet-parent-requests__caption small{color:#0b8150;font-size:13px;",
       "font-weight:700;white-space:nowrap}",
@@ -304,10 +304,7 @@
 
       var caption = document.createElement("span");
       caption.className = "tri-viet-parent-requests__caption";
-      caption.innerHTML = (
-        "<span>Yêu cầu phụ huynh " + number + "</span>" +
-        "<small>Chạm để xem rõ</small>"
-      );
+      caption.innerHTML = "<small>Chạm để xem rõ</small>";
       slide.appendChild(imageWrap);
       slide.appendChild(caption);
       track.appendChild(slide);
