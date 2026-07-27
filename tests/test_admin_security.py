@@ -563,6 +563,13 @@ def test_public_runtime_embeds_config_without_fetching_blocked_json():
     assert "window.fetch" not in runtime
     assert ".testimonial-collage img" in runtime
     assert "#parent-feedback-gallery" in runtime
+    assert "updateTextbookCovers" in runtime
+    for subject in ("ngu-van", "hoa-hoc", "vat-ly"):
+        for grade in (10, 11, 12):
+            assert (
+                f"sach-giao-khoa-moi/{subject}-{grade}-gdpt-2018"
+                in runtime
+            )
 
 
 def test_feedback_api_saves_homepage_and_shared_galleries(

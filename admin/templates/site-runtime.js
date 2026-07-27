@@ -9,6 +9,44 @@
     runtimeSrc.indexOf("/giasubinhminh.com/") >= 0
   ) ? "/giasubinhminh.com" : "";
   var fallbackSrc = sitePrefix + "/wp-content/uploads/cms/2026/07/banner-trung-tam-gia-su-tri-viet.png";
+  var textbookCovers = {
+    "gia-su-van-10-de-thanh-cong-noi-tiep-thanh-cong": {
+      src: "/giasubinhminh.com/wp-content/uploads/cms/2026/07/sach-giao-khoa-moi/ngu-van-10-gdpt-2018.jpg",
+      alt: "Sách giáo khoa Ngữ văn 10 - Chương trình GDPT 2018"
+    },
+    "gia-su-van-11-danh-thuc-dam-me-hoc-van-trong-con-nguoi-ban": {
+      src: "/giasubinhminh.com/wp-content/uploads/cms/2026/07/sach-giao-khoa-moi/ngu-van-11-gdpt-2018.jpg",
+      alt: "Sách giáo khoa Ngữ văn 11 - Chương trình GDPT 2018"
+    },
+    "gia-su-van-lop-12-cham-dinh-cua-thanh-cong": {
+      src: "/giasubinhminh.com/wp-content/uploads/cms/2026/07/sach-giao-khoa-moi/ngu-van-12-gdpt-2018.webp",
+      alt: "Sách giáo khoa Ngữ văn 12 - Chương trình GDPT 2018"
+    },
+    "gia-su-hoa-lop-10-giup-con-tro-thanh-than-dong-hoa-hoc": {
+      src: "/giasubinhminh.com/wp-content/uploads/cms/2026/07/sach-giao-khoa-moi/hoa-hoc-10-gdpt-2018.jpg",
+      alt: "Sách giáo khoa Hóa học 10 - Chương trình GDPT 2018"
+    },
+    "gia-su-hoa-lop-11-de-con-duong-gioi-hoa-tro-nen-ngan-nhat": {
+      src: "/giasubinhminh.com/wp-content/uploads/cms/2026/07/sach-giao-khoa-moi/hoa-hoc-11-gdpt-2018.jpg",
+      alt: "Sách giáo khoa Hóa học 11 - Chương trình GDPT 2018"
+    },
+    "gia-su-hoa-lop-12-muon-gioi-hoa-thi-khong-duoc-bo-lo": {
+      src: "/giasubinhminh.com/wp-content/uploads/cms/2026/07/sach-giao-khoa-moi/hoa-hoc-12-gdpt-2018.png",
+      alt: "Sách giáo khoa Hóa học 12 - Chương trình GDPT 2018"
+    },
+    "gia-su-ly-lop-10-hoc-phi-re-hieu-qua-gap-3-lan": {
+      src: "/giasubinhminh.com/wp-content/uploads/cms/2026/07/sach-giao-khoa-moi/vat-ly-10-gdpt-2018.jpg",
+      alt: "Sách giáo khoa Vật lí 10 - Chương trình GDPT 2018"
+    },
+    "gia-su-ly-lop-11-nam-giu-chia-khoa-cua-su-thanh-cong": {
+      src: "/giasubinhminh.com/wp-content/uploads/cms/2026/07/sach-giao-khoa-moi/vat-ly-11-gdpt-2018.jpg",
+      alt: "Sách giáo khoa Vật lí 11 - Chương trình GDPT 2018"
+    },
+    "gia-su-ly-lop-12-nguoc-dong-de-chiem-linh-uoc-mo": {
+      src: "/giasubinhminh.com/wp-content/uploads/cms/2026/07/sach-giao-khoa-moi/vat-ly-12-gdpt-2018.jpg",
+      alt: "Sách giáo khoa Vật lí 12 - Chương trình GDPT 2018"
+    }
+  };
 
   function safeImageUrl(value) {
     var url = String(value || "").trim();
@@ -23,6 +61,55 @@
     Array.prototype.forEach.call(document.querySelectorAll(selector), function (node) {
       node.textContent = value;
     });
+  }
+
+  function textbookCoverForPath(pathname) {
+    var normalizedPath = String(pathname || "").replace(/\/index\.html\/?$/i, "/");
+    var slugs = Object.keys(textbookCovers);
+    for (var index = 0; index < slugs.length; index += 1) {
+      if (normalizedPath.indexOf("/" + slugs[index] + "/") >= 0) {
+        return textbookCovers[slugs[index]];
+      }
+    }
+    return null;
+  }
+
+  function applyTextbookCover(image, cover) {
+    if (!image || !cover) return;
+    var source = safeImageUrl(cover.src);
+    if (!source) return;
+    image.removeAttribute("srcset");
+    image.removeAttribute("sizes");
+    image.removeAttribute("width");
+    image.removeAttribute("height");
+    image.src = source;
+    image.alt = cover.alt;
+    image.dataset.triVietTextbookCover = "true";
+  }
+
+  function updateTextbookCovers() {
+    Array.prototype.forEach.call(
+      document.querySelectorAll("a[href] img"),
+      function (image) {
+        var link = image.closest("a[href]");
+        if (!link) return;
+        var pathname;
+        try {
+          pathname = new URL(link.href, window.location.href).pathname;
+        } catch (_error) {
+          return;
+        }
+        applyTextbookCover(image, textbookCoverForPath(pathname));
+      }
+    );
+
+    var currentCover = textbookCoverForPath(window.location.pathname);
+    if (currentCover) {
+      applyTextbookCover(
+        document.querySelector("article .entry-image img.wp-post-image"),
+        currentCover
+      );
+    }
   }
 
   function updateHeader(config) {
@@ -128,6 +215,7 @@
 
   function initialize() {
     applySiteConfig(siteConfig);
+    updateTextbookCovers();
     repairAlreadyFailedImages();
   }
 
