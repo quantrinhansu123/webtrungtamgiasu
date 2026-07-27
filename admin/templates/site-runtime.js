@@ -191,22 +191,27 @@
       ".tri-viet-parent-requests__caption small{color:#0b8150;font-size:13px;",
       "font-weight:700;white-space:nowrap}",
       ".tri-viet-parent-requests__control{position:absolute;z-index:2;top:47%;",
+      "display:flex;align-items:center;justify-content:center;",
       "width:46px;height:46px;min-width:0;min-height:0;max-width:none;",
       "margin:0;padding:0;border:0;border-radius:50%;background:#087849;",
-      "color:#fff;font-size:34px;line-height:42px;text-align:center;",
+      "color:#fff;font-size:0;line-height:1;text-align:center;",
       "box-shadow:0 8px 22px rgba(8,83,52,.25);cursor:pointer;",
       "transition:background .2s ease,transform .2s ease}",
+      ".tri-viet-parent-requests__control:before{content:'';display:block;",
+      "width:11px;height:11px;border-top:3px solid currentColor;",
+      "border-right:3px solid currentColor}",
       ".tri-viet-parent-requests__control:hover{background:#075f3b;",
       "transform:scale(1.06)}",
       ".tri-viet-parent-requests__control--prev{left:0}",
+      ".tri-viet-parent-requests__control--prev:before{transform:rotate(-135deg)}",
       ".tri-viet-parent-requests__control--next{right:0}",
+      ".tri-viet-parent-requests__control--next:before{transform:rotate(45deg)}",
       ".tri-viet-parent-requests__footer{display:flex;align-items:center;",
       "justify-content:center;gap:13px;margin-top:8px;color:#496158;",
       "font-size:14px;font-weight:600}",
       ".tri-viet-parent-requests__counter{min-width:72px;padding:8px 12px;",
       "border-radius:999px;background:#087849;color:#fff;text-align:center;",
       "font-variant-numeric:tabular-nums}",
-      ".tri-viet-parent-requests__hint{margin:0}",
       ".tri-viet-parent-requests__lightbox{position:fixed;z-index:999999;",
       "inset:0;display:none;align-items:center;justify-content:center;",
       "padding:24px;background:rgba(4,20,14,.94)}",
@@ -229,13 +234,12 @@
       ".tri-viet-parent-requests__slide{flex-basis:calc(100% - 28px);",
       "padding:8px;border-radius:17px}",
       ".tri-viet-parent-requests__control{top:auto;bottom:7px;width:44px;",
-      "height:44px;font-size:30px;line-height:39px}",
+      "height:44px}",
       ".tri-viet-parent-requests__control--prev{left:calc(50% - 106px)}",
       ".tri-viet-parent-requests__control--next{right:calc(50% - 106px)}",
       ".tri-viet-parent-requests__footer{position:relative;min-height:58px;",
       "margin-top:-58px;padding-top:7px;gap:11px;flex-wrap:wrap}",
-      ".tri-viet-parent-requests__hint{flex-basis:100%;text-align:center;",
-      "margin-top:9px}}",
+      "}",
       "@media(prefers-reduced-motion:reduce){.tri-viet-parent-requests__track{",
       "scroll-behavior:auto}.tri-viet-parent-requests__slide,",
       ".tri-viet-parent-requests__control{transition:none}}"
@@ -334,11 +338,7 @@
     counter.className = "tri-viet-parent-requests__counter";
     counter.setAttribute("aria-label", "Vị trí ảnh");
     counter.textContent = "01 / 50";
-    var hint = document.createElement("p");
-    hint.className = "tri-viet-parent-requests__hint";
-    hint.textContent = "Tự chuyển sau mỗi 5 giây \u00b7 Có thể vuốt sang ngang";
     footer.appendChild(counter);
-    footer.appendChild(hint);
 
     shell.appendChild(previous);
     shell.appendChild(track);
