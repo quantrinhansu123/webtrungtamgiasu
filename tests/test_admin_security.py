@@ -564,6 +564,10 @@ def test_public_runtime_embeds_config_without_fetching_blocked_json():
     assert ".testimonial-collage img" in runtime
     assert "#parent-feedback-gallery" in runtime
     assert "updateTextbookCovers" in runtime
+    assert "initializeParentRequestCarousel" in runtime
+    assert "parentRequestImageCount = 50" in runtime
+    assert "parentRequestAutoplayDelay = 5000" in runtime
+    assert "yeu-cau-tim-gia-su/yeu-cau-tim-gia-su-" in runtime
     for subject in ("ngu-van", "hoa-hoc", "vat-ly"):
         for grade in (10, 11, 12):
             assert (
