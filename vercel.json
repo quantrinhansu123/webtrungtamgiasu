@@ -37,6 +37,7 @@
     }
   ],
   "rewrites": [
+    { "source": "/", "destination": "/giasubinhminh.com/index.html" },
     { "source": "/admin", "destination": "/api/cms" },
     { "source": "/admin/:path*", "destination": "/api/cms" },
     { "source": "/giasubinhminh.com/wp-admin/:path*", "destination": "/api/cms" },
