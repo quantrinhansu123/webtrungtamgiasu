@@ -579,6 +579,17 @@
       }
     );
 
+    Array.prototype.forEach.call(
+      document.querySelectorAll('link[rel~="icon"], link[rel="apple-touch-icon"]'),
+      function (link) {
+        if (logo) link.href = logo;
+      }
+    );
+    var tileImage = document.querySelector(
+      'meta[name="msapplication-TileImage"]'
+    );
+    if (logo && tileImage) tileImage.content = logo;
+
     Array.prototype.forEach.call(document.querySelectorAll('#logo a[rel="home"]'), function (link) {
       if (siteName) link.title = siteName;
     });
