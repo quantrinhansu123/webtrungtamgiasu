@@ -1,6 +1,6 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "buildCommand": "python scripts/build_public.py",
+  "buildCommand": "python scripts/build_public.py && python scripts/prepare_custom_domain.py",
   "outputDirectory": "public",
   "functions": {
     "api/**/*.py": {
@@ -26,9 +26,14 @@
   ],
   "redirects": [
     {
-      "source": "/",
-      "destination": "/giasubinhminh.com/",
-      "permanent": false
+      "source": "/giasubinhminh.com",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/giasubinhminh.com/:path*",
+      "destination": "/:path*",
+      "permanent": true
     }
   ],
   "rewrites": [
@@ -42,7 +47,8 @@
     { "source": "/vercel.json", "destination": "/api/cms" },
     { "source": "/cookies.txt", "destination": "/api/cms" },
     { "source": "/hts-log.txt", "destination": "/api/cms" },
-    { "source": "/api/:path*", "destination": "/api/cms" }
+    { "source": "/api/:path*", "destination": "/api/cms" },
+    { "source": "/:path*", "destination": "/giasubinhminh.com/:path*" }
   ],
   "headers": [
     {
