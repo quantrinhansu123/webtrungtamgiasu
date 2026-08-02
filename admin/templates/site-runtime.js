@@ -4,10 +4,12 @@
   var siteConfig = __SITE_CONFIG_JSON__;
   var runtimeScript = document.currentScript;
   var runtimeSrc = runtimeScript ? String(runtimeScript.getAttribute("src") || "") : "";
+  var legacySitePath = "/" + "giasubinhminh.com";
   var sitePrefix = (
-    window.location.pathname.indexOf("/giasubinhminh.com/") === 0 ||
-    runtimeSrc.indexOf("/giasubinhminh.com/") >= 0
-  ) ? "/giasubinhminh.com" : "";
+    window.location.pathname.indexOf(legacySitePath + "/") === 0 ||
+    window.location.pathname === legacySitePath ||
+    runtimeSrc.indexOf(legacySitePath + "/") >= 0
+  ) ? legacySitePath : "";
   var fallbackSrc = sitePrefix + "/wp-content/uploads/cms/2026/07/banner-trung-tam-gia-su-tri-viet.png";
   var textbookCovers = {
     "gia-su-van-10-de-thanh-cong-noi-tiep-thanh-cong": {
@@ -47,12 +49,49 @@
       alt: "Sách giáo khoa Vật lí 12 - Chương trình GDPT 2018"
     }
   };
-  var parentRequestImageCount = 50;
+  var parentRequestImageCount = 115;
   var parentRequestAutoplayDelay = 5000;
   var parentRequestImageBase = (
-    "/giasubinhminh.com/wp-content/uploads/cms/2026/07/" +
+    sitePrefix + "/wp-content/uploads/cms/2026/07/" +
     "yeu-cau-tim-gia-su/yeu-cau-tim-gia-su-"
   );
+  var realActivityImages = [
+    {
+      src: "wp-content/uploads/cms/2026/08/hoat-dong-thuc-te/hoat-dong-tri-viet-01.jpg",
+      alt: "Gia sư Trí Việt hướng dẫn học sinh trong giờ học thực tế",
+      title: "Gia sư đồng hành cùng học sinh"
+    },
+    {
+      src: "wp-content/uploads/cms/2026/08/hoat-dong-thuc-te/hoat-dong-tri-viet-02.jpg",
+      alt: "Gia sư và học sinh Trí Việt trong buổi học",
+      title: "Giờ học gần gũi, tích cực"
+    },
+    {
+      src: "wp-content/uploads/cms/2026/08/hoat-dong-thuc-te/hoat-dong-tri-viet-03.jpg",
+      alt: "Học sinh học cùng gia sư Trí Việt",
+      title: "Theo sát từng học sinh"
+    },
+    {
+      src: "wp-content/uploads/cms/2026/08/hoat-dong-thuc-te/hoat-dong-tri-viet-04.jpg",
+      alt: "Học sinh tập trung làm bài trong giờ học",
+      title: "Tập trung rèn luyện kiến thức"
+    },
+    {
+      src: "wp-content/uploads/cms/2026/08/hoat-dong-thuc-te/hoat-dong-tri-viet-05.jpg",
+      alt: "Bài luyện chữ trong lớp học Trí Việt",
+      title: "Rèn chữ và nền nếp học tập"
+    },
+    {
+      src: "wp-content/uploads/cms/2026/08/hoat-dong-thuc-te/hoat-dong-tri-viet-06.jpg",
+      alt: "Lớp học thực tế tại Trung Tâm Gia Sư Trí Việt",
+      title: "Không khí lớp học thực tế"
+    },
+    {
+      src: "wp-content/uploads/cms/2026/08/hoat-dong-thuc-te/hoat-dong-tri-viet-07.jpg",
+      alt: "Các học sinh học tập tại Trung Tâm Gia Sư Trí Việt",
+      title: "Học tập chủ động, vui vẻ"
+    }
+  ];
 
   function safeImageUrl(value) {
     var url = String(value || "").trim();
@@ -334,7 +373,7 @@
     var counter = document.createElement("span");
     counter.className = "tri-viet-parent-requests__counter";
     counter.setAttribute("aria-label", "Vị trí ảnh");
-    counter.textContent = "01 / 50";
+    counter.textContent = "01 / " + parentRequestImageCount;
     footer.appendChild(counter);
 
     shell.appendChild(previous);
@@ -559,6 +598,125 @@
     startAutoplay();
   }
 
+  function addRealActivityNewsStyles() {
+    if (document.getElementById("tri-viet-real-activity-styles")) return;
+    var style = document.createElement("style");
+    style.id = "tri-viet-real-activity-styles";
+    style.textContent = [
+      ".tri-viet-real-activity{box-sizing:border-box;padding:66px 20px 72px;",
+      "background:#fff;color:#17352a;font-family:Arial,sans-serif}",
+      ".tri-viet-real-activity *{box-sizing:border-box}",
+      ".tri-viet-real-activity__inner{max-width:1180px;margin:0 auto}",
+      ".tri-viet-real-activity__heading{text-align:center;max-width:790px;",
+      "margin:0 auto 34px}",
+      ".tri-viet-real-activity__eyebrow{display:inline-block;margin:0 0 9px;",
+      "color:#ed3237;font-size:14px;font-weight:800;letter-spacing:.1em;",
+      "text-transform:uppercase}",
+      ".tri-viet-real-activity__title{margin:0;color:#087849;",
+      "font-size:clamp(28px,3vw,42px);line-height:1.17;font-weight:800}",
+      ".tri-viet-real-activity__subtitle{margin:12px auto 0;color:#4b6259;",
+      "font-size:17px;line-height:1.65}",
+      ".tri-viet-real-activity__grid{display:flex;flex-wrap:wrap;",
+      "justify-content:center;gap:20px}",
+      ".tri-viet-real-activity__card{position:relative;display:block;",
+      "flex:0 1 calc((100% - 60px)/4);min-width:240px;margin:0;overflow:hidden;",
+      "border-radius:18px;background:#e9f4ef;box-shadow:0 12px 30px ",
+      "rgba(19,76,53,.14);aspect-ratio:4/3;cursor:zoom-in;",
+      "transition:transform .2s ease,box-shadow .2s ease}",
+      ".tri-viet-real-activity__card:hover{transform:translateY(-5px);",
+      "box-shadow:0 18px 38px rgba(19,76,53,.2)}",
+      ".tri-viet-real-activity__image{display:block;width:100%;height:100%;",
+      "object-fit:cover;transition:transform .35s ease}",
+      ".tri-viet-real-activity__card:hover .tri-viet-real-activity__image{",
+      "transform:scale(1.035)}",
+      ".tri-viet-real-activity__caption{position:absolute;left:0;right:0;",
+      "bottom:0;padding:42px 16px 15px;color:#fff;font-size:16px;",
+      "line-height:1.35;font-weight:800;text-shadow:0 1px 3px rgba(0,0,0,.5);",
+      "background:linear-gradient(transparent,rgba(3,45,29,.88))}",
+      ".tri-viet-real-activity__more{display:flex;justify-content:center;",
+      "margin-top:30px}",
+      ".tri-viet-real-activity__link{display:inline-flex;align-items:center;",
+      "justify-content:center;min-height:46px;padding:11px 25px;border-radius:99px;",
+      "background:#087849;color:#fff!important;font-size:15px;font-weight:800;",
+      "text-decoration:none!important;box-shadow:0 8px 20px rgba(8,120,73,.2)}",
+      ".tri-viet-real-activity__link:hover{background:#075f3b;color:#fff}",
+      "@media(max-width:900px){.tri-viet-real-activity__card{",
+      "flex-basis:calc((100% - 20px)/2)}}",
+      "@media(max-width:600px){.tri-viet-real-activity{padding:48px 14px 54px}",
+      ".tri-viet-real-activity__heading{margin-bottom:24px}",
+      ".tri-viet-real-activity__subtitle{font-size:15px}",
+      ".tri-viet-real-activity__grid{gap:14px}",
+      ".tri-viet-real-activity__card{flex-basis:100%;min-width:0;",
+      "border-radius:15px}.tri-viet-real-activity__caption{font-size:15px}}",
+      "@media(prefers-reduced-motion:reduce){.tri-viet-real-activity__card,",
+      ".tri-viet-real-activity__image{transition:none}}"
+    ].join("");
+    document.head.appendChild(style);
+  }
+
+  function initializeRealActivityNews() {
+    if (!isHomepage()) return;
+    if (document.getElementById("tri-viet-real-activity")) return;
+
+    var parentRequests = document.getElementById("tri-viet-parent-requests");
+    if (!parentRequests) return;
+
+    addRealActivityNewsStyles();
+    var section = document.createElement("section");
+    section.id = "tri-viet-real-activity";
+    section.className = "tri-viet-real-activity";
+    section.setAttribute("aria-labelledby", "tri-viet-real-activity-title");
+
+    var inner = document.createElement("div");
+    inner.className = "tri-viet-real-activity__inner";
+    inner.innerHTML = [
+      '<header class="tri-viet-real-activity__heading">',
+      '<span class="tri-viet-real-activity__eyebrow">Chia sẻ tin tức</span>',
+      '<h2 class="tri-viet-real-activity__title" ',
+      'id="tri-viet-real-activity-title">Hình ảnh dạy và học thực tế</h2>',
+      '<p class="tri-viet-real-activity__subtitle">',
+      "Những khoảnh khắc học tập thực tế của gia sư và học sinh Trí Việt.",
+      "</p></header>"
+    ].join("");
+
+    var grid = document.createElement("div");
+    grid.className = "tri-viet-real-activity__grid";
+    realActivityImages.forEach(function (item) {
+      var card = document.createElement("a");
+      card.className = "tri-viet-real-activity__card";
+      card.href = safeImageUrl(item.src);
+      card.target = "_blank";
+      card.rel = "noopener";
+      card.setAttribute("aria-label", "Xem ảnh: " + item.title);
+
+      var image = document.createElement("img");
+      image.className = "tri-viet-real-activity__image";
+      image.src = safeImageUrl(item.src);
+      image.alt = item.alt;
+      image.loading = "lazy";
+      image.decoding = "async";
+
+      var caption = document.createElement("span");
+      caption.className = "tri-viet-real-activity__caption";
+      caption.textContent = item.title;
+      card.appendChild(image);
+      card.appendChild(caption);
+      grid.appendChild(card);
+    });
+    inner.appendChild(grid);
+
+    var more = document.createElement("div");
+    more.className = "tri-viet-real-activity__more";
+    var link = document.createElement("a");
+    link.className = "tri-viet-real-activity__link";
+    link.href = sitePrefix + "/chia-se-kinh-nghiem/";
+    link.textContent = "Xem thêm chia sẻ tin tức";
+    more.appendChild(link);
+    inner.appendChild(more);
+    section.appendChild(inner);
+    parentRequests.insertAdjacentElement("afterend", section);
+  }
+
   function updateHeader(config) {
     var siteName = String(config.site_name || "").trim();
     var logo = safeImageUrl(config.logo);
@@ -675,6 +833,7 @@
     applySiteConfig(siteConfig);
     updateTextbookCovers();
     initializeParentRequestCarousel();
+    initializeRealActivityNews();
     repairAlreadyFailedImages();
   }
 
