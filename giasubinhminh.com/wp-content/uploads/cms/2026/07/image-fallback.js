@@ -92,6 +92,13 @@
       title: "Học tập chủ động, vui vẻ"
     }
   ];
+  var tuitionRates = {
+    studentOne: "120.000 – 200.000",
+    studentOneHighSchool: "150.000 – 250.000",
+    studentTwo: "200.000 – 300.000",
+    teacherOne: "250.000 – 400.000",
+    teacherTwo: "350.000 – 500.000"
+  };
 
   function safeImageUrl(value) {
     var url = String(value || "").trim();
@@ -155,6 +162,150 @@
         currentCover
       );
     }
+  }
+
+  function plainTuitionText(value) {
+    return String(value || "")
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .replace(/đ/g, "d")
+      .replace(/Đ/g, "D")
+      .replace(/\s+/g, " ")
+      .trim()
+      .toLowerCase();
+  }
+
+  function directTableCells(row) {
+    return Array.prototype.filter.call(row.children, function (child) {
+      return child.tagName === "TD" || child.tagName === "TH";
+    });
+  }
+
+  function setTuitionCell(cell, value, key) {
+    if (!cell) return;
+    cell.textContent = value;
+    cell.dataset.triVietTuition = key;
+  }
+
+  function isHighSchoolTuitionContext(value) {
+    var text = plainTuitionText(value);
+    return (
+      text.indexOf("cap 3") >= 0 ||
+      text.indexOf("cap iii") >= 0 ||
+      text.indexOf("lop 10") >= 0 ||
+      text.indexOf("lop 11") >= 0 ||
+      text.indexOf("lop 12") >= 0 ||
+      /lop 9[^0-9]{0,5}12/.test(text) ||
+      text.indexOf("on thi dai hoc") >= 0 ||
+      text.indexOf("thi dai hoc") >= 0 ||
+      text.indexOf("thpt") >= 0
+    );
+  }
+
+  function hasSpecificTuitionLevel(value) {
+    var text = plainTuitionText(value);
+    return (
+      text.indexOf("cap ") >= 0 ||
+      text.indexOf("lop ") >= 0 ||
+      text.indexOf("on thi") >= 0 ||
+      text.indexOf("thpt") >= 0
+    );
+  }
+
+  function updateFiveColumnTuitionTable(table, pageContext) {
+    Array.prototype.forEach.call(table.querySelectorAll("tr"), function (row) {
+      var cells = directTableCells(row);
+      if (cells.length !== 5) return;
+      if (cells.some(function (cell) {
+        return Number(cell.getAttribute("colspan") || 1) > 1;
+      })) return;
+
+      var label = plainTuitionText(cells[0].textContent);
+      var rowText = plainTuitionText(row.textContent);
+      if (
+        !label ||
+        label.indexOf("lop hoc") >= 0 ||
+        label.indexOf("doi tuong") >= 0 ||
+        label.indexOf("noi dung") >= 0 ||
+        label.indexOf("1 hoc sinh") >= 0 ||
+        rowText.indexOf("lien he") >= 0 ||
+        rowText.indexOf("thoa thuan") >= 0 ||
+        rowText.indexOf(">=3") >= 0 ||
+        rowText.indexOf("tu 3 hoc sinh") >= 0
+      ) return;
+
+      var highSchool = isHighSchoolTuitionContext(label) || (
+        !hasSpecificTuitionLevel(label) &&
+        isHighSchoolTuitionContext(pageContext)
+      );
+      setTuitionCell(
+        cells[1],
+        highSchool
+          ? tuitionRates.studentOneHighSchool
+          : tuitionRates.studentOne,
+        "student-one"
+      );
+      setTuitionCell(cells[2], tuitionRates.studentTwo, "student-two");
+      setTuitionCell(cells[3], tuitionRates.teacherOne, "teacher-one");
+      setTuitionCell(cells[4], tuitionRates.teacherTwo, "teacher-two");
+      row.classList.add("tri-viet-tuition-row-updated");
+    });
+  }
+
+  function updateThreeColumnTuitionTable(table, pageContext) {
+    var highSchool = isHighSchoolTuitionContext(pageContext);
+    Array.prototype.forEach.call(table.querySelectorAll("tr"), function (row) {
+      var cells = directTableCells(row);
+      if (cells.length !== 3) return;
+      var label = plainTuitionText(cells[0].textContent);
+      if (label === "1 hoc sinh") {
+        setTuitionCell(
+          cells[1],
+          highSchool
+            ? tuitionRates.studentOneHighSchool
+            : tuitionRates.studentOne,
+          "student-one"
+        );
+        setTuitionCell(cells[2], tuitionRates.teacherOne, "teacher-one");
+        row.classList.add("tri-viet-tuition-row-updated");
+      } else if (label === "2 hoc sinh") {
+        setTuitionCell(cells[1], tuitionRates.studentTwo, "student-two");
+        setTuitionCell(cells[2], tuitionRates.teacherTwo, "teacher-two");
+        row.classList.add("tri-viet-tuition-row-updated");
+      }
+    });
+  }
+
+  function updateTuitionTables() {
+    var heading = document.querySelector("article h1, main h1, h1");
+    var pageContext = [
+      document.title,
+      window.location.pathname,
+      heading ? heading.textContent : ""
+    ].join(" ");
+
+    Array.prototype.forEach.call(document.querySelectorAll("table"), function (table) {
+      var text = plainTuitionText(table.textContent);
+      if (
+        text.indexOf("sinh vien") < 0 ||
+        text.indexOf("giao vien") < 0 ||
+        text.indexOf("1 hoc sinh") < 0 ||
+        text.indexOf("2 hoc sinh") < 0
+      ) return;
+
+      var hasFiveColumns = Array.prototype.some.call(
+        table.querySelectorAll("tr"),
+        function (row) {
+          return directTableCells(row).length === 5;
+        }
+      );
+      if (hasFiveColumns) {
+        updateFiveColumnTuitionTable(table, pageContext);
+      } else {
+        updateThreeColumnTuitionTable(table, pageContext);
+      }
+      table.classList.add("tri-viet-tuition-table-updated");
+    });
   }
 
   function isHomepage() {
@@ -832,6 +983,7 @@
   function initialize() {
     applySiteConfig(siteConfig);
     updateTextbookCovers();
+    updateTuitionTables();
     initializeParentRequestCarousel();
     initializeRealActivityNews();
     repairAlreadyFailedImages();

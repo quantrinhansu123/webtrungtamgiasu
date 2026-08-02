@@ -570,6 +570,15 @@ def test_public_runtime_embeds_config_without_fetching_blocked_json():
     assert "yeu-cau-tim-gia-su/yeu-cau-tim-gia-su-" in runtime
     assert "initializeRealActivityNews" in runtime
     assert runtime.count("hoat-dong-thuc-te/hoat-dong-tri-viet-") == 7
+    assert "updateTuitionTables" in runtime
+    for tuition_rate in (
+        "120.000 – 200.000",
+        "150.000 – 250.000",
+        "200.000 – 300.000",
+        "250.000 – 400.000",
+        "350.000 – 500.000",
+    ):
+        assert tuition_rate in runtime
     for subject in ("ngu-van", "hoa-hoc", "vat-ly"):
         for grade in (10, 11, 12):
             assert (
