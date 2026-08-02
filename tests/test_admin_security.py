@@ -569,7 +569,15 @@ def test_public_runtime_embeds_config_without_fetching_blocked_json():
     assert "parentRequestAutoplayDelay = 5000" in runtime
     assert "yeu-cau-tim-gia-su/yeu-cau-tim-gia-su-" in runtime
     assert "initializeRealActivityNews" in runtime
-    assert runtime.count("hoat-dong-thuc-te/hoat-dong-tri-viet-") == 7
+    for image_index in range(1, 25):
+        assert (
+            "hoat-dong-thuc-te/"
+            f"hoat-dong-tri-viet-{image_index:02d}.jpg"
+            in runtime
+        )
+    assert "updateHomepageServiceImages" in runtime
+    assert "updateNewsListingImages" in runtime
+    assert "updateFrenchTutorArticleImage" in runtime
     assert "updateTuitionTables" in runtime
     for tuition_rate in (
         "120.000 – 200.000",

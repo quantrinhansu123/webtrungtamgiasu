@@ -90,8 +90,110 @@
       src: "wp-content/uploads/cms/2026/08/hoat-dong-thuc-te/hoat-dong-tri-viet-07.jpg",
       alt: "Các học sinh học tập tại Trung Tâm Gia Sư Trí Việt",
       title: "Học tập chủ động, vui vẻ"
+    },
+    {
+      src: "wp-content/uploads/cms/2026/08/hoat-dong-thuc-te/hoat-dong-tri-viet-08.jpg",
+      alt: "Lớp học đông học sinh tập trung làm bài tại Trí Việt",
+      title: "Không khí học tập nghiêm túc"
+    },
+    {
+      src: "wp-content/uploads/cms/2026/08/hoat-dong-thuc-te/hoat-dong-tri-viet-09.jpg",
+      alt: "Các em nhỏ học tập trong lớp tại Trung Tâm Gia Sư Trí Việt",
+      title: "Lớp học gần gũi, vui vẻ"
+    },
+    {
+      src: "wp-content/uploads/cms/2026/08/hoat-dong-thuc-te/hoat-dong-tri-viet-10.jpg",
+      alt: "Học sinh chăm chú viết bài trong giờ học",
+      title: "Rèn luyện kiến thức mỗi ngày"
+    },
+    {
+      src: "wp-content/uploads/cms/2026/08/hoat-dong-thuc-te/hoat-dong-tri-viet-11.jpg",
+      alt: "Học sinh tiểu học tham gia lớp học tại Trí Việt",
+      title: "Xây nền tảng học tập vững chắc"
+    },
+    {
+      src: "wp-content/uploads/cms/2026/08/hoat-dong-thuc-te/hoat-dong-tri-viet-12.jpg",
+      alt: "Lớp học thực tế với nhiều học sinh đang làm bài",
+      title: "Học tập tập trung, hiệu quả"
+    },
+    {
+      src: "wp-content/uploads/cms/2026/08/hoat-dong-thuc-te/hoat-dong-tri-viet-13.jpg",
+      alt: "Học sinh ôn tập trong lớp học Trí Việt",
+      title: "Đồng hành trong từng buổi học"
+    },
+    {
+      src: "wp-content/uploads/cms/2026/08/hoat-dong-thuc-te/hoat-dong-tri-viet-14.jpg",
+      alt: "Nhóm học sinh cùng nhau luyện bài",
+      title: "Học nhóm chủ động, tiến bộ"
+    },
+    {
+      src: "wp-content/uploads/cms/2026/08/hoat-dong-thuc-te/hoat-dong-tri-viet-15.jpg",
+      alt: "Lớp học đông học sinh tại Trung Tâm Gia Sư Trí Việt",
+      title: "Môi trường học tập tích cực"
+    },
+    {
+      src: "wp-content/uploads/cms/2026/08/hoat-dong-thuc-te/hoat-dong-tri-viet-16.jpg",
+      alt: "Các học sinh chăm chú học bài trên lớp",
+      title: "Nỗ lực học tập mỗi ngày"
+    },
+    {
+      src: "wp-content/uploads/cms/2026/08/hoat-dong-thuc-te/hoat-dong-tri-viet-17.jpg",
+      alt: "Học sinh trao đổi bài trong buổi học thực tế",
+      title: "Cùng nhau tiến bộ"
+    },
+    {
+      src: "wp-content/uploads/cms/2026/08/hoat-dong-thuc-te/hoat-dong-tri-viet-18.jpg",
+      alt: "Gia sư Trí Việt trực tiếp hướng dẫn học sinh đọc bài",
+      title: "Gia sư kèm sát từng bài học"
+    },
+    {
+      src: "wp-content/uploads/cms/2026/08/hoat-dong-thuc-te/hoat-dong-tri-viet-19.jpg",
+      alt: "Gia sư đồng hành cùng học sinh trong buổi học tại nhà",
+      title: "Buổi học một kèm một thực tế"
+    },
+    {
+      src: "wp-content/uploads/cms/2026/08/hoat-dong-thuc-te/hoat-dong-tri-viet-20.jpg",
+      alt: "Gia sư hướng dẫn học sinh tiểu học làm bài",
+      title: "Tận tình hướng dẫn học sinh"
+    },
+    {
+      src: "wp-content/uploads/cms/2026/08/hoat-dong-thuc-te/hoat-dong-tri-viet-21.jpg",
+      alt: "Gia sư ngồi cạnh hỗ trợ học sinh luyện viết",
+      title: "Theo sát quá trình làm bài"
+    },
+    {
+      src: "wp-content/uploads/cms/2026/08/hoat-dong-thuc-te/hoat-dong-tri-viet-22.jpg",
+      alt: "Gia sư hướng dẫn học sinh giải bài trên bảng",
+      title: "Giải đáp kiến thức trực quan"
+    },
+    {
+      src: "wp-content/uploads/cms/2026/08/hoat-dong-thuc-te/hoat-dong-tri-viet-23.jpg",
+      alt: "Học sinh nghiêm túc làm bài trong lớp ôn tập",
+      title: "Lớp ôn tập nghiêm túc"
+    },
+    {
+      src: "wp-content/uploads/cms/2026/08/hoat-dong-thuc-te/hoat-dong-tri-viet-24.jpg",
+      alt: "Các em học sinh học tập tại lớp của Trí Việt",
+      title: "Lớp học thân thiện, tích cực"
     }
   ];
+  var homepageServiceImages = [
+    realActivityImages[17],
+    realActivityImages[18],
+    realActivityImages[19],
+    realActivityImages[20],
+    realActivityImages[21],
+    realActivityImages[22],
+    realActivityImages[23],
+    realActivityImages[11]
+  ];
+  var newsListingImages = [realActivityImages[17]].concat(
+    realActivityImages.slice(7, 24)
+  );
+  var realActivityGalleryImages = realActivityImages.slice(17, 24).concat(
+    realActivityImages.slice(7, 17),
+    realActivityImages.slice(0, 7)
+  );
   var tuitionRates = {
     studentOne: "120.000 – 200.000",
     studentOneHighSchool: "150.000 – 250.000",
@@ -106,6 +208,20 @@
     if (/^https:\/\//i.test(url) || url.indexOf("/") === 0) return url;
     if (/^[a-z][a-z0-9+.-]*:/i.test(url)) return "";
     return sitePrefix + "/" + url.replace(/^\/+/, "");
+  }
+
+  function applyRealPhoto(image, item) {
+    if (!image || !item) return;
+    var source = safeImageUrl(item.src);
+    if (!source) return;
+    image.removeAttribute("srcset");
+    image.removeAttribute("sizes");
+    image.removeAttribute("width");
+    image.removeAttribute("height");
+    image.src = source;
+    image.alt = item.alt;
+    image.loading = "lazy";
+    image.decoding = "async";
   }
 
   function replaceText(selector, value) {
@@ -317,6 +433,107 @@
       pathname === "/giasubinhminh.com" ||
       pathname === "/giasubinhminh.com/"
     );
+  }
+
+  function updateHomepageServiceImages() {
+    if (!isHomepage()) return;
+
+    var images = document.querySelectorAll(
+      "#section_12457 .wp-dichvu-item .box-image img"
+    );
+    if (!images.length) return;
+
+    if (!document.getElementById("tri-viet-real-service-styles")) {
+      var style = document.createElement("style");
+      style.id = "tri-viet-real-service-styles";
+      style.textContent = [
+        "#section_12457 .wp-dichvu-item .box-image{height:190px;overflow:hidden;",
+        "border-radius:8px;background:#edf6f1}",
+        "#section_12457 .wp-dichvu-item .box-image .tri-viet-real-service-photo{",
+        "display:block;width:100%;height:100%;object-fit:cover;object-position:center}",
+        "@media(max-width:549px){#section_12457 .wp-dichvu-item .box-image{",
+        "height:145px}}"
+      ].join("");
+      document.head.appendChild(style);
+    }
+
+    Array.prototype.forEach.call(images, function (image, index) {
+      var item = homepageServiceImages[index];
+      if (!item) return;
+      applyRealPhoto(image, item);
+      image.classList.add("tri-viet-real-service-photo");
+    });
+  }
+
+  function createNewsThumbnail(box) {
+    var boxImage = document.createElement("div");
+    boxImage.className = "box-image";
+
+    var imageCover = document.createElement("div");
+    imageCover.className = "image-cover";
+    imageCover.style.paddingTop = "56%";
+
+    var image = document.createElement("img");
+    image.className = "attachment-medium size-medium wp-post-image";
+    imageCover.appendChild(image);
+    boxImage.appendChild(imageCover);
+
+    var boxText = box.querySelector(".box-text");
+    box.insertBefore(boxImage, boxText || box.firstChild);
+    return image;
+  }
+
+  function updateNewsListingImages() {
+    var pathname = String(window.location.pathname || "")
+      .replace(/\/index\.html\/?$/i, "")
+      .replace(/\/+$/, "");
+    if (
+      pathname !== "/chia-se-kinh-nghiem" &&
+      pathname !== "/giasubinhminh.com/chia-se-kinh-nghiem"
+    ) return;
+
+    Array.prototype.forEach.call(
+      document.querySelectorAll(".blog-wrapper .post-item .box-blog-post"),
+      function (box, index) {
+        var item = newsListingImages[index % newsListingImages.length];
+        var image = box.querySelector(".box-image img") || createNewsThumbnail(box);
+        applyRealPhoto(image, item);
+        image.classList.add("tri-viet-real-news-photo");
+      }
+    );
+  }
+
+  function updateFrenchTutorArticleImage() {
+    var pathname = String(window.location.pathname || "");
+    if (
+      pathname.indexOf(
+        "/gia-su-tieng-phap-chuyen-day-ngu-phap-giao-tiep-" +
+        "luyen-chung-chi-cap-toc-nguoi-moi-bat-dau/"
+      ) < 0
+    ) return;
+
+    var matchedImage = null;
+    Array.prototype.some.call(
+      document.querySelectorAll("article .entry-content img"),
+      function (image) {
+        var source = String(image.getAttribute("src") || "");
+        if (
+          source.indexOf("banner-trung-tam-gia-su-tri-viet") < 0 &&
+          source.indexOf("b60442c2c31d48ab8146e213a27ac28c") < 0
+        ) return false;
+        matchedImage = image;
+        return true;
+      }
+    );
+    if (!matchedImage) return;
+
+    applyRealPhoto(matchedImage, realActivityImages[17]);
+    matchedImage.classList.add("tri-viet-french-tutor-photo");
+    matchedImage.style.display = "block";
+    matchedImage.style.width = "100%";
+    matchedImage.style.maxHeight = "560px";
+    matchedImage.style.objectFit = "cover";
+    matchedImage.style.borderRadius = "12px";
   }
 
   function findTutorRegistrationSection() {
@@ -796,9 +1013,15 @@
       "@media(max-width:600px){.tri-viet-real-activity{padding:48px 14px 54px}",
       ".tri-viet-real-activity__heading{margin-bottom:24px}",
       ".tri-viet-real-activity__subtitle{font-size:15px}",
-      ".tri-viet-real-activity__grid{gap:14px}",
-      ".tri-viet-real-activity__card{flex-basis:100%;min-width:0;",
-      "border-radius:15px}.tri-viet-real-activity__caption{font-size:15px}}",
+      ".tri-viet-real-activity__grid{gap:14px;flex-wrap:nowrap;",
+      "justify-content:flex-start;overflow-x:auto;scroll-snap-type:x mandatory;",
+      "padding:0 2px 10px;-webkit-overflow-scrolling:touch}",
+      ".tri-viet-real-activity__grid::-webkit-scrollbar{height:6px}",
+      ".tri-viet-real-activity__grid::-webkit-scrollbar-thumb{",
+      "background:#b8d9c8;border-radius:99px}",
+      ".tri-viet-real-activity__card{flex:0 0 84%;min-width:0;",
+      "scroll-snap-align:start;border-radius:15px}",
+      ".tri-viet-real-activity__caption{font-size:15px}}",
       "@media(prefers-reduced-motion:reduce){.tri-viet-real-activity__card,",
       ".tri-viet-real-activity__image{transition:none}}"
     ].join("");
@@ -832,7 +1055,7 @@
 
     var grid = document.createElement("div");
     grid.className = "tri-viet-real-activity__grid";
-    realActivityImages.forEach(function (item) {
+    realActivityGalleryImages.forEach(function (item) {
       var card = document.createElement("a");
       card.className = "tri-viet-real-activity__card";
       card.href = safeImageUrl(item.src);
@@ -984,6 +1207,9 @@
     applySiteConfig(siteConfig);
     updateTextbookCovers();
     updateTuitionTables();
+    updateHomepageServiceImages();
+    updateNewsListingImages();
+    updateFrenchTutorArticleImage();
     initializeParentRequestCarousel();
     initializeRealActivityNews();
     repairAlreadyFailedImages();
