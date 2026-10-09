@@ -49,7 +49,7 @@
       alt: "Sách giáo khoa Vật lí 12 - Chương trình GDPT 2018"
     }
   };
-  var parentRequestImageCount = 115;
+  var parentRequestImageCount = 215;
   var parentRequestAutoplayDelay = 5000;
   var parentRequestImageBase = (
     sitePrefix + "/wp-content/uploads/cms/2026/07/" +
@@ -707,6 +707,7 @@
       image.alt = "Tin nhắn phụ huynh đăng ký tìm gia sư " + index;
       image.loading = index <= 6 ? "eager" : "lazy";
       image.decoding = "async";
+      image.draggable = false;
       imageWrap.appendChild(image);
 
       var caption = document.createElement("span");
@@ -903,13 +904,15 @@
       dragStartX = event.clientX;
       dragStartScroll = track.scrollLeft;
       track.classList.add("is-dragging");
-      track.setPointerCapture(event.pointerId);
       stopAutoplay();
     });
     track.addEventListener("pointermove", function (event) {
       if (!dragging) return;
       event.preventDefault();
-      if (Math.abs(event.clientX - dragStartX) > 5) blockSlideClick = true;
+      if (!blockSlideClick && Math.abs(event.clientX - dragStartX) > 5) {
+        blockSlideClick = true;
+        track.setPointerCapture(event.pointerId);
+      }
       track.scrollLeft = dragStartScroll - (event.clientX - dragStartX);
     });
     function finishDragging(event) {

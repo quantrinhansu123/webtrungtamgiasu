@@ -565,7 +565,7 @@ def test_public_runtime_embeds_config_without_fetching_blocked_json():
     assert "#parent-feedback-gallery" in runtime
     assert "updateTextbookCovers" in runtime
     assert "initializeParentRequestCarousel" in runtime
-    assert "parentRequestImageCount = 115" in runtime
+    assert "parentRequestImageCount = 215" in runtime
     assert "parentRequestAutoplayDelay = 5000" in runtime
     assert "yeu-cau-tim-gia-su/yeu-cau-tim-gia-su-" in runtime
     assert "initializeRealActivityNews" in runtime
